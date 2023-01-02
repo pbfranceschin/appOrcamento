@@ -20,10 +20,12 @@ import {
 } from "wagmi";
 
 import { getContractData } from '../utils';
+import GetBalance from '../components/user/GetBalance';
 
 const [contractAddress, contractABI] = getContractData();
 
 const buttonSingleDefault = "Transferir";
+const buttonGetBalanceDefault = "Consultar";
 const buttonGetAreaDefault = "Consultar";
 const buttonAddOrgDefault = "Cadastrar";
 const buttonAddAreaDefault = "Cadastrar";
@@ -38,10 +40,12 @@ export default function ApplicationSite() {
     });
 
     const [buttonSingleText, setButtonSingleText] = useState(buttonSingleDefault);
+    const [buttonGetBalanceText, setButtonGetBalanceText] = useState(buttonGetBalanceDefault);
     const [buttonGetAreaText, setButtonGetAreaText] = useState(buttonGetAreaDefault);
     const [buttonAddOrgText, setButtonAddOrgText ] = useState(buttonAddOrgDefault);
     const [buttonAddAreaText, setButtonAddAreaText ] = useState(buttonAddAreaDefault);
-    // SingleTrasnfer
+
+    // SingleTransfer
     const [valueSingle, setValueSingle] = useState('');
     const [areaSingle, setAreaSingle] = useState('');
     const [addressSingle, setAddressSingle] = useState('');
@@ -55,8 +59,15 @@ export default function ApplicationSite() {
     // const [batchValue3, setBacthValue3] = useState();
     // const [batchArea3, setBatchArea3] = useState();
     
+    // getBalance
+    const [addressBalance, setAddressBalance] = useState('');
+    const [areaBalance, setAreaBalance] = useState('');
+    const [balance, setBalance] = useState('');
+
     // getArea
     const [areaGet, setAreaGet] = useState('');
+    const [areas, setAreas] = useState('');
+
     // addOrg
     const [address1stAdd, setAddress1stAdd] = useState('');
     const [area1stAdd, setArea1stAdd] = useState('');
@@ -110,6 +121,36 @@ export default function ApplicationSite() {
         }
     }
 
+
+    const getBalance = async (
+        account,
+        area
+    ) => {
+        if(buttonGetBalanceText !== buttonGetBalanceDefault) {
+            return
+        }
+        let error = null
+        let txReceipt
+        try {
+            setButtonGetBalanceText('Consultando...')
+            const bal = await Contract.balanceOf(account, area)
+            txReceipt = await bal.wait()
+        } catch(err) {
+            console.log(err)
+            error = err
+            let msg = "Erro:\n".concat(err)
+            alert(msg)
+            setButtonGetBalanceText(buttonGetBalanceDefault)
+        }
+        if(error == null) {
+            console.log('success')
+            console.log(txReceipt)
+            setButtonGetBalanceText(buttonGetBalanceDefault)
+            setBalance(bal.toString())
+        }
+
+    }
+
     // TODO
     // // // // função async que chama Contract.getAreas // // // //
     // 
@@ -120,11 +161,12 @@ export default function ApplicationSite() {
             return
         }
         let error = null
-        let txReceipt
+        // let txReceipt
+        let areas_
         try {
             setButtonGetAreaText('Carregando...')
-            const tx = await Contract.getAreas(account)
-            txReceipt = await tx.wait()
+            areas_ = await Contract.getAreas(account)
+            // txReceipt = await areas_.wait()
         } catch(err){
             console.log(err)
             error = err
@@ -134,10 +176,9 @@ export default function ApplicationSite() {
         }
         if(error === null) {
             console.log('success')
-            console.log(txReceipt)
+            // console.log(txReceipt)
             setButtonGetAreaText(buttonGetAreaDefault)
-            // return output
-            alert(tx)
+            setAreas(areas_.toString())
         }
     }
     
@@ -209,6 +250,14 @@ export default function ApplicationSite() {
             return
         }
         transferSingle(addressSingle, areaSingle, valueSingle)
+    }
+
+    const handleGetBalance = () =>{
+        if(!balanceGet) {
+            alert('Preencha o campo com o endereço')
+            return
+        }
+        getBalance(balanceGet)
     }
 
     const handleGetArea = () => {
@@ -302,6 +351,14 @@ export default function ApplicationSite() {
                     <h2>Repasses</h2>
                 </div>
                 <div>
+                <p>Áreas:</p>
+                    <p>0 = Verba Ordinária;
+                    1 = Educação;
+                    2 = Infraestrutura;
+                    3 = Saúde
+                    </p>
+                </div>
+                <div>
                     <p>Transferência simples</p>
                     <SingleTransfer 
                         addressSingle={addressSingle}
@@ -330,14 +387,38 @@ export default function ApplicationSite() {
                     />
                 </div>
                 <div className={styles.center}>
-                    <h2>Consultas</h2>
+                    <h2>Consultas</h2>                    
+                </div>
+                <div>
+                    <p>Áreas:</p>
+                    <p>0 = Verba Ordinária;
+                    1 = Educação;
+                    2 = Infraestrutura;
+                    3 = Saúde
+                    </p>
+                </div>
+
+                <div>
+                    <p>Consulta de Saldos</p>
+                    <GetBalance 
+                        addressBalance={addressBalance}
+                        setBalanceGet={setAddressBalance}
+                        areaBalance={areaBalance}
+                        setAreaBalance={setAreaBalance}
+                    />
+                    <button onClick={handleGetBalance}>
+                        {buttonGetBalanceText}
+                    </button>
+                    <p>Saldo: {balance}</p>
                 </div>
                 <div>
                     <p>Consulta de Áreas</p>
                     <GetArea 
                         areaGet={areaGet}
                         setAreaGet={setAreaGet}
-                    />                
+                    />
+
+                    <p>Áreas: {areas}</p>              
                     
                 </div>
                 
@@ -375,18 +456,7 @@ export default function ApplicationSite() {
                         {buttonAddAreaText}
                     </button>
                 </div>
-                {/* TESTE !!!!!!!!!!!!!!! */}
-                {/* <div>
-                    <p>teste</p>
-                    <input 
-                        type='number'
-                        placeholder='trossoqualquer'
-                        value={trossoqualquer}
-                        onChange={(e) => setTrossoqualquer(e.target.value)}
-                    />
-                    <button onClick={handleTrossoqualquer}> trossoqualquer </button>
-                </div> */}
-                {/* !!!!!!!!!!!!!!!! TESTE */}
+                
             </main>
 
         </>      
