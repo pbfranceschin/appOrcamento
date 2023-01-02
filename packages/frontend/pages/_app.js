@@ -32,12 +32,12 @@ const hardhatChain = {
 };
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum, hardhatChain],
-  [alchemyProvider({ apiKey: alchemyId }), publicProvider()]
+  [hardhatChain],
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'create-web3',
+  appName: 'app-orcamento',
   chains,
 });
 
@@ -54,9 +54,6 @@ const App = ({ Component, pageProps }) => {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider coolMode chains={chains}>
-        <NextHead>
-          <title>create-web3</title>
-        </NextHead>
         <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>
