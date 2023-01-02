@@ -25,5 +25,8 @@
       "**/backend",
       "**/backend/**"
     ]
+  },
+  "dependencies": {
+    "@next/font": "^13.1.1"
   }
 }

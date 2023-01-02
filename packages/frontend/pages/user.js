@@ -1,11 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import Header from './itens/Header';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import styles from '../styles/Home.module.css'
 import SingleTransfer from '../components/user/SingleTransfer';
 import BatchTransfer from '../components/user/BatchTransfer';
 import GetArea from '../components/user/GetArea';
+import GetBalance from '../components/user/GetBalance';
 import AddOrg from '../components/owner/AddOrg';
 import AddArea from '../components/owner/AddArea';
 
@@ -20,7 +22,7 @@ import {
 } from "wagmi";
 
 import { getContractData } from '../utils';
-import GetBalance from '../components/user/GetBalance';
+
 
 const [contractAddress, contractABI] = getContractData();
 
@@ -93,8 +95,6 @@ export default function ApplicationSite() {
         try {
             setButtonSingleText("Assinando...")
             console.log('singleTransfer from', signerAddress, 'to', to)
-            // const balanceReceived = await Contract.balanceOf(signerAddress, area.toString())
-            // console.log('BALANÇO',balanceReceived)
             const tx = await Contract.safeTransferFrom(
                 signerAddress,
                 to,
@@ -149,9 +149,7 @@ export default function ApplicationSite() {
 
     }
 
-    // TODO
-    // // // // função async que chama Contract.getAreas // // // //
-    // 
+    
     const getArea = async (
         account,        
     ) => {
@@ -159,12 +157,10 @@ export default function ApplicationSite() {
             return
         }
         let error = null
-        // let txReceipt
         let areas_
         try {
             setButtonGetAreaText('Carregando...')
             areas_ = await Contract.getAreas(account)
-            // txReceipt = await areas_.wait()
         } catch(err){
             console.log(err)
             error = err
@@ -174,7 +170,6 @@ export default function ApplicationSite() {
         }
         if(error === null) {
             console.log('success')
-            // console.log(txReceipt)
             setButtonGetAreaText(buttonGetAreaDefault)
             setAreas(areas_.toString())
         }
@@ -239,8 +234,7 @@ export default function ApplicationSite() {
                 setButtonAddAreaText(buttonAddAreaDefault)
             }
     }
-    // // // // funcao asyc que chama Contract.addArea // // // //
-    // // // // event handler pra addArea // // // // // // // // 
+ 
 
     const handleSingleTransfer = () => {
         if(!valueSingle || !addressSingle){
@@ -263,9 +257,7 @@ export default function ApplicationSite() {
             alert('Preencha o campo _endereço_')
             return
         }
-        // const output = getArea(areaGet)
-        // return output
-        getArea(areaGet)
+         getArea(areaGet)
     }
 
     const handleAddOrg = () => {
@@ -339,10 +331,9 @@ export default function ApplicationSite() {
                 <title>App Orçamento da União 2023</title>
                 <meta name="description" content="Created by FGV-ECMI" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/fgv.ico" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
-            {/* <Link href={'./control.js'}>
-            </Link>            */}
+            <Header />
             <ConnectButton />
             <main className={styles.main}>
                 <div className={styles.center}>
