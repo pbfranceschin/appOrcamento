@@ -130,11 +130,10 @@ export default function ApplicationSite() {
             return
         }
         let error = null
-        let txReceipt
+        let bal
         try {
             setButtonGetBalanceText('Consultando...')
-            const bal = await Contract.balanceOf(account, area)
-            txReceipt = await bal.wait()
+            bal = await Contract.balanceOf(account, area)
         } catch(err) {
             console.log(err)
             error = err
@@ -144,7 +143,6 @@ export default function ApplicationSite() {
         }
         if(error == null) {
             console.log('success')
-            console.log(txReceipt)
             setButtonGetBalanceText(buttonGetBalanceDefault)
             setBalance(bal.toString())
         }
@@ -253,11 +251,11 @@ export default function ApplicationSite() {
     }
 
     const handleGetBalance = () =>{
-        if(!balanceGet) {
-            alert('Preencha o campo com o endereço')
+        if(!addressBalance || !areaBalance) {
+            alert('Preencha os campos _endereço_ e _montante_')
             return
         }
-        getBalance(balanceGet)
+        getBalance(addressBalance, areaBalance)
     }
 
     const handleGetArea = () => {
@@ -402,7 +400,7 @@ export default function ApplicationSite() {
                     <p>Consulta de Saldos</p>
                     <GetBalance 
                         addressBalance={addressBalance}
-                        setBalanceGet={setAddressBalance}
+                        setAddressBalance={setAddressBalance}
                         areaBalance={areaBalance}
                         setAreaBalance={setAreaBalance}
                     />

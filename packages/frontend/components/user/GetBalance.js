@@ -1,7 +1,7 @@
 import React from "react";
 
 const GetBalance = (props) => {
-
+    console.log(props)
     return (
     <>
     <div className='form-control pb-2'>
@@ -14,13 +14,11 @@ const GetBalance = (props) => {
         />
         <input
             className="input input-bordered"
-            type='text'
+            type='number'
             placeholder = "área"
             value={props.areaBalance}
             onChange = {(e) => props.setAreaBalance(e.target.value)}
-        />
-        
-        
+        /> 
     </div>
     </>
     )   
