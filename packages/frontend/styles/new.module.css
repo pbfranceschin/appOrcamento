@@ -1,0 +1,44 @@
+.header {
+    overflow: hidden;
+    background-color: #2e2d58;
+    color: aliceblue;
+    padding: 20px 10px;
+  }
+
+  .header a {
+    float: left;
+    color: #f7f4f4;
+    text-align: top;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 15px;
+    line-height: 25px;
+    border-radius: 4px;
+  }
+  
+  .headerRight {
+    float: right;
+    text-align: end;
+  }
+
+
+.center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  line-height: 200%;
+}
+
+.buttonApp{
+  background-color: #2e2d58;
+  color: aliceblue;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+
