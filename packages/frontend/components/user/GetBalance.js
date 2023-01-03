@@ -1,7 +1,7 @@
 import React from "react";
 
 const GetBalance = (props) => {
-    console.log(props)
+
     return (
     <>
     <div className='form-control pb-2'>
