@@ -2,8 +2,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Header from './itens/Header';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useState } from 'react';
+import { useState, PureComponent } from 'react';
+import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+
 import styles from '../styles/Home.module.css'
+import newStyle from '../styles/new.module.css'
+
 import SingleTransfer from '../components/user/SingleTransfer';
 import BatchTransfer from '../components/user/BatchTransfer';
 import GetArea from '../components/user/GetArea';
@@ -134,6 +138,7 @@ export default function ApplicationSite() {
         try {
             setButtonGetBalanceText('Consultando...')
             bal = await Contract.balanceOf(account, area)
+            console.log('piiing2')
         } catch(err) {
             console.log(err)
             error = err
@@ -249,6 +254,7 @@ export default function ApplicationSite() {
             alert('Preencha os campos _endereço_ e _montante_')
             return
         }
+        console.log('piiiing')
         getBalance(addressBalance, areaBalance)
     }
 
@@ -323,7 +329,13 @@ export default function ApplicationSite() {
 
     ///////////////////////////////////////////////
 
-
+    const verba_ = 10**12
+    const chartData = [
+        {name: 'Ordinária', value: (verba_*80)/100},
+        {name: 'Educação', value: (verba_*5)/100},
+        {name: 'Infra', value: (verba_*10)/100},
+        {name: 'Saúde', value: (verba_*5)/100 },
+    ]
 
     return (
         <>
@@ -335,6 +347,23 @@ export default function ApplicationSite() {
             </Head>
             <Header />
             <ConnectButton />
+            <div className={newStyle.center}>
+                <h2>Orçamento: {verba_}</h2>
+                <PieChart width={400} height={400}>
+                    <Pie
+                        dataKey="value"
+                        isAnimationActive={false}
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        label
+                    />          
+                    <Tooltip />
+                </PieChart>
+            </div>
+
             <main className={styles.main}>
                 <div className={styles.center}>
                     <h2>Repasses</h2>

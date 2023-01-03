@@ -23,7 +23,8 @@
 
 
 .center {
-  justify-content: center;
+  display: flex;
+  justify-content: space-around;
   align-items: center;
   text-align: center;
   line-height: 200%;

@@ -27,6 +27,7 @@ const Header = () => {
               {' '}
               <Image
                 src="/FGV_branco.png"
+                alt="logo"
                 width={120}
                 height={36}
                 priority
