@@ -161,6 +161,7 @@ export default function ApplicationSite() {
         if(buttonSingleText !== buttonSingleDefault){
             return
         }
+        setAreas('')
         let error = null
         let areas_
         try {
@@ -205,8 +206,10 @@ export default function ApplicationSite() {
         if(error === null) {
             console.log('success')
             console.log(txReceipt)
-            alert('Endereço', account, 'adicionado à área', area, 'com sucesso!')
+            alert('Cadastro realizado com sucesso!')
             setButtonAddOrgText(buttonAddOrgDefault)
+            setAddress1stAdd('')
+            setArea1stAdd('')
         }
     }
     
@@ -235,8 +238,10 @@ export default function ApplicationSite() {
             if(error === null) {
                 console.log('success')
                 console.log(txReceipt)
-                alert('Endereço ${account}, adicionado à área ${area} com sucesso!')
+                alert('Cadastro realizado com sucesso!')
                 setButtonAddAreaText(buttonAddAreaDefault)
+                setAddressAdd('')
+                setAreaAdd('')
             }
     }
  
@@ -254,7 +259,6 @@ export default function ApplicationSite() {
             alert('Preencha os campos _endereço_ e _montante_')
             return
         }
-        console.log('piiiing')
         getBalance(addressBalance, areaBalance)
     }
 
@@ -273,13 +277,13 @@ export default function ApplicationSite() {
         }
         if(!area1stAdd) {
             addOrg(address1stAdd, 0)
-            setAddress1stAdd('')
-            setArea1stAdd('')
+            // setAddress1stAdd('')
+            // setArea1stAdd('')
             return
         }
         addOrg(address1stAdd, area1stAdd)
-        setAddress1stAdd('')
-        setArea1stAdd('')
+        // setAddress1stAdd('')
+        // setArea1stAdd('')
     }
 
     const handleAddArea = () => {
@@ -288,8 +292,8 @@ export default function ApplicationSite() {
             return
         }
         addArea(addressAdd, areaAdd)
-        setAddressAdd('')
-        setAreaAdd('')
+        // setAddressAdd('')
+        // setAreaAdd('')
     }
 
 

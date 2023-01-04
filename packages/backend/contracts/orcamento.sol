@@ -102,6 +102,10 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         _orgArea[org][area] = true;
     }
 
+    //////////////////////////
+    // TODO: function subArea
+    /////////////////////////
+
     ////////////////////////////
     // teste //////////////
     
