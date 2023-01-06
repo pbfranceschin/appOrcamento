@@ -1,4 +1,4 @@
-# App Orçamento da União 2023
+# App Orçamento da União
 O _App Orçamento da União_ move a tecnologia Blockchain para realizar e condicionar os repasses da verba pública. A arquitetura descentralizada da rede Blockchain confere mais **resiliência** ao sistema assim como maior **disponibilidade dos dados** referentes a ele. A abertura para leitura dos dados confere **transparência** e a eliminação de intermediários **celeridade** ao processo.
 
 Além das características mencionadas acima, que permitem que esse processo seja **mais seguro, eficiente e auditável** que o status quo, a utilização de _smart contracts_ para condicionar os repasses possibilita que algumas regras sobre a execução do orçamento sejam codificadas em lógica computacional e aplicadas automaticamente, tornando o processo **muito menos corruptível**.

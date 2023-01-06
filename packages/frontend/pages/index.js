@@ -18,9 +18,23 @@ export default function Home() {
       </Head>
       <Header />
       <main >
-        
+        <div className={newStyle.centerClose}>
+          <Image
+          src="/brasao.png"
+          width={312.5}
+          height={187.5}
+          />
+        </div>
         <div className={newStyle.centerBlue}>
-          <div ><h1 color='#2e2d58' className={inter.className}><i>O orçamento público na Blockchain!</i></h1></div>
+          
+          <div >
+            <h1 
+            color='#2e2d58'
+            className={inter.className}
+            >
+              <i>O orçamento público na Blockchain!</i>
+            </h1>
+          </div>
         </div>
         <div className={newStyle.center}>
           <a

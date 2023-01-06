@@ -448,10 +448,15 @@ export default function ApplicationSite() {
                 
                 
                 <div className={newStyle.center}>
-                    <h2>Área de Controle</h2>
+                    <h2>Controle</h2>
                     
                 </div>
-                <div><p>Os métodos abaixo são de uso exclusivo do órgão de controle</p></div>
+                <div>
+                    <p>
+                        Os métodos abaixo são de
+                        uso exclusivo do órgão de controle
+                    </p>
+                </div>
                 <div>
                     <p>Cadastramento de novo órgão</p>
                     <AddOrg 
