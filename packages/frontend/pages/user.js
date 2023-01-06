@@ -344,7 +344,7 @@ export default function ApplicationSite() {
     return (
         <>
             <Head>
-                <title>App Orçamento da União 2023</title>
+                <title>App Orçamento da União</title>
                 <meta name="description" content="Created by FGV-ECMI" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
@@ -369,7 +369,7 @@ export default function ApplicationSite() {
             </div>
 
             <main className={styles.main}>
-                <div className={styles.center}>
+                <div className={newStyle.center}>
                     <h2>Repasses</h2>
                 </div>
                 <div>
@@ -408,7 +408,7 @@ export default function ApplicationSite() {
                         // setBatchArea3={setBatchArea3}
                     />
                 </div>
-                <div className={styles.center}>
+                <div className={newStyle.center}>
                     <h2>Consultas</h2>                    
                 </div>
                 <div>
@@ -439,18 +439,16 @@ export default function ApplicationSite() {
                         areaGet={areaGet}
                         setAreaGet={setAreaGet}
                     />
-
+                    <button onClick={handleGetArea}>
+                        {buttonGetAreaText}
+                    </button>
                     <p>Áreas: {areas}</p>              
                     
                 </div>
                 
                 
-                <div className={styles.center}>
+                <div className={newStyle.center}>
                     <h2>Área de Controle</h2>
-                    <button onClick={handleGetArea}>
-                        {buttonGetAreaText}
-                    </button>
-                
                     
                 </div>
                 <div><p>Os métodos abaixo são de uso exclusivo do órgão de controle</p></div>

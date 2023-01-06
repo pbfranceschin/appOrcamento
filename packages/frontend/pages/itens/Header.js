@@ -15,7 +15,7 @@ const Header = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-            <h2><i>App Orçamento da União 2023</i></h2>
+            <h2><i>App Orçamento da União</i></h2>
             </a>
           </div>
           <div className={newStyle.headerRight}>

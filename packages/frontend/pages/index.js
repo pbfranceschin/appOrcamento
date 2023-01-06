@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>App Orçamento da União 2023</title>
+        <title>App Orçamento da União</title>
         <meta name="description" content="Created by FGV-ECMI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -19,8 +19,8 @@ export default function Home() {
       <Header />
       <main >
         
-        <div className={styles.center}>
-          <div><h1 className={inter.className}><i>O orçamento público na Blockchain!</i></h1></div>
+        <div className={newStyle.centerBlue}>
+          <div ><h1 color='#2e2d58' className={inter.className}><i>O orçamento público na Blockchain!</i></h1></div>
         </div>
         <div className={newStyle.center}>
           <a
@@ -31,7 +31,7 @@ export default function Home() {
             <button className={newStyle.buttonApp}> Abrir o App </button>
           </a>
         </div>
-        <div className={styles.center}>
+        <div className={newStyle.center}>
         <div>
           <p className={inter.className}>O <i><b>App Orçamento da União</b></i> move a tecnologia <b>Blockchain</b> <br></br> para 
           a realização de repasses de verba pública conferindo maior celeridade

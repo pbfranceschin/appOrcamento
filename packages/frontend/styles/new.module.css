@@ -24,11 +24,34 @@
 
 .center {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   text-align: center;
+  position: relative;
+  padding: 4rem 0;
   line-height: 200%;
 }
+
+.centerBlue {
+  color: #2e2d58;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 4rem 0;
+  line-height: 200%;
+}
+
+/* .center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 4rem 0;
+} */
+
 
 .buttonApp{
   background-color: #2e2d58;
