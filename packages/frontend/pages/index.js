@@ -21,15 +21,14 @@ export default function Home() {
         <div className={newStyle.centerClose}>
           <Image
           src="/brasao.png"
-          width={312.5}
-          height={187.5}
+          width={234.375}
+          height={140.625}
           />
         </div>
         <div className={newStyle.centerBlue}>
           
           <div >
             <h1 
-            color='#2e2d58'
             className={inter.className}
             >
               <i>O orçamento público na Blockchain!</i>
@@ -45,16 +44,19 @@ export default function Home() {
             <button className={newStyle.buttonApp}> Abrir o App </button>
           </a>
         </div>
-        <div className={newStyle.center}>
-        <div>
-          <p className={inter.className}>O <i><b>App Orçamento da União</b></i> move a tecnologia <b>Blockchain</b> <br></br> para 
-          a realização de repasses de verba pública conferindo maior celeridade
-          ao processo assim como a auditorias dele. <br></br>A tecnologia permite ainda que 
-          seja feito o particionamento da verba por área de atuação <br></br> com os repasses
-          sendo controlados por Smart Contracts.          
+        {/* <div className={newStyle.center}> */}
+          <div className={newStyle.centerClose}>
+            <p><h2>Não confie, verifique!</h2></p>
+          </div>
+          <div className={newStyle.centerClose}>
+            <p className={inter.className}>O <i><b>App Orçamento da União</b></i> move a tecnologia <b>Blockchain</b> <br></br> para 
+            a realização de repasses de verba pública conferindo maior trasnparência e celeridade
+            ao processo<br></br>assim como a auditorias dele. A tecnologia permite ainda que 
+            seja feito o particionamento da verba <br></br>por área de atuação, com os repasses
+            sendo controlados por Smart Contracts.          
           </p>
           </div>
-        </div>
+        {/* </div> */}
         
         <div className={styles.grid}>
           <a

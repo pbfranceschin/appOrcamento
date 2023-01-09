@@ -1,10 +1,9 @@
 import * as React from 'react';
-import NextHead from 'next/head';
 import '../styles/globals.css';
 
 // Imports
 import { chain, createClient, WagmiConfig, configureChains } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+// import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 import '@rainbow-me/rainbowkit/styles.css';
@@ -13,7 +12,7 @@ import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { useIsMounted } from '../hooks';
 
 // Get environment variables
-const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+// const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 // const infuraId = process.env.NEXT_PUBLIC_INFURA_ID;
 
 const hardhatChain = {
