@@ -5,6 +5,8 @@ import { useState, useRef } from "react";
 import { getContractData } from '../utils';
 import { useProvider } from 'wagmi';
 
+import Head from 'next/head';
+import Header from "./itens/ScanHeader";
 
 const fetchTxData = async (provider, contract, filter) => {
     
@@ -15,7 +17,7 @@ const fetchTxData = async (provider, contract, filter) => {
 
     const events = logs.map(log => contract.interface.parseLog(log).args);
 
-    return events.slice(-10);
+    return events;
 }
 
 const useTxData = () => {
@@ -46,10 +48,6 @@ const useTxData = () => {
 }
 
 const main = () => {
-    
-    
-
-    // const provider = new ethers.providers.JsonRpcProvider();
 
     const txData = useTxData()
 
@@ -59,6 +57,77 @@ const main = () => {
     return (
         <>
         <main>
+            <Head>
+                <title>Rastreador do Orçamento</title>
+                <meta content="Desenvolvido por FGV-ECMI"/>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <Header />
+            {/* <h1 className="taxt-3xl font-bold underline"> teste </h1> */}
+            <div class="flex flex-col">
+                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                        <div class="overflow-hidden">
+                            <table class="min-w-full">
+                            <thead class="bg-white border-b">
+                                <tr>
+                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    #
+                                </th>
+                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Operador
+                                </th>
+                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Área
+                                </th>
+                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Debitado de
+                                </th>
+                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Creditado a
+                                </th>
+                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Montante
+                                </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {txData.map((e,i) => {
+                                    const id = e.id.toString()
+                                    const value =e.value.toString()
+                                    return (
+                                        <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {i}
+                                        </td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {e.operator}
+                                        </td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {id}
+                                        </td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {e.from}
+                                        </td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {e.to}
+                                        </td>
+                                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {value}
+                                        </td>
+                                        </tr>
+                                    )
+                                })}                                
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                    
+            
+{/*             
             {txData.map((e,i) => {
                 const id = e.id.toString()
                 const value =e.value.toString()
@@ -68,7 +137,7 @@ const main = () => {
                     </div>
                 )
 
-            })}
+            })} */}
         </main>
         
         </>
