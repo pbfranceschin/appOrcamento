@@ -26,15 +26,17 @@ import {
 } from "wagmi";
 
 import { getContractData } from '../utils';
+import { arrayify } from 'ethers/lib/utils';
 
 
 const [contractAddress, contractABI] = getContractData();
 
-const buttonSingleDefault = "Transferir";
-const buttonGetBalanceDefault = "Consultar";
-const buttonGetAreaDefault = "Consultar";
-const buttonAddOrgDefault = "Cadastrar";
-const buttonAddAreaDefault = "Cadastrar";
+const buttonTransferDefault = "Transferir";
+// const buttonBatchDefault = "Transferir";
+const buttonViewDefault = "Consultar";
+// const buttonGetAreaDefault = "Consultar";
+const buttonAddDefault = "Cadastrar";
+// const buttonAddAreaDefault = "Cadastrar";
 
 export default function ApplicationSite() {
 
@@ -45,11 +47,12 @@ export default function ApplicationSite() {
         signerOrProvider: signerData
     });
 
-    const [buttonSingleText, setButtonSingleText] = useState(buttonSingleDefault);
-    const [buttonGetBalanceText, setButtonGetBalanceText] = useState(buttonGetBalanceDefault);
-    const [buttonGetAreaText, setButtonGetAreaText] = useState(buttonGetAreaDefault);
-    const [buttonAddOrgText, setButtonAddOrgText ] = useState(buttonAddOrgDefault);
-    const [buttonAddAreaText, setButtonAddAreaText ] = useState(buttonAddAreaDefault);
+    const [buttonSingleText, setButtonSingleText] = useState(buttonTransferDefault);
+    const [buttonBatchText, setButtonBatchText] = useState(buttonTransferDefault);
+    const [buttonGetBalanceText, setButtonGetBalanceText] = useState(buttonViewDefault);
+    const [buttonGetAreaText, setButtonGetAreaText] = useState(buttonViewDefault);
+    const [buttonAddOrgText, setButtonAddOrgText ] = useState(buttonAddDefault);
+    const [buttonAddAreaText, setButtonAddAreaText ] = useState(buttonAddDefault);
 
     // SingleTransfer
     const [valueSingle, setValueSingle] = useState('');
@@ -57,19 +60,19 @@ export default function ApplicationSite() {
     const [addressSingle, setAddressSingle] = useState('');
 
     // BatchTransfer
-    // const [batchAddress, setBatchAddress] = useState();
-    // const [batchValue1, setBacthValue1] = useState();
-    // const [batchArea1, setBatchArea1] = useState();
-    // const [batchValue2, setBacthValue2] = useState();
-    // const [batchArea2, setBatchArea2] = useState();
-    // const [batchValue3, setBacthValue3] = useState();
-    // const [batchArea3, setBatchArea3] = useState();
-    
+    const [batchAddress, setBatchAddress] = useState('');
+    const [batchValue1, setBatchValue1] = useState('');
+    const [batchArea1, setBatchArea1] = useState('');
+    const [batchValue2, setBatchValue2] = useState('');
+    const [batchArea2, setBatchArea2] = useState('');
+    const [batchValue3, setBatchValue3] = useState('');
+    const [batchArea3, setBatchArea3] = useState('');
+    const [batchValue4, setBatchValue4] = useState('');
+    const [batchArea4, setBatchArea4] = useState('');
     // getBalance
     const [addressBalance, setAddressBalance] = useState('');
     const [areaBalance, setAreaBalance] = useState('');
     const [balance, setBalance] = useState('');
-
     // getArea
     const [areaGet, setAreaGet] = useState('');
     const [areas, setAreas] = useState('');
@@ -81,6 +84,9 @@ export default function ApplicationSite() {
     const [addressAdd, setAddressAdd] = useState('');
     const [areaAdd, setAreaAdd] = useState('');
     
+
+    // // contract callers // // // //
+    // // // // // // // // // // // /
     const transferSingle = async (
         to,
         area,
@@ -90,7 +96,7 @@ export default function ApplicationSite() {
             alert("Conecte a carteira para transferir")
             return
         }
-        if(buttonSingleText !== buttonSingleDefault){
+        if(buttonSingleText !== buttonTransferDefault){
             return
         }
         const signerAddress = await signerData.getAddress()
@@ -113,24 +119,74 @@ export default function ApplicationSite() {
             error = err
             let msg = "Erro:\n".concat(err)
             alert(msg)
-            setButtonSingleText(buttonSingleDefault)
+            setButtonSingleText(buttonTransferDefault)
         }
         if(error === null) {
             console.log('success')
             console.log(txReceipt)
-            setButtonSingleText(buttonSingleDefault)
+            setButtonSingleText(buttonTransferDefault)
             setAddressSingle('')
             setValueSingle('')
             setAreaSingle('')
+            alert('Transferencia realizada com sucesso')
         }
     }
 
+    const transferBatch = async (
+        to,
+        areas,
+        amounts,
+        ) =>{
+        if(!signerData) {
+            alert("Conecte a carteira para transferir")
+            return
+        }
+        if(buttonBatchText !== buttonTransferDefault){
+            return
+        }
+        const signerAddress = await signerData.getAddress()
+        let error = null
+        let txReceipt
+        try {
+            setButtonBatchText("Assinando...")
+            console.log('batchTransfer from', signerAddress, 'to', to)
+            const tx = await Contract.safeBatchTransferFrom(
+                signerAddress,
+                to,
+                areas,
+                amounts,
+                '0x00'
+            )
+            setButtonBatchText("Enviando...")
+            txReceipt = await tx.wait()
+        } catch(err){
+            console.log(err)
+            error = err
+            let msg = "Erro:\n".concat(err)
+            alert(msg)
+            setButtonBatchText(buttonTransferDefault)
+        }
+        if(error === null) {
+            console.log('success')
+            console.log(txReceipt)
+            setButtonBatchText(buttonTransferDefault)
+            setBatchValue1('')
+            setBatchValue2('')
+            setBatchValue3('')
+            setBatchValue4('')
+            setBatchArea1('')
+            setBatchArea2('')
+            setBatchArea3('')
+            setBatchArea4('')
+            alert('Transferencia realizada com sucesso')
+        }
+    }
 
     const getBalance = async (
         account,
         area
     ) => {
-        if(buttonGetBalanceText !== buttonGetBalanceDefault) {
+        if(buttonGetBalanceText !== buttonViewDefault) {
             return
         }
         let error = null
@@ -144,11 +200,11 @@ export default function ApplicationSite() {
             error = err
             let msg = "Erro:\n".concat(err)
             alert(msg)
-            setButtonGetBalanceText(buttonGetBalanceDefault)
+            setButtonGetBalanceText(buttonViewDefault)
         }
         if(error == null) {
             console.log('success')
-            setButtonGetBalanceText(buttonGetBalanceDefault)
+            setButtonGetBalanceText(buttonViewDefault)
             setBalance(bal.toString())
         }
 
@@ -158,7 +214,7 @@ export default function ApplicationSite() {
     const getArea = async (
         account,        
     ) => {
-        if(buttonSingleText !== buttonSingleDefault){
+        if(buttonGetAreaText !== buttonViewDefault){
             return
         }
         setAreas('')
@@ -172,11 +228,11 @@ export default function ApplicationSite() {
             error = err
             let msg = "Erro:\n".concat(err)
             alert(msg)
-            setButtonGetAreaText(buttonGetAreaDefault)
+            setButtonGetAreaText(buttonViewDefault)
         }
         if(error === null) {
             console.log('success')
-            setButtonGetAreaText(buttonGetAreaDefault)
+            setButtonGetAreaText(buttonViewDefault)
             setAreas(areas_.toString())
         }
     }
@@ -185,7 +241,7 @@ export default function ApplicationSite() {
         account,
         area
     ) => {
-        if(buttonAddOrgText !== buttonAddOrgDefault){
+        if(buttonAddOrgText !== buttonAddDefault){
             return
         }
         let error = null
@@ -201,13 +257,13 @@ export default function ApplicationSite() {
             error = err
             let msg = "Erro:\n".concat(err)
             alert(msg)
-            setButtonAddOrgText(buttonAddOrgDefault)
+            setButtonAddOrgText(buttonAddDefault)
         }
         if(error === null) {
             console.log('success')
             console.log(txReceipt)
             alert('Cadastro realizado com sucesso!')
-            setButtonAddOrgText(buttonAddOrgDefault)
+            setButtonAddOrgText(buttonAddDefault)
             setAddress1stAdd('')
             setArea1stAdd('')
         }
@@ -217,7 +273,7 @@ export default function ApplicationSite() {
         account,
         area
         ) => {
-            if(buttonAddAreaText !== buttonAddAreaDefault){
+            if(buttonAddAreaText !== buttonAddDefault){
                 return
             }
             let error = null
@@ -233,19 +289,20 @@ export default function ApplicationSite() {
                 error = err
                 let msg = "Erro:\n".concat(err)
                 alert(msg)
-                setButtonAddAreaText(buttonAddAreaDefault)
+                setButtonAddAreaText(buttonAddDefault)
             }
             if(error === null) {
                 console.log('success')
                 console.log(txReceipt)
                 alert('Cadastro realizado com sucesso!')
-                setButtonAddAreaText(buttonAddAreaDefault)
+                setButtonAddAreaText(buttonAddDefault)
                 setAddressAdd('')
                 setAreaAdd('')
             }
     }
- 
 
+    // // // // handlers // // // 
+    // // // // // // // // // //
     const handleSingleTransfer = () => {
         if(!valueSingle || !addressSingle){
             alert('Preencha os campos _endereço_ e _montante_')
@@ -253,10 +310,59 @@ export default function ApplicationSite() {
         }
         transferSingle(addressSingle, areaSingle, valueSingle)
     }
+ 
+    const handleBatchTransfer = () => {
+        if(!batchAddress){
+            alert('Preencha o campo _endereço_ ')
+            return
+        }
+        if(
+            !(batchValue1 && batchArea1) &&
+            !(batchValue2 && batchArea2) &&
+            !(batchValue3 && batchArea3) &&
+            !(batchValue4 && batchArea4)
+            ) {
+                alert('preencha pelo menos um dos pares (area, montante)')
+                return
+            }
+        if(
+            (!batchValue1 && batchArea1) ||
+            (batchValue1 && !batchArea1) ||
+            (!batchValue2 && batchArea2) ||
+            (batchValue2 && !batchArea2) ||
+            (!batchValue3 && batchArea3) ||
+            (batchValue3 && !batchArea3) ||
+            (!batchValue4 && batchArea4) ||
+            (batchValue4 && !batchArea4)
+        ) {
+            alert('um dos pares (area, montante) está imcompleto!')
+            return
+        }
+        let values = new Array()
+        let areas = new Array()
+        if(batchValue1){
+            values.push(batchValue1)
+            areas.push(batchArea1)
+        }
+        if(batchValue2){
+            values.push(batchValue2)
+            areas.push(batchArea2)
+        }
+        if(batchValue3){
+            values.push(batchValue3)
+            areas.push(batchArea3)
+        }
+        if(batchValue4){
+            values.push(batchValue4)
+            areas.push(batchArea4)
+        }
+        
+        transferBatch(batchAddress, areas, values)
+    }
 
     const handleGetBalance = () =>{
         if(!addressBalance || !areaBalance) {
-            alert('Preencha os campos _endereço_ e _montante_')
+            alert('Preencha os campos _endereço_ e _area_')
             return
         }
         getBalance(addressBalance, areaBalance)
@@ -267,7 +373,7 @@ export default function ApplicationSite() {
             alert('Preencha o campo _endereço_')
             return
         }
-         getArea(areaGet)
+        getArea(areaGet)
     }
 
     const handleAddOrg = () => {
@@ -351,8 +457,13 @@ export default function ApplicationSite() {
             </Head>
             <Header />
             <ConnectButton />
-            <div className={newStyle.center}>
-                <h2>Orçamento: {verba_}</h2>
+            
+
+            <main className="justify-center content-center justify-items-center p-6">
+            <div className={newStyle.centerClose}>
+                <h2 className='font-bold text-xl'>Orçamento: {verba_}</h2>
+            </div>
+            <div className={newStyle.centerClose}>
                 <PieChart width={400} height={400}>
                     <Pie
                         dataKey="value"
@@ -367,21 +478,19 @@ export default function ApplicationSite() {
                     <Tooltip />
                 </PieChart>
             </div>
-
-            <main className={styles.main}>
                 <div className={newStyle.center}>
-                    <h2>Repasses</h2>
+                    <h2 className='font-bold text-xl'>Repasses</h2>
                 </div>
-                <div>
-                <p>Áreas:</p>
-                    <p>0 = Verba Ordinária;
+                <div className='p-4'>
+                <p className='pb-2 italic'><b>Áreas: </b>
+                    0 = Verba Ordinária;
                     1 = Educação;
                     2 = Infraestrutura;
                     3 = Saúde
                     </p>
-                </div>
-                <div>
-                    <p>Transferência simples</p>
+                {/* </div>
+                <div> */}
+                    <p >Transferência simples</p>
                     <SingleTransfer 
                         addressSingle={addressSingle}
                         valueSingle={valueSingle}
@@ -390,37 +499,52 @@ export default function ApplicationSite() {
                         setAreaSingle={setAreaSingle}
                         setAddressSingle={setAddressSingle}
                     />
-                    <button
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         onClick={handleSingleTransfer}
                     >
                         {buttonSingleText}
                     </button>
-                </div>
-                <div>
-                    <p>Transferência em lote</p>
+                {/* </div>
+                <div> */}
+                    <p className='pt-6'>Transferência em lote</p>
                     <BatchTransfer
-                        // setBatchAddress={setBatchAddress}
-                        // setBacthValue1={setBacthValue1}
-                        // setBacthValue2={setBacthValue2}
-                        // setBacthValue3={setBacthValue3}
-                        // setBatchArea1={setBatchArea1}
-                        // setBatchArea2={setBatchArea2}
-                        // setBatchArea3={setBatchArea3}
+                        batchAddress={batchAddress}                        
+                        setBatchAddress={setBatchAddress}
+                        batchValue1={batchValue1}
+                        setBatchValue1={setBatchValue1}
+                        batchValue2={batchValue2}
+                        setBatchValue2={setBatchValue2}
+                        batchValue3={batchValue3}
+                        setBatchValue3={setBatchValue3}
+                        batchValue4={batchValue4}
+                        setBatchValue4={setBatchValue4}
+                        batchArea1={batchArea1}
+                        setBatchArea1={setBatchArea1}
+                        batchArea2={batchArea2}
+                        setBatchArea2={setBatchArea2}
+                        batchArea3={batchArea3}
+                        setBatchArea3={setBatchArea3}
+                        batchArea4={batchArea4}
+                        setBatchArea4={setBatchArea4}
                     />
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleBatchTransfer}
+                    >
+                        {buttonBatchText}
+                    </button>
                 </div>
                 <div className={newStyle.center}>
-                    <h2>Consultas</h2>                    
+                    <h2 className='font-bold text-xl'>Consultas</h2>                    
                 </div>
                 <div>
-                    <p>Áreas:</p>
-                    <p>0 = Verba Ordinária;
+                    <p className='justify-self-center pb-2 italic'><b>Áreas: </b>
+                    0 = Verba Ordinária;
                     1 = Educação;
                     2 = Infraestrutura;
                     3 = Saúde
                     </p>
                 </div>
-
-                <div>
+                <div >
                     <p>Consulta de Saldos</p>
                     <GetBalance 
                         addressBalance={addressBalance}
@@ -428,31 +552,37 @@ export default function ApplicationSite() {
                         areaBalance={areaBalance}
                         setAreaBalance={setAreaBalance}
                     />
-                    <button onClick={handleGetBalance}>
+                    <button 
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleGetBalance}
+                    >
                         {buttonGetBalanceText}
                     </button>
-                    <p>Saldo: {balance}</p>
+                    <p className='py-2'>Saldo: {balance}</p>
                 </div>
-                <div>
+                <div >
                     <p>Consulta de Áreas</p>
                     <GetArea 
                         areaGet={areaGet}
                         setAreaGet={setAreaGet}
                     />
-                    <button onClick={handleGetArea}>
+                    <button 
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleGetArea}
+                    >
                         {buttonGetAreaText}
                     </button>
-                    <p>Áreas: {areas}</p>              
+                    <p className='pt-2'>Áreas: {areas}</p>              
                     
                 </div>
                 
                 
                 <div className={newStyle.center}>
-                    <h2>Controle</h2>
+                    <h2 className='font-bold text-xl'>Controle</h2>
                     
                 </div>
-                <div>
-                    <p>
+                <div className='pb-4'>
+                    <p className='text-red-400 font-bold italic'>
                         Os métodos abaixo são de
                         uso exclusivo do órgão de controle
                     </p>
@@ -465,19 +595,25 @@ export default function ApplicationSite() {
                         area1stAdd={area1stAdd}
                         setArea1stAdd={setArea1stAdd}
                     />
-                    <button onClick={handleAddOrg}>
+                    <button 
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleAddOrg}
+                    >
                         {buttonAddOrgText}
                     </button>
                 </div>
                 <div>
-                    <p>Cadastramento de órgão a nova área</p>
+                    <p className='pt-2'>Cadastramento de órgão a nova área</p>
                     <AddArea
                         addressAdd={addressAdd}
                         setAddressAdd={setAddressAdd}
                         areaAdd={areaAdd}
                         setAreaAdd={setAreaAdd}
                     />
-                    <button onClick={handleAddArea}>
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleAddArea}
+                    >
                         {buttonAddAreaText}
                     </button>
                 </div>

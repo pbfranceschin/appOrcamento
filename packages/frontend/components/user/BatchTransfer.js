@@ -5,47 +5,77 @@ const BatchTransfer = (props) => {
     <div className='form-control pb-2'>
         <div>
             <input
+                className='border rounded'
                 type='text'
                 placeholder='endereço'
+                value={props.addressBatch}
                 onChange={(e) => props.setBatchAddress(e.target.value)}
             />
         </div>
-        {/* <div>
-            <input 
+        <div>
+            <input
+                className='border rounded'
                 type='number'
                 placeholder='montante 1'
-                // onChange={(e) => props.setBacthValue1(e.target.value)}
+                value={props.batchValue1}
+                onChange={(e) => props.setBatchValue1(e.target.value)}
             />
             <input 
+                className='border rounded'
                 type='number'
                 placeholder='área 1'
-                // onChange={(e) => props.setBatchArea1(e.target.value)}
+                value={props.batchArea1}
+                onChange={(e) => props.setBatchArea1(e.target.value)}
             />
-        </div> */}
+        </div>
         <div>
             <input 
+                className='border rounded'
                 type='number'
                 placeholder='montante 2'
-                onChange={(e) => props.setBacthValue2(e.target.value)}
+                value={props.bacthValue2}
+                onChange={(e) => props.setBatchValue2(e.target.value)}
             />
-            <input 
+            <input
+                className='border rounded'
                 type='number'
                 placeholder='área 2'
+                value={props.batchArea2}
                 onChange={(e) => props.setBatchArea2(e.target.value)}
             />
         </div>
-        {/* <div>
+        <div>
             <input 
+                className='border rounded'
                 type='number'
                 placeholder='montante 3'
-                onChange={(e) => props.setBacthValue3(e.target.value)}
+                value={props.batchValue3}
+                onChange={(e) => props.setBatchValue3(e.target.value)}
             />
             <input 
+                className='border rounded'
                 type='number'
                 placeholder='área 3'
+                value={props.batchArea3}
                 onChange={(e) => props.setBatchArea3(e.target.value)}
             />
-        </div> */}
+        </div>
+        <div>
+            <input 
+                className='border rounded'
+                type='number'
+                placeholder='montante 4'
+                value={props.batchValue4}
+                onChange={(e) => props.setBatchValue4(e.target.value)}
+            />
+            <input 
+                className='border rounded'
+                type='number'
+                placeholder='área 4'
+                value={props.batchArea4}
+                onChange={(e) => props.setBatchArea4(e.target.value)}
+            />
+        </div>
     </div>
     )
 }

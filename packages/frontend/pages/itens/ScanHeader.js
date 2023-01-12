@@ -14,7 +14,7 @@ const Header = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-            <h2 className="font-bold"><i>Rastreador do Orçamento</i></h2>
+            <h2 className="font-bold italic text-2xl">Rastreador do Orçamento</h2>
             </a>
           </div>
           <div className={newStyle.headerRight}>
