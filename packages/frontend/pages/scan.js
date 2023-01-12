@@ -17,7 +17,7 @@ const fetchTxData = async (provider, contract, filter) => {
 
     const events = logs.map(log => contract.interface.parseLog(log).args);
 
-    return events;
+    return events.slice(-10);
 }
 
 const useTxData = () => {

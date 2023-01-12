@@ -335,7 +335,7 @@ export default function ApplicationSite() {
             (!batchValue4 && batchArea4) ||
             (batchValue4 && !batchArea4)
         ) {
-            alert('um dos pares (area, montante) está imcompleto!')
+            alert('pelo menos um dos pares (area, montante) está imcompleto!')
             return
         }
         let values = new Array()
