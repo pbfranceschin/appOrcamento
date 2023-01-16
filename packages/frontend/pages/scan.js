@@ -7,6 +7,7 @@ import { useProvider } from 'wagmi';
 
 import Head from 'next/head';
 import Header from "./itens/ScanHeader";
+import Search from '../components/scan/Search'
 
 const fetchTxData = async (provider, contract, filter) => {
     
@@ -44,15 +45,16 @@ const useTxData = () => {
             filterInitializer.current = true
         }
     },[])
-    return txData
+    return [...txData].reverse()
 }
 
 const main = () => {
 
-    const txData = useTxData()
+    const [searchValue, setSearchValue] = useState('')
+
+    let txData = useTxData()
 
     console.log(txData)
-    
 
     return (
         <>
@@ -64,7 +66,18 @@ const main = () => {
             </Head>
             <Header />
             {/* <h1 className="taxt-3xl font-bold underline"> teste </h1> */}
-            <div className="flex flex-col">
+            <div>
+                <Search
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                />
+
+            </div>
+            <div className="flex justify-center items-center pt-6 pb-2">
+                <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1> 
+            </div>
+                
+            <div className="flex flex-col border-t">
                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                         <div className="overflow-hidden">
@@ -95,8 +108,9 @@ const main = () => {
                                 {txData.map((e,i) => {
                                     const id = e.id.toString()
                                     const value =e.value.toString()
+                                    const key = i.toString()
                                     return (
-                                        <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                        <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {i}
                                         </td>
@@ -124,20 +138,8 @@ const main = () => {
                     </div>
                 </div>
             </div>
-            
-                    
-            
-{/*             
-            {txData.map((e,i) => {
-                const id = e.id.toString()
-                const value =e.value.toString()
-                return (
-                    <div key={id}>
-                    #{i}, {e.operator}, {e.from}, {e.to}, {id}, {value}
-                    </div>
-                )
+                        
 
-            })} */}
         </main>
         
         </>

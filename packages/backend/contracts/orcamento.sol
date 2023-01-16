@@ -27,6 +27,8 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     uint256 private _infra = 10; 
     uint256 private _health = 5;
 
+    event Registry(address indexed account, uint256 indexed area, bool indexed added);
+
     constructor() ERC1155("https://console.filebase.com/buckets/app-orcamento/{area}.json") {
         
         _mint(msg.sender, SAUDE, (_budget * _health) / 100, "");
@@ -103,6 +105,12 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
 
     function _setArea(address org, uint256 area) private {
         _orgArea[org][area] = true;
+        emit Registry(org, area, true);
+    }
+
+    function _subArea(address org, uint256 area) private {
+        _orgArea[org][area] = false;
+        emit Registry(org, area, false);
     }
 
     //////////////////////////
@@ -112,13 +120,13 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     ////////////////////////////
     // teste //////////////
     
-    event testeEvento(uint256 input, address caller);
-    uint256 private umValor;
+    // event testeEvento(uint256 input, address caller);
+    // uint256 private umValor;
 
-    function teste(uint256 trossoqualquer) public {
-        require(trossoqualquer == 0, "trossoqualquer nao eh zero");
-        umValor = trossoqualquer;
-        emit testeEvento(umValor, msg.sender);
-    }
+    // function teste(uint256 trossoqualquer) public {
+    //     require(trossoqualquer == 0, "trossoqualquer nao eh zero");
+    //     umValor = trossoqualquer;
+    //     emit testeEvento(umValor, msg.sender);
+    // }
     
 }

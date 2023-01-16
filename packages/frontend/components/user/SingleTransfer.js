@@ -9,6 +9,7 @@ const SingleTransfer = (props) => {
             <div>
             <input
                 className="border rounded"
+                id='simple-search'
                 type='text'
                 placeholder = "endereço"
                 value={props.addressSingle}
