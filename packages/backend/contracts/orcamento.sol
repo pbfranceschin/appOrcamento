@@ -27,6 +27,8 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     uint256 private _infra = 10; 
     uint256 private _health = 5;
 
+    event Registry(address indexed org, uint256 indexed area, bool indexed added);
+
     constructor() ERC1155("https://console.filebase.com/buckets/app-orcamento/{area}.json") {
         
         _mint(msg.sender, SAUDE, (_budget * _health) / 100, "");
@@ -92,6 +94,25 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
 
     }
 
+    function subOrg(address org) public onlyOwner {
+        require(_orgArea[org][OUTROS] == true, "address not added");
+
+        uint[] memory areas = getAreas(org);
+        for(uint256 i = 0; i < areas.length; i++){
+            if(_orgArea[org][areas[i]] == false){
+                return;
+            }
+            _subArea(org, areas[i]);
+        }
+    }
+
+    function subArea(address org, uint256 area) public onlyOwner {
+        require(area > 0, 'to exclude account altogether use subOrg method');
+        require(_orgArea[org][area] == true, 'this account is not registered to the area specified');
+
+        _subArea(org, area);
+    }
+
     function addArea(address org, uint256 area) public onlyOwner{
         require(_orgArea[org][OUTROS] == true, 'Please add organization first');
         require(_orgArea[org][area] != true, "area already set for this organization");
@@ -100,6 +121,12 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
 
     function _setArea(address org, uint256 area) private {
         _orgArea[org][area] = true;
+        emit Registry(org, area, true);
+    }
+
+    function _subArea(address org, uint256 area) private {
+        _orgArea[org][area] = false;
+        emit Registry(org, area, false);
     }
 
     //////////////////////////
@@ -109,13 +136,13 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     ////////////////////////////
     // teste //////////////
     
-    event testeEvento(uint256 input, address caller);
-    uint256 private umValor;
+    // event testeEvento(uint256 input, address caller);
+    // uint256 private umValor;
 
-    function teste(uint256 trossoqualquer) public {
-        require(trossoqualquer == 0, "trossoqualquer nao eh zero");
-        umValor = trossoqualquer;
-        emit testeEvento(umValor, msg.sender);
-    }
+    // function teste(uint256 trossoqualquer) public {
+    //     require(trossoqualquer == 0, "trossoqualquer nao eh zero");
+    //     umValor = trossoqualquer;
+    //     emit testeEvento(umValor, msg.sender);
+    // }
     
 }

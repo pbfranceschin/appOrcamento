@@ -44,7 +44,7 @@ describe("Testing OrcamentoUniao contract", function () {
     expect(await contract.balanceOf(ownerAddress, OUTROS)).to.equal((verba*outros)/100);
   });
 
-  it("tests area allocation", async function () {
+  it("tests area allocation and getter", async function () {
     let areas1 = await contract.getAreas(org1Address);
     let areas2 = await contract.getAreas(org2Address);
     // areas1 should be [0,1,0,0]
@@ -82,6 +82,40 @@ describe("Testing OrcamentoUniao contract", function () {
     expect(areas2[3]).to.eq(0);
 
     // TODO expect addArea(org3Address, area) to revert
+    await expect(
+      contract.addArea(org3Address, EDUCACAO)
+    ).to.be.revertedWith('Please add organization first');
+  });
+
+  it("tests area revogation", async function () {
+    await expect(
+      contract.subArea(org1Address, OUTROS)
+    ).to.be.revertedWith('to exclude account altogether use subOrg method');
+
+    await expect(
+      contract.subArea(org2Address, OUTROS)
+    ).to.be.revertedWith('to exclude account altogether use subOrg method');
+
+    await expect(
+      contract.subArea(org2Address, EDUCACAO)
+    ).to.be.revertedWith('this account is not registered to the area specified');
+
+    await contract.addArea(org1Address, INFRA);
+    await contract.addArea(org1Address, SAUDE);
+    await contract.subArea(org1Address, EDUCACAO);
+    let areas1 = await contract.getAreas(org1Address);
+    // areas1 should be [0,2,3,0]
+    expect(areas1[0]).to.eq(0);
+    expect(areas1[1]).to.eq(2);
+    expect(areas1[2]).to.eq(3);
+    expect(areas1[3]).to.eq(0);
+
+    await contract.subOrg(org1Address);
+    await expect(contract.getAreas(org1Address)).to.be.revertedWith('organization not added');
+
+    await expect(contract.subOrg(org3Address)).to.be.revertedWith("address not added")
+    
+    
   });
 
   it("tests transfers", async function () {
