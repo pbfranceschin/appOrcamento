@@ -31,7 +31,6 @@ import { getContractData } from '../utils';
 import { arrayify } from 'ethers/lib/utils';
 
 
-
 const [contractAddress, contractABI] = getContractData();
 
 const buttonSendDefault = "Enviar";

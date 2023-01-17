@@ -27,7 +27,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     uint256 private _infra = 10; 
     uint256 private _health = 5;
 
-    event Registry(address indexed org, uint256 indexed area, bool indexed added);
+    event Registry(address indexed account, uint256 indexed area, bool indexed added);
 
     constructor() ERC1155("https://console.filebase.com/buckets/app-orcamento/{area}.json") {
         
