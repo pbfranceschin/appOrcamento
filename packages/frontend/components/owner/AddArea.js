@@ -5,14 +5,14 @@ const AddArea = (props) => {
         <>
         <div className='form-control pb-2'>
             <input
-                className="input input-bordered"
+                className="border rounded"
                 type='text'
                 placeholder = "endereço"
                 value={props.addressAdd}
                 onChange = {(e) => props.setAddressAdd(e.target.value)}
             />
             <input
-                className="input input-bordered"
+                className="border rounded"
                 type='number'
                 placeholder = "área"
                 value={props.areaAdd}

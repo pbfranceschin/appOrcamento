@@ -12,7 +12,7 @@ export default function Home() {
     <>
       <Head>
         <title>App Orçamento da União</title>
-        <meta name="description" content="Created by FGV-ECMI" />
+        <meta name="description" content="Desenvolvido por FGV-ECMI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -25,11 +25,11 @@ export default function Home() {
           height={140.625}
           />
         </div>
-        <div className={newStyle.centerBlue}>
+        <div className={newStyle.centerClose}>
           
           <div >
             <h1 
-            className={inter.className}
+            className="font-bold text-4xl text-blue-800"
             >
               <i>O orçamento público na Blockchain!</i>
             </h1>
@@ -41,22 +41,26 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className={newStyle.buttonApp}> Abrir o App </button>
+            <button
+            className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded shadow-xl"
+          >
+              Abrir o App
+            </button>
           </a>
         </div>
-        {/* <div className={newStyle.center}> */}
+        <div className="pb-9">
           <div className={newStyle.centerClose}>
-            <p><h2>Não confie, verifique!</h2></p>
+            <p><h2 className='font-bold text-2xl pb-2 subpixel-antialiased'>Não confie, verifique!</h2></p>
           </div>
           <div className={newStyle.centerClose}>
-            <p className={inter.className}>O <i><b>App Orçamento da União</b></i> move a tecnologia <b>Blockchain</b> <br></br> para 
+            <p className="text-sm subpixel-antialiased font-light">O <i><b>App Orçamento da União</b></i> move a tecnologia <b>Blockchain</b> <br></br> para 
             a realização de repasses de verba pública conferindo maior trasnparência e celeridade
             ao processo<br></br>assim como a auditorias dele. A tecnologia permite ainda que 
             seja feito o particionamento da verba <br></br>por área de atuação, com os repasses
             sendo controlados por Smart Contracts.          
           </p>
           </div>
-        {/* </div> */}
+        </div>
         
         <div className={styles.grid}>
           <a

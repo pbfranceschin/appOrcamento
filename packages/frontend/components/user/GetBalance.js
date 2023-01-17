@@ -6,14 +6,14 @@ const GetBalance = (props) => {
     <>
     <div className='form-control pb-2'>
         <input
-            className="input input-bordered"
+            className="border rounded"
             type='text'
             placeholder = "endereço"
             value={props.addressBalance}
             onChange = {(e) => props.setAddressBalance(e.target.value)}
         />
         <input
-            className="input input-bordered"
+            className="border rounded"
             type='number'
             placeholder = "área"
             value={props.areaBalance}

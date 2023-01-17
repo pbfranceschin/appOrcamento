@@ -51,6 +51,15 @@
   /* position: relative; */
 }
 
+.centerCloseGrey {
+  display: flex;
+  background-color: grey;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* position: relative; */
+}
+
 /* .center {
   display: flex;
   justify-content: center;

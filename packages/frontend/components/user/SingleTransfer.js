@@ -8,23 +8,24 @@ const SingleTransfer = (props) => {
         <div className='form-control pb-2'>
             <div>
             <input
-                className="input input-bordered"
+                className="border rounded"
+                id='simple-search'
                 type='text'
                 placeholder = "endereço"
                 value={props.addressSingle}
                 onChange = {(e) => props.setAddressSingle(e.target.value)}
             />
-            </div>
-            <div>
+            {/* </div>
+            <div> */}
             <input
-                className="input input-bordered"
+                className="border rounded"
                 type = "number"
                 placeholder = "area"
                 value={props.areaSingle}
                 onChange = {(e) => props.setAreaSingle(e.target.value)}
             />
             <input 
-                className="input input-bordered"
+                className="border rounded"
                 type = "number"
                 placeholder = "montante"
                 value={props.valueSingle}

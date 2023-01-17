@@ -6,7 +6,7 @@ const GetArea = (props) => {
         <>
         <div className='form-control pb-2'>
         <input
-                className="input input-bordered"
+                className="border rounded"
                 type='text'
                 placeholder = "endereço"
                 value={props.areaGet}

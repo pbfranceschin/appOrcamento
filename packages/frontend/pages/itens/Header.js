@@ -14,7 +14,7 @@ const Header = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-            <h2 className="font-bold"><i>App Orçamento da União</i></h2>
+            <h2 className="font-bold italic text-2xl">App Orçamento da União</h2>
             </a>
           </div>
           <div className={newStyle.headerRight}>

@@ -39,6 +39,9 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
 
     }
 
+
+    // TODO function override que verifica se address ta cadastrado antes de chamar balanceOf
+
     function getAreas(address org) public view returns(uint256[] memory){
         require(_orgArea[org][OUTROS] == true, "organization not added");
         

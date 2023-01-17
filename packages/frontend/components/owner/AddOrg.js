@@ -5,14 +5,14 @@ const AddOrg = (props) => {
         <>
         <div className='form-control pb-2'>
             <input
-                className="input input-bordered"
+                className="border rounded"
                 type='text'
                 placeholder = "endereço"
                 value={props.address1stAdd}
                 onChange = {(e) => props.setAddress1stAdd(e.target.value)}
             />
             <input
-                className="input input-bordered"
+                className="border rounded"
                 type='number'
                 placeholder = "área (opcional)"
                 value={props.area1stAdd}
