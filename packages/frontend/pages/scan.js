@@ -18,43 +18,51 @@ const fetchTxData = async (provider, contract, filter) => {
 
     const events = logs.map(log => contract.interface.parseLog(log).args);
 
-    return events.slice(-10);
+    return events;
 }
 
 const useTxData = () => {
     const [txData, setTxData] = useState([]);
+    const [addData, setAddData] = useState([]);
     const filterInitializer = useRef(false);
     const provider = useProvider();
     useEffect(() => {
         const [contractAddress, contractABI] = getContractData();
         const contract = new ethers.Contract(contractAddress, contractABI, provider)
-        const filter = contract.filters.TransferSingle()
+        const txFilter = contract.filters.TransferSingle()
+        const addFilter = contract.filters.Registry()
         // console.log(provider)
         if(!filterInitializer.current) {
-            provider.on(filter, (log) => {
+            provider.on(txFilter, (log) => {
                 // console.log(log)
-                const parsedEvent = contract.interface.parseLog({
-                    topics: log.topics,
-                    data: log.data,
-                })
+                // const parsedEvent = contract.interface.parseLog({
+                //     topics: log.topics,
+                //     data: log.data,
+                // })
                 // console.log(parsedEvent.args)
-                fetchTxData(provider, contract, filter).then(response => {
+                fetchTxData(provider, contract, txFilter).then(response => {
                     setTxData(response)
+                })
+            })
+            provider.on(addFilter, (log) => {
+                fetchTxData(provider, contract, addFilter).then(response => {
+                    setAddData(response)
                 })
             })
             filterInitializer.current = true
         }
     },[])
-    return [...txData].reverse()
+    return [[...txData].reverse(), [...addData].reverse()]
 }
 
 const main = () => {
 
     const [searchValue, setSearchValue] = useState('')
 
-    let txData = useTxData()
+    let [txData, addData] = useTxData()
 
     console.log(txData)
+    console.log(addData)
 
     return (
         <>
@@ -65,7 +73,6 @@ const main = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header />
-            {/* <h1 className="taxt-3xl font-bold underline"> teste </h1> */}
             <div>
                 <Search
                     searchValue={searchValue}
@@ -138,7 +145,61 @@ const main = () => {
                     </div>
                 </div>
             </div>
-                        
+            <div className="flex justify-center items-center pt-6 pb-2">
+                <h1 className="font-bold text-xl subpixel-antialiased ">Cadastros</h1> 
+            </div>
+            <div className="flex flex-col border-t">
+                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                        <div className="overflow-hidden">
+                            <table className="min-w-full">
+                            <thead className="bg-white border-b">
+                                <tr>
+                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    #
+                                </th>
+                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Endereço
+                                </th>
+                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Área
+                                </th>
+                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                    Ação
+                                </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {addData.map((e,i) => {
+                                    const id = e.area.toString()
+                                    const key = i.toString()
+                                    let action = 'Cadastro'
+                                    if(!e.added) {
+                                        action = 'Revogação'
+                                    }
+                                    return (
+                                        <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {i}
+                                        </td>
+                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {e.account}
+                                        </td>
+                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {id}
+                                        </td>
+                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                            {action}
+                                        </td>
+                                        </tr>
+                                    )
+                                })}                                
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>    
 
         </main>
         
