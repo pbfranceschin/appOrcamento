@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { NETWORK_ID  } from "./config";
 
 import contracts from "./contracts/hardhat_contracts.json";
