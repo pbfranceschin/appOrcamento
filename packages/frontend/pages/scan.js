@@ -1,6 +1,6 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { getContractData } from '../utils';
 import { useProvider } from 'wagmi';
 
@@ -36,6 +36,7 @@ const useTxData = () => {
     const [txData, setTxData] = useState([]);
     const [addData, setAddData] = useState([]);
     const filterInitializer = useRef(false);
+    const txDataUpdate = useRef(false);
     const provider = useProvider();
     useEffect(() => {
         const [contractAddress, contractABI] = getContractData();
@@ -54,31 +55,33 @@ const useTxData = () => {
             provider.on(txFilter, (log) => {
                 fetchTxData(contract, txFilter).then(response => {
                     setTxData(response)
+                    txDataUpdate.current = !txDataUpdate.current
                 })
             })
             provider.on(addFilter, (log) => {
                 fetchTxData(contract, addFilter).then(response => {
                     setAddData(response)
+                    // addData updater
                 })
             })
             filterInitializer.current = true
         }
     },[])
-    return [[...txData].reverse(), [...addData].reverse()]
+    return [[...txData].reverse(), [...addData].reverse(), txDataUpdate.current]
 }
 
 const queryData = (
     data,
     filter,
-    filterType
 ) => {
 
     array_ = new Array()
-    let entry
     for(let i = 0; i < data.length; i++) {
-        entry = data[i]
-        if(entry.filterType === filter){
-            array_.push(entry)
+        for(let j = 0; j < data[i].length; j++){
+            if(data[i][j] === filter){
+                array_.push(data[i])
+                break
+            }
         }
     }
     return array_
@@ -87,7 +90,7 @@ const queryData = (
 const main = () => {
 
     const [searchValue, setSearchValue] = useState('')
-    const [txData, addData] = useTxData()
+    const [txData, addData, txUpdater] = useTxData()
     const [txIndex, setTxIndex] = useState(0)
     const [txShow, setTxShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
@@ -97,115 +100,116 @@ const main = () => {
     
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
     const buttonActive = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md"
-    // let prevButtonClass = buttonDisabled
     const [prevButtonClass, setPrevButtonClass ] = useState(buttonDisabled)
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true)
-    // let nextButtonClass = buttonDisabled
     const [nextButtonClass, setNextButtonClass] = useState(buttonActive)
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true)
     const prevButtonText = '<<Anterior'
     const nextButtonText = 'Próxima>>'
 
+    // initiate tx list
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
             setTxShow(sliceData(txData, 0, 10))
             dataInitializer.current = true
         }
-    },[txData])
+    },[txData, dataInitializer])
 
-    // useEffect(() => {
-    //     return
-    // }, [txShow])
+    
+    // update txShow
+    useLayoutEffect(() => { // <<<<<<<<<<<<<<=========================== ESSE TA ENTRANDO EM LOOP INFINITO. eu to usando useLayoutEffect pq roda antes de renderizar, mas com o useEffect tava dando o mesmo problema
+        console.log('txShow updater')
+        // if(txSearched.current){
+        //     setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
+        // } else {
+        //     // setTxShow(txData.slice(txIndex, txIndex + 10))
+        //     // setTxShow(sliceData(txData, txIndex, txIndex + 10))
+        //     console.log('teste')
+        // }     
 
+        if(txSearched.current){
+            console.log('Showing searched data')
+            if(txIndex + 9 >= txSearchedData.length){
+                // const end = txSearchedData.length
+                setTxShow(txSearchedData.slice(txIndex))
+                setNextButtonDisabled(true)
+                setNextButtonClass(buttonDisabled)
+                return
+            }
+            setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
+            return
+        }
 
-    // ========>>>>>> esse bloco não ta funcionando!!!!! verificar se if else ta sendo usado corretamente <<<===========
+        if(txIndex + 9 >= txData.length) {
+            setTxShow(txData.slice(txIndex))
+            setNextButtonDisabled(true)
+            setNextButtonClass(buttonDisabled)
+            console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
+            console.log('index', txIndex, 'nextButtonDisabled', nextButtonDisabled)
+            return
+        }
+        setTxShow(txData.slice(txIndex, txIndex + 10))
+        console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled, 'data length', txData.length)
+
+    }, ([txSearchedData, txIndex]))
+    
+     // check the length update nextButton state
+    useLayoutEffect(() => {
+        if(txSearched.current){
+            if(txSearchedData.length <= 10){
+                setNextButtonDisabled(true)
+                console.log('check the length: single page/searched data')
+            } else {
+                setNextButtonDisabled(false)
+                console.log('check the length: multiple pages/searched data')
+                }
+            } else {
+                if(txData.length <= 10){
+                    setNextButtonDisabled(true)
+                    console.log('check the length: single page/full data')
+                } else{
+                    setNextButtonDisabled(false)
+                    console.log('check the length: multiple pages/full data')
+                }
+            }
+    }, ([txSearched, txUpdater]))
+
+    
+    // check the index, update prevButton state
+    useLayoutEffect(() => {
+        if(txIndex === 0){
+            setPrevButtonDisabled(true)
+        }
+    },([txIndex]))
+    
+
+    // check button state update button class 
     useEffect(()=> {
         console.log('button activator/disabler')
         if(!prevButtonDisabled) {
-            console.log('activate prevButton')
+            console.log('activate prevButton', 'disable false', prevButtonDisabled)
             // prevButtonClass = buttonActive
             setPrevButtonClass(buttonActive)
-        }
-        else {
-            console.log('disbale prevButton')
+        } else {
+            console.log('disbale prevButton', 'disable true?', prevButtonDisabled)
             // prevButtonClass = buttonDisabled
             setPrevButtonClass(buttonDisabled)
         }
 
         if(!nextButtonDisabled) {
-            console.log('activate nextButton', 'false', nextButtonDisabled)
+            console.log('activate nextButton', 'disable false?', nextButtonDisabled)
             // nextButtonClass = buttonActive
             setNextButtonClass(buttonActive)
 
-        }
-        else {
-            console.log('disable nextButton', 'true', nextButtonDisabled)
+        }else {
+            console.log('disable nextButton', 'disable true?', nextButtonDisabled)
             // nextButtonClass = buttonDisabled
             setNextButtonClass(buttonDisabled)
         }
-    }, [prevButtonDisabled, nextButtonDisabled])
+    }, ([prevButtonDisabled, nextButtonDisabled]))
     
-    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ //
-    // // // // // // // // // // // // // // // 
 
-    // useEffect(() => {
-    //     if(!nextButtonDisabled) {
-    //         nextButtonClass = buttonActive
-    //     }
-    //     else {
-    //         nextButtonClass = buttonDisabled
-    //     }
-    // },[nextButtonDisabled])
-
-
-    // 
-    // check the length
-    useEffect(() => {
-        if(txSearched.current){
-            if(txSearchedData.length <= 10){
-                setNextButtonDisabled(true)
-                console.log('check the length: single page/searched data')
-            }
-            else {
-                setNextButtonDisabled(false)
-                console.log('check the length: multiple pages/searched data')
-            }
-        }
-        else {
-            if(txData.length <= 10){
-                setNextButtonDisabled(true)
-                console.log('check the length: single page/full data')
-            }
-            else{
-                setNextButtonDisabled(false)
-                console.log('check the length: multiple pages/full data')
-            }
-        }
-    }, [txSearched, txData])
-
-    // check the index
-    useEffect(() => {
-        if(txIndex === 0){
-            setPrevButtonDisabled(true)
-        }
-        
-    },[txIndex])
-
-    // update txShow
-    // useEffect(() => {
-    //     console.log('txShow updater')
-    //     if(txSearched.current){
-    //         setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
-    //     }
-    //     else {
-    //         setTxShow(txData.slice(txIndex, txIndex + 10))
-    //     }
-
-    // }, [txSearchedData, txData, txIndex])
-    
-    
-    
-    // 
+    // handlers
     const txNextHandler = () => {
         if(nextButtonDisabled){
             console.log('button disabled checked')
@@ -213,26 +217,6 @@ const main = () => {
         }
         setTxIndex(txIndex + 10)
         setPrevButtonDisabled(false)
-        if(txSearched.current){
-            console.log('Showing searched data')
-            if(txIndex + 9 >= txSearchedData.length){
-                // const end = txSearchedData.length
-                setTxShow(txSearchedData.slice(txIndex))
-                setNextButtonDisabled(true)
-                return
-            }
-            setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
-            return
-        }
-        if(txIndex + 9 >= txData.length) {
-            setTxShow(txData.slice(txIndex))
-            setNextButtonDisabled(true)
-            console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
-            console.log('index', txIndex, 'nextButtonDisabled', nextButtonDisabled)
-            return
-        }
-        setTxShow(txData.slice(txIndex, txIndex + 10))
-        console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled)
     }
     
     const txPrevHandler = () => {
@@ -242,21 +226,25 @@ const main = () => {
         }
         setTxIndex(txIndex - 10)
         setNextButtonDisabled(false)
-        // if(txSearched.current){
-        //     setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
-        // }
-        // else {
-        //     setTxShow(txData.slice(txIndex, txIndex + 10))
-        // }
-        // if(txIndex === 0){
-        //     setPrevButtonDisabled(true)
-        // }
+        
+        if(txIndex === 0){
+            setPrevButtonDisabled(true)
+        }
         console.log(
             'txIndex', txIndex, 
             'txShow', txShow,
             'nextButtonDisabled', nextButtonDisabled,
             'prevButtonDisabled', prevButtonDisabled
         )
+    }
+
+    const searchHandler = () => {
+        if(!searchValue){
+            txSearched.current = false
+            setTxShow()
+        }
+        txSearched.current = true
+        setTxShow(queryData(txData, searchValue))
     }
 
     return (
@@ -413,6 +401,6 @@ const main = () => {
         
         </>
     )
-};
+}
 
 export default main;
