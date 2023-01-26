@@ -2,7 +2,7 @@ import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { getContractData } from '../utils';
-import { useProvider } from 'wagmi';
+import { ContractMethodNoResultError, useProvider } from 'wagmi';
 
 import Head from 'next/head';
 import Header from "./itens/ScanHeader";
@@ -96,9 +96,10 @@ const main = () => {
     const [txShow, setTxShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
     const dataInitializer = useRef(false)
-    const [txSearched, setTxSearched] = useState(false) //// <<<====== setar true quando for feita uma busca; pensar como voltar pra false 
+    const [txSearched, setTxSearched] = useState(false)
 
     
+    const [tab, setTab] = useState(0) // tab = 0 => tranfers // tab = 1 => registries
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
     const buttonActive = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md"
     const [prevButtonClass, setPrevButtonClass ] = useState(buttonDisabled)
@@ -107,9 +108,12 @@ const main = () => {
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true)
     const prevButtonText = '<<Anterior'
     const nextButtonText = 'Próxima>>'
+    const error_msg_filter = 'erro: filtro de dado não reconhecido'
 
     // console.log('txShow',txShow)
     // console.log(txSearched)
+    console.log('tab', tab)
+    console.log('show', txShow)
 
     // initiate tx list
     useEffect(() => {
@@ -124,11 +128,11 @@ const main = () => {
     useLayoutEffect(() => {
         
         console.log('txShow updater')
-             
+        console.log('searched data', txSearchedData.slice(txIndex))
+        
         if(txSearched){
             console.log('Showing searched data')
             if(txIndex + 10 >= txSearchedData.length){
-                // const end = txSearchedData.length
                 setTxShow(txSearchedData.slice(txIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
@@ -137,18 +141,34 @@ const main = () => {
             setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
             return
         }
+        
+        if(tab === 0){
+            if(txIndex + 10 >= txData.length) {
+                setTxShow(txData.slice(txIndex))
+                setNextButtonDisabled(true)
+                setNextButtonClass(buttonDisabled)
+                console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
+                return
+            }
+            setTxShow(txData.slice(txIndex, txIndex + 10))
+            // console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled, 'data length', txData.length)
+        } else if(tab === 1){
+            if(txIndex + 10 >= addData.length) {
+                setTxShow(addData.slice(txIndex))
+                setNextButtonDisabled(true)
+                setNextButtonClass(buttonDisabled)
+                console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
+                return
+            }
+            setTxShow(addData.slice(txIndex, txIndex + 10))
+            console.log('check')
 
-        if(txIndex + 10 >= txData.length) {
-            setTxShow(txData.slice(txIndex))
-            setNextButtonDisabled(true)
-            setNextButtonClass(buttonDisabled)
-            console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
-            return
+        } else {
+            console.log(error_msg_filter)
+            alert(error_msg_filter)
         }
-        setTxShow(txData.slice(txIndex, txIndex + 10))
-        // console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled, 'data length', txData.length)
 
-    }, [txSearched, txIndex])
+    }, [txSearched, txIndex, tab])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
@@ -160,16 +180,30 @@ const main = () => {
                 setNextButtonDisabled(false)
                 // console.log('check the length: multiple pages/searched data')
                 }
-            } else {
-                if(txData.length <= 10){
-                    setNextButtonDisabled(true)
-                    // console.log('check the length: single page/full data')
-                } else{
-                    setNextButtonDisabled(false)
-                    // console.log('check the length: multiple pages/full data')
-                }
+            return
+        }
+        
+        if(tab === 0) {
+            if(txData.length <= 10){
+                setNextButtonDisabled(true)
+                // console.log('check the length: single page/full data')
+            } else{
+                setNextButtonDisabled(false)
+                // console.log('check the length: multiple pages/full data')
             }
-    }, ([txSearched, txUpdater]))
+        } else if(tab === 1){
+            if(addData.length <= 10){
+                setNextButtonDisabled(true)
+                // console.log('check the length: single page/full data')
+            } else{
+                setNextButtonDisabled(false)
+                // console.log('check the length: multiple pages/full data')
+            }            
+        }  else {
+            console.log(error_msg_filter)
+            alert(error_msg_filter)
+        }
+    }, ([txSearched, txUpdater, tab]))
 
     
     // check the index, update prevButton state
@@ -202,7 +236,8 @@ const main = () => {
     }, ([prevButtonDisabled, nextButtonDisabled]))
     
 
-    // handlers
+    // // // handlers // // // 
+    // // // // // // // // // 
     const txNextHandler = () => {
         if(nextButtonDisabled){
             // console.log('button disabled checked')
@@ -223,12 +258,7 @@ const main = () => {
         if(txIndex === 0){
             setPrevButtonDisabled(true)
         }
-        // console.log(
-        //     'txIndex', txIndex, 
-        //     'txShow', txShow,
-        //     'nextButtonDisabled', nextButtonDisabled,
-        //     'prevButtonDisabled', prevButtonDisabled
-        // )
+        
     }
 
     const handleSearch = () => {
@@ -237,16 +267,23 @@ const main = () => {
             return
         }
         setTxSearched(true)
-        setTxSearchedData(queryData(txData, searchValue))
         setTxIndex(0)
         console.log('buscar')
+        if(tab === 0){
+            setTxSearchedData(queryData(txData, searchValue))
+        } else if(tab === 1){
+            setTxSearchedData(queryData(addData, searchValue))
+            // console.log('searched Data', txSearchedData)
+        } else {
+            console.log(error_msg_filter)
+            alert(error_msg_filter)
+        }
     }
 
     const clearSearch = () => {
         console.log('clear search')
         setTxSearched(false)
         setSearchValue('')
-        // setTxShow(txData.slice(0,10))
         setTxIndex(0)
     }
 // // // // =====>>TESTE<<====== // // // //
@@ -256,167 +293,242 @@ const main = () => {
     //     console.log(_y)
     // }
 // // // // // // // // // // // // // // //
-    return (
-        <>
-        <main>
-            <Head>
-                <title>Rastreador do Orçamento</title>
-                <meta content="Desenvolvido por FGV-ECMI"/>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Header />
-            <div>
-                <Search
-                    searchValue={searchValue}
-                    setSearchValue={setSearchValue}
-                    handleSearch={handleSearch}
-                    clearSearch={clearSearch}
-                />
 
-            </div>
-            <div className="flex justify-center items-center pt-6 pb-2">
-                <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1> 
-            </div>
-                
-            <div className="flex flex-col border-t">
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full">
-                            <thead className="bg-white border-b">
-                                <tr>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    #
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Operador
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Área
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Debitado de
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Creditado a
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Montante
-                                </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {txShow.map((e,i) => {
-                                    const id = e.id.toString()
-                                    const value =e.value.toString()
-                                    const key = i.toString()
-                                    return (
-                                        <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {i}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {e.operator}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {id}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {e.from}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {e.to}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {value}
-                                        </td>
-                                        </tr>
-                                    )
-                                })}                                
-                            </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="flex justify-start">
-                <div className="px-2">
-                    <button className={prevButtonClass} onClick={txPrevHandler}>
-                        {prevButtonText}
-                    </button>
-                </div>
+    if(tab === 0){
+        return (
+            <>
+            <main>
+                <Head>
+                    <title>Rastreador do Orçamento</title>
+                    <meta content="Desenvolvido por FGV-ECMI"/>
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
+                <Header />
                 <div>
-                    <button className={nextButtonClass} onClick={txNextHandler}>
-                        {nextButtonText}
+                    <Search
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        handleSearch={handleSearch}
+                        clearSearch={clearSearch}
+                    />
+
+                </div>
+                <div className="flex justify-center items-center pt-6 pb-2">
+                    {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
+                    <button 
+                    className="bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
+                    >
+                        Transferências
+                    </button>
+                    <button 
+                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                    onClick={() => setTab(1)}
+                    >
+                        cadastros
                     </button>
                 </div>
-
-            </div>
-            {/* TESTE */}
-            {/* <div className="py-4 px-2">
-                <button className="bg-red-400 py-2 px-4 text-white font-medium text-xs rounded" onClick={testeQueryData}>teste</button>
-            </div> */}
-            {/* ^^^^^^^^ */}
-            <div className="flex justify-center items-center pt-6 pb-2">
-                <h1 className="font-bold text-xl subpixel-antialiased ">Cadastros</h1> 
-            </div>
-            <div className="flex flex-col border-t">
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full">
-                            <thead className="bg-white border-b">
-                                <tr>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    #
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Endereço
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Área
-                                </th>
-                                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Ação
-                                </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {addData.map((e,i) => {
-                                    const id = e.area.toString()
-                                    const key = i.toString()
-                                    let action = 'Cadastro'
-                                    if(!e.added) {
-                                        action = 'Revogação'
-                                    }
-                                    return (
-                                        <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {i}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {e.account}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {id}
-                                        </td>
-                                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {action}
-                                        </td>
-                                        </tr>
-                                    )
-                                })}                                
-                            </tbody>
-                            </table>
+                <div className="flex justify-center items-center pt-6 pb-2">
+                    <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1> 
+                </div>
+                    
+                <div className="flex flex-col border-t">
+                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                            <div className="overflow-hidden">
+                                <table className="min-w-full">
+                                <thead className="bg-white border-b">
+                                    <tr>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        #
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Operador
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Área
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Debitado de
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Creditado a
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Montante
+                                    </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {txShow.map((e,i) => {
+                                        const id = e.id.toString()
+                                        const value = e.value.toString()
+                                        const key = i.toString()
+                                        return (
+                                            <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {i}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {e.operator}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {id}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {e.from}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {e.to}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {value}
+                                            </td>
+                                            </tr>
+                                        )
+                                    })}                                
+                                </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>    
+                <div className="flex justify-start">
+                    <div className="px-2 pb-2">
+                        <button className={prevButtonClass} onClick={txPrevHandler}>
+                            {prevButtonText}
+                        </button>
+                    </div>
+                    <div>
+                        <button className={nextButtonClass} onClick={txNextHandler}>
+                            {nextButtonText}
+                        </button>
+                    </div>
 
-        </main>
-        
-        </>
-    )
+                </div>
+                {/* TESTE */}
+                {/* <div className="py-4 px-2">
+                    <button className="bg-red-400 py-2 px-4 text-white font-medium text-xs rounded" onClick={testeQueryData}>teste</button>
+                </div> */}
+                {/* ^^^^^^^^ */}
+            </main>
+            </>
+        )} else if (tab === 1){
+            return (
+            <>
+            <main>
+                <Head>
+                    <title>Rastreador do Orçamento</title>
+                    <meta content="Desenvolvido por FGV-ECMI"/>
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
+                <Header />
+                <div>
+                    <Search
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        handleSearch={handleSearch}
+                        clearSearch={clearSearch}
+                    />
+
+                </div>
+                <div className="flex justify-center items-center pt-6 pb-2">
+                    {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
+                    <button 
+                    className="opacity-50 bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
+                    onClick={() => setTab(0)}
+                    >
+                        Transferências
+                    </button>
+                    <button 
+                    className="bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                    >
+                        cadastros
+                    </button>
+                </div>
+                
+                <div className="flex justify-center items-center pt-6 pb-2">
+                    <h1 className="font-bold text-xl subpixel-antialiased ">Cadastros</h1> 
+                </div>
+                <div className="flex flex-col border-t">
+                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                            <div className="overflow-hidden">
+                                <table className="min-w-full">
+                                <thead className="bg-white border-b">
+                                    <tr>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        #
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Endereço
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Área
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Ação
+                                    </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {addData.map((e,i) => {
+                                        const id = e.area.toString()
+                                        const key = i.toString()
+                                        let action = 'Cadastro'
+                                        if(!e.added) {
+                                            action = 'Revogação'
+                                        }
+                                        return (
+                                            <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {i}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {e.account}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {id}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {action}
+                                            </td>
+                                            </tr>
+                                        )
+                                    })}                                
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex justify-start">
+                    <div className="px-2 pb-2">
+                        <button className={prevButtonClass} onClick={txPrevHandler}>
+                            {prevButtonText}
+                        </button>
+                    </div>
+                    <div>
+                        <button className={nextButtonClass} onClick={txNextHandler}>
+                            {nextButtonText}
+                        </button>
+                    </div>
+
+                </div>
+
+            </main>
+            
+            </>
+            
+            )
+        }
+        else{
+            return(
+                <>
+                <h1 className="text-2xl font-bold uppercase">erro: <br></br> {error_msg_filter}</h1>
+                </>
+            )
+        }
+    
 }
 
 export default main;
