@@ -75,11 +75,12 @@ const queryData = (
     filter,
 ) => {
 
-    array_ = new Array()
+    let array_ = new Array()
     for(let i = 0; i < data.length; i++) {
         for(let j = 0; j < data[i].length; j++){
-            if(data[i][j] === filter){
+            if(data[i][j].toString() === filter){
                 array_.push(data[i])
+                console.log('rodada', j)
                 break
             }
         }
@@ -95,7 +96,7 @@ const main = () => {
     const [txShow, setTxShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
     const dataInitializer = useRef(false)
-    const txSearched = useRef(false) //// <<<====== setar true quando for feita uma busca; pensar como voltar pra false 
+    const [txSearched, setTxSearched] = useState(false) //// <<<====== setar true quando for feita uma busca; pensar como voltar pra false 
 
     
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
@@ -107,6 +108,9 @@ const main = () => {
     const prevButtonText = '<<Anterior'
     const nextButtonText = 'Próxima>>'
 
+    // console.log('txShow',txShow)
+    console.log(txSearched)
+
     // initiate tx list
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
@@ -117,19 +121,13 @@ const main = () => {
 
     
     // update txShow
-    useLayoutEffect(() => { // <<<<<<<<<<<<<<=========================== ESSE TA ENTRANDO EM LOOP INFINITO. eu to usando useLayoutEffect pq roda antes de renderizar, mas com o useEffect tava dando o mesmo problema
+    useLayoutEffect(() => {
+        
         console.log('txShow updater')
-        // if(txSearched.current){
-        //     setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
-        // } else {
-        //     // setTxShow(txData.slice(txIndex, txIndex + 10))
-        //     // setTxShow(sliceData(txData, txIndex, txIndex + 10))
-        //     console.log('teste')
-        // }     
-
-        if(txSearched.current){
+             
+        if(txSearched){
             console.log('Showing searched data')
-            if(txIndex + 9 >= txSearchedData.length){
+            if(txIndex + 10 >= txSearchedData.length){
                 // const end = txSearchedData.length
                 setTxShow(txSearchedData.slice(txIndex))
                 setNextButtonDisabled(true)
@@ -140,36 +138,35 @@ const main = () => {
             return
         }
 
-        if(txIndex + 9 >= txData.length) {
+        if(txIndex + 10 >= txData.length) {
             setTxShow(txData.slice(txIndex))
             setNextButtonDisabled(true)
             setNextButtonClass(buttonDisabled)
             console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
-            console.log('index', txIndex, 'nextButtonDisabled', nextButtonDisabled)
             return
         }
         setTxShow(txData.slice(txIndex, txIndex + 10))
-        console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled, 'data length', txData.length)
+        // console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled, 'data length', txData.length)
 
-    }, ([txSearchedData, txIndex]))
+    }, [txSearched, txIndex])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
-        if(txSearched.current){
+        if(txSearched){
             if(txSearchedData.length <= 10){
                 setNextButtonDisabled(true)
-                console.log('check the length: single page/searched data')
+                // console.log('check the length: single page/searched data')
             } else {
                 setNextButtonDisabled(false)
-                console.log('check the length: multiple pages/searched data')
+                // console.log('check the length: multiple pages/searched data')
                 }
             } else {
                 if(txData.length <= 10){
                     setNextButtonDisabled(true)
-                    console.log('check the length: single page/full data')
+                    // console.log('check the length: single page/full data')
                 } else{
                     setNextButtonDisabled(false)
-                    console.log('check the length: multiple pages/full data')
+                    // console.log('check the length: multiple pages/full data')
                 }
             }
     }, ([txSearched, txUpdater]))
@@ -185,25 +182,21 @@ const main = () => {
 
     // check button state update button class 
     useEffect(()=> {
-        console.log('button activator/disabler')
+        // console.log('button activator/disabler')
         if(!prevButtonDisabled) {
-            console.log('activate prevButton', 'disable false', prevButtonDisabled)
-            // prevButtonClass = buttonActive
+            // console.log('activate prevButton', 'disable false', prevButtonDisabled)
             setPrevButtonClass(buttonActive)
         } else {
-            console.log('disbale prevButton', 'disable true?', prevButtonDisabled)
-            // prevButtonClass = buttonDisabled
+            // console.log('disbale prevButton', 'disable true?', prevButtonDisabled)
             setPrevButtonClass(buttonDisabled)
         }
 
         if(!nextButtonDisabled) {
-            console.log('activate nextButton', 'disable false?', nextButtonDisabled)
-            // nextButtonClass = buttonActive
+            // console.log('activate nextButton', 'disable false?', nextButtonDisabled)
             setNextButtonClass(buttonActive)
 
         }else {
-            console.log('disable nextButton', 'disable true?', nextButtonDisabled)
-            // nextButtonClass = buttonDisabled
+            // console.log('disable nextButton', 'disable true?', nextButtonDisabled)
             setNextButtonClass(buttonDisabled)
         }
     }, ([prevButtonDisabled, nextButtonDisabled]))
@@ -212,7 +205,7 @@ const main = () => {
     // handlers
     const txNextHandler = () => {
         if(nextButtonDisabled){
-            console.log('button disabled checked')
+            // console.log('button disabled checked')
             return
         }
         setTxIndex(txIndex + 10)
@@ -221,7 +214,7 @@ const main = () => {
     
     const txPrevHandler = () => {
         if(prevButtonDisabled){
-            console.log('button disabled checked')
+            // console.log('button disabled checked')
             return
         }
         setTxIndex(txIndex - 10)
@@ -230,23 +223,34 @@ const main = () => {
         if(txIndex === 0){
             setPrevButtonDisabled(true)
         }
-        console.log(
-            'txIndex', txIndex, 
-            'txShow', txShow,
-            'nextButtonDisabled', nextButtonDisabled,
-            'prevButtonDisabled', prevButtonDisabled
-        )
+        // console.log(
+        //     'txIndex', txIndex, 
+        //     'txShow', txShow,
+        //     'nextButtonDisabled', nextButtonDisabled,
+        //     'prevButtonDisabled', prevButtonDisabled
+        // )
     }
 
-    const searchHandler = () => {
+    const handleSearch = () => {
         if(!searchValue){
-            txSearched.current = false
-            setTxShow()
+            console.log('clear search')
+            setTxSearched(false)
+            setTxShow(txData.slice(0,10))
+            setTxIndex(0)
+            return
         }
-        txSearched.current = true
-        setTxShow(queryData(txData, searchValue))
+        setTxSearched(true)
+        setTxSearchedData(queryData(txData, searchValue))
+        setTxIndex(0)
+        console.log('buscar')
     }
-
+// // // // =====>>TESTE<<====== // // // //
+    // const testeQueryData = () => {
+    //     const _x = [['2', '32', '3'], ['1', '34', '5', '0'], ['9', '2', '3'], ['55', '44', '99'], ['123', '342', '100'], ['2', '66', '12']]
+    //     const _y = queryData(_x, '2')
+    //     console.log(_y)
+    // }
+// // // // // // // // // // // // // // //
     return (
         <>
         <main>
@@ -260,6 +264,7 @@ const main = () => {
                 <Search
                     searchValue={searchValue}
                     setSearchValue={setSearchValue}
+                    handleSearch={handleSearch}
                 />
 
             </div>
@@ -341,6 +346,11 @@ const main = () => {
                 </div>
 
             </div>
+            {/* TESTE */}
+            {/* <div className="py-4 px-2">
+                <button className="bg-red-400 py-2 px-4 text-white font-medium text-xs rounded" onClick={testeQueryData}>teste</button>
+            </div> */}
+            {/* ^^^^^^^^ */}
             <div className="flex justify-center items-center pt-6 pb-2">
                 <h1 className="font-bold text-xl subpixel-antialiased ">Cadastros</h1> 
             </div>
