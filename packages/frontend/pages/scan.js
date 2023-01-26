@@ -109,7 +109,7 @@ const main = () => {
     const nextButtonText = 'Próxima>>'
 
     // console.log('txShow',txShow)
-    console.log(txSearched)
+    // console.log(txSearched)
 
     // initiate tx list
     useEffect(() => {
@@ -233,16 +233,21 @@ const main = () => {
 
     const handleSearch = () => {
         if(!searchValue){
-            console.log('clear search')
-            setTxSearched(false)
-            setTxShow(txData.slice(0,10))
-            setTxIndex(0)
+            clearSearch()
             return
         }
         setTxSearched(true)
         setTxSearchedData(queryData(txData, searchValue))
         setTxIndex(0)
         console.log('buscar')
+    }
+
+    const clearSearch = () => {
+        console.log('clear search')
+        setTxSearched(false)
+        setSearchValue('')
+        // setTxShow(txData.slice(0,10))
+        setTxIndex(0)
     }
 // // // // =====>>TESTE<<====== // // // //
     // const testeQueryData = () => {
@@ -265,6 +270,7 @@ const main = () => {
                     searchValue={searchValue}
                     setSearchValue={setSearchValue}
                     handleSearch={handleSearch}
+                    clearSearch={clearSearch}
                 />
 
             </div>
