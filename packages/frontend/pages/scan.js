@@ -17,7 +17,7 @@ const fetchTxData = async (contract, filter) => {
 
     const events = logs.map(log => contract.interface.parseLog(log).args);
 
-    return events.slice(-10);
+    return events;
 }
 
 const sliceData = (data, start, end) => {
@@ -118,6 +118,7 @@ const main = () => {
     console.log('tab', tab)
     console.log('show', txShow)
     console.log('showUpdater', showUpdater.current)
+    console.log('addData', addData)
 
     // initiate tx list
     useEffect(() => {
