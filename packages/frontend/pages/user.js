@@ -12,6 +12,8 @@ import SingleTransfer from '../components/user/SingleTransfer';
 import BatchTransfer from '../components/user/BatchTransfer';
 import GetArea from '../components/user/GetArea';
 import GetBalance from '../components/user/GetBalance';
+import GetAddress from '../components/user/GetAddress';
+import GetName from '../components/user/GetName';
 import AddOrg from '../components/owner/AddOrg';
 import AddArea from '../components/owner/AddArea';
 import SubOrg from '../components/owner/SubOrg';
@@ -29,6 +31,7 @@ import {
 
 import { getContractData } from '../utils';
 import { arrayify } from 'ethers/lib/utils';
+
 
 
 const [contractAddress, contractABI] = getContractData();
@@ -50,6 +53,8 @@ export default function ApplicationSite() {
     const [buttonBatchText, setButtonBatchText] = useState(buttonSendDefault);
     const [buttonGetBalanceText, setButtonGetBalanceText] = useState(buttonViewDefault);
     const [buttonGetAreaText, setButtonGetAreaText] = useState(buttonViewDefault);
+    const [buttonGetAddressText, setButtonGetAddressText ] = useState(buttonViewDefault);
+    const [buttonGetNameText, setButtonGetNameText] = useState(buttonViewDefault);
     const [buttonAddOrgText, setButtonAddOrgText ] = useState(buttonSendDefault);
     const [buttonAddAreaText, setButtonAddAreaText ] = useState(buttonSendDefault);
     const [buttonSubOrgText, setButtonSubOrgText] = useState(buttonSendDefault);
@@ -77,10 +82,18 @@ export default function ApplicationSite() {
     // getArea
     const [areaGet, setAreaGet] = useState('');
     const [areas, setAreas] = useState('');
+    // getAddress
+    const [nameGet, setNameGet] = useState('');
+    const [addressShow, setAddressShow] = useState('');
+
+    // getName
+    const [addressGet, setAddressGet] = useState('')
+    const [nameShow, setNameShow] = useState('')
 
     // addOrg
     const [address1stAdd, setAddress1stAdd] = useState('');
     const [area1stAdd, setArea1stAdd] = useState('');
+    const [nameAdd, setNameAdd] = useState('');
     // addArea
     const [addressAdd, setAddressAdd] = useState('');
     const [areaAdd, setAreaAdd] = useState('');
@@ -242,10 +255,73 @@ export default function ApplicationSite() {
             setAreas(areas_.toString())
         }
     }
+
+    const getAddress = async (
+        name
+    ) => {
+        if(buttonGetAddressText !== buttonViewDefault){
+            return
+        }
+        setAddressShow('')
+        let error = null
+        let address_
+        try {
+            setButtonGetAddressText('Carregando...')
+            address_ = await Contract.getAddress(name)
+        } catch(err){
+            console.log(err)
+            error = err
+            let msg = "Erro:\n".concat(err)
+            alert(msg)
+            setButtonGetAddressText(buttonViewDefault)
+        }
+        if(error === null){
+            console.log('success')
+            setButtonGetAddressText(buttonViewDefault)
+            console.log(address_)
+            if(address_.toString() === '0x0000000000000000000000000000000000000000'){
+                setAddressShow('Inexistente')
+                return
+            }
+            setAddressShow(address_.toString())
+        }
+    }
+
+    const getName = async (
+        address
+    ) => {
+        if(buttonGetNameText !== buttonViewDefault){
+            return
+        }
+        setNameShow('')
+        let error = null
+        let name_
+        try {
+            setButtonGetNameText('Carregando...')
+            name_ = await Contract.getName(address)
+        } catch(err) {
+            console.log(err)
+            error = err
+            let msg = "Erro:\n".concat(err)
+            alert(msg)
+            setButtonGetNameText(buttonViewDefault)
+        }
+        if(error === null) {
+            console.log('success')
+            setButtonGetNameText(buttonViewDefault)
+            console.log(name_)
+            if(name_.toString() === ''){
+                setNameShow('Não registrado')
+                return
+            }
+            setNameShow(name_.toString())
+        }
+    }
     
     const addOrg = async (
         account,
-        area
+        area,
+        name
     ) => {
         if(!signerData) {
             alert("Conecte a carteira para realizar essa operação")
@@ -259,7 +335,7 @@ export default function ApplicationSite() {
         try {
             setButtonAddOrgText('Assinando...')
             console.log('Adding account', account,'to area', area)
-            const tx = await Contract.addOrg(account, area)
+            const tx = await Contract.addOrg(account, area, name)
             setButtonAddOrgText('Enviando...')
             txReceipt = await tx.wait()
         } catch(err){
@@ -276,6 +352,7 @@ export default function ApplicationSite() {
             setButtonAddOrgText(buttonSendDefault)
             setAddress1stAdd('')
             setArea1stAdd('')
+            setNameAdd('')
         }
     }
     
@@ -383,6 +460,8 @@ export default function ApplicationSite() {
         }
     }
 
+    
+
     // // // // handlers // // // 
     // // // // // // // // // //
     const handleSingleTransfer = () => {
@@ -442,7 +521,7 @@ export default function ApplicationSite() {
         transferBatch(batchAddress, areas, values)
     }
 
-    const handleGetBalance = () =>{
+    const handleGetBalance = () => {
         if(!addressBalance || !areaBalance) {
             alert('Preencha os campos _endereço_ e _area_')
             return
@@ -458,6 +537,22 @@ export default function ApplicationSite() {
         getArea(areaGet)
     }
 
+    const handleGetAddress = () => {
+        if(!nameGet){
+            alert('Preencha o campo com o nome do órgão')
+            return
+        }
+        getAddress(nameGet)
+    }
+
+    const handleGetName = () => {
+        if(!addressGet){
+            alert('Preencha o campo com o endereço')
+            return
+        }
+        getName(addressGet)
+    }
+
     const handleAddOrg = () => {
         if(!address1stAdd) {
             alert('Preencha o campo do endereço')
@@ -467,7 +562,7 @@ export default function ApplicationSite() {
             addOrg(address1stAdd, 0)
             return
         }
-        addOrg(address1stAdd, area1stAdd)
+        addOrg(address1stAdd, area1stAdd, nameAdd)
         
     }
 
@@ -630,7 +725,7 @@ export default function ApplicationSite() {
                 <div className={newStyle.center}>
                     <h2 className='font-bold text-xl'>Consultas</h2>                    
                 </div>
-                <div className='flex justify-center'>
+                <div className='flex justify-center pb-2'>
                     <p className='pb-2 italic'><b>Áreas: </b>
                     0 = Verba Ordinária;
                     1 = Educação;
@@ -638,36 +733,71 @@ export default function ApplicationSite() {
                     3 = Saúde
                     </p>
                 </div>
-                <div >
-                    <p>Consulta de Saldos</p>
-                    <GetBalance 
-                        addressBalance={addressBalance}
-                        setAddressBalance={setAddressBalance}
-                        areaBalance={areaBalance}
-                        setAreaBalance={setAreaBalance}
-                    />
-                    <button 
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleGetBalance}
-                    >
-                        {buttonGetBalanceText}
-                    </button>
-                    <p className='py-2'>Saldo: {balance}</p>
-                </div>
-                <div >
-                    <p>Consulta de Áreas</p>
-                    <GetArea 
-                        areaGet={areaGet}
-                        setAreaGet={setAreaGet}
-                    />
-                    <button 
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleGetArea}
-                    >
-                        {buttonGetAreaText}
-                    </button>
-                    <p className='pt-2'>Áreas: {areas}</p>              
-                    
+                <div className='grid grid-cols-2'>
+                    <div>
+                        <div >
+                            <p>Consulta de Saldos</p>
+                            <GetBalance 
+                                addressBalance={addressBalance}
+                                setAddressBalance={setAddressBalance}
+                                areaBalance={areaBalance}
+                                setAreaBalance={setAreaBalance}
+                            />
+                            <button 
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={handleGetBalance}
+                            >
+                                {buttonGetBalanceText}
+                            </button>
+                            <p className='py-2'><i>Saldo:</i> {balance}</p>
+                        </div>
+                        <div >
+                            <p>Consulta de Áreas</p>
+                            <GetArea 
+                                areaGet={areaGet}
+                                setAreaGet={setAreaGet}
+                            />
+                            <button 
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={handleGetArea}
+                            >
+                                {buttonGetAreaText}
+                            </button>
+                            <p className='pt-2'><i>Áreas:</i> {areas}</p>              
+                            
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <p>Consulta de Endereço</p>
+                            <GetAddress
+                                nameGet={nameGet}
+                                setNameGet={setNameGet}
+                            />
+                            <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={handleGetAddress}
+                            >
+                                {buttonGetAddressText}
+                            </button>
+                            <p className='pt-2'><i>Endereço:</i> {addressShow}</p>
+                        </div>
+                        <div className='pt-2'>
+                            <p>Consulta de Nome</p>
+                            <GetName
+                                addressGet={addressGet}
+                                setAddressGet={setAddressGet}
+                            />
+                            <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={handleGetName}
+                            >
+                                {buttonGetNameText}
+                            </button>
+                            <p className='pt-2'><i>Nome:</i> {nameShow}</p>
+                        </div>
+
+                    </div>
                 </div>
                 
                 
@@ -690,6 +820,8 @@ export default function ApplicationSite() {
                                 setAddress1stAdd={setAddress1stAdd}
                                 area1stAdd={area1stAdd}
                                 setArea1stAdd={setArea1stAdd}
+                                nameAdd={nameAdd}
+                                setNameAdd={setNameAdd}
                             />
                             <button 
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

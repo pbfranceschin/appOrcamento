@@ -11,6 +11,16 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
      * @notice this format is used because an organization can be active in multiple policy area
      */
     mapping(address => mapping(uint256 => bool)) private _orgArea;
+
+    /**
+     * @dev mapping address to name of org
+     */
+    mapping(address => string) _orgName;
+
+    /**
+     * @dev mapping name to address of org
+     */
+    mapping(string => address) _orgAddress;
  
     //
     uint256 public OUTROS = 0;
@@ -55,6 +65,14 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         }
         return areas;
     }
+
+    function getName(address org) public view returns(string memory){
+        return _orgName[org];
+    }
+    
+    function getAddress(string memory name) public view returns(address) {
+        return _orgAddress[name];
+    }
     
 
     function safeTransferFrom(
@@ -86,10 +104,12 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     }
     
 
-    function addOrg(address org, uint256 area) public onlyOwner {
+    function addOrg(address org, uint256 area, string memory name) public onlyOwner {
         require(_orgArea[org][OUTROS] != true, "address already added");
 
         _setArea(org, OUTROS);
+        _orgName[org] = name;
+        _orgAddress[name] = org;
 
         if(area != OUTROS){
             _setArea(org, area);
@@ -132,10 +152,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         emit Registry(org, area, false);
     }
 
-    //////////////////////////
-    // TODO: function subArea
-    /////////////////////////
-
+ 
     ////////////////////////////
     // teste //////////////
     

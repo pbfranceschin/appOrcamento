@@ -18,6 +18,13 @@ const AddOrg = (props) => {
                 value={props.area1stAdd}
                 onChange = {(e) => props.setArea1stAdd(e.target.value)}
             />
+            <input
+                className="border rounded"
+                type='text'
+                placeholder='nome'
+                value={props.nameAdd}
+                onChange={(e) => props.setNameAdd(e.target.value)}
+            />
         </div>
         </>
     )
