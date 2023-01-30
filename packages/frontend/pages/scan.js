@@ -197,7 +197,7 @@ const main = () => {
             alert(error_msg_filter)
         }
 
-    }, [txSearched, txIndex, tab])
+    }, [txSearched, txIndex, tab, showUpdater.current])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
@@ -294,6 +294,9 @@ const main = () => {
         if(!searchValue){
             clearSearch()
             return
+        }
+        if(txSearched){
+            showUpdater.current = null
         }
         setTxSearched(true)
         setTxIndex(0)
