@@ -95,8 +95,10 @@ const main = () => {
     const [txIndex, setTxIndex] = useState(0)
     const [txShow, setTxShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
+    const [addSearchedData, setAddSearchedData] = useState([])
     const dataInitializer = useRef(false)
     const [txSearched, setTxSearched] = useState(false)
+    const showUpdater = useRef()
 
     
     const [tab, setTab] = useState(0) // tab = 0 => tranfers // tab = 1 => registries
@@ -110,10 +112,12 @@ const main = () => {
     const nextButtonText = 'Próxima>>'
     const error_msg_filter = 'erro: filtro de dado não reconhecido'
 
+
     // console.log('txShow',txShow)
     // console.log(txSearched)
     console.log('tab', tab)
     console.log('show', txShow)
+    console.log('showUpdater', showUpdater.current)
 
     // initiate tx list
     useEffect(() => {
@@ -128,18 +132,43 @@ const main = () => {
     useLayoutEffect(() => {
         
         console.log('txShow updater')
-        console.log('searched data', txSearchedData.slice(txIndex))
+        // console.log('searched data', txSearchedData.slice(txIndex))
+
+        if(tab === 0){
+            showUpdater.current = 0
+        } else if(tab === 1){
+            showUpdater.current = 1
+        } else {
+            alert(error_msg_filter)
+            return
+        }
         
         if(txSearched){
-            console.log('Showing searched data')
-            if(txIndex + 10 >= txSearchedData.length){
-                setTxShow(txSearchedData.slice(txIndex))
-                setNextButtonDisabled(true)
-                setNextButtonClass(buttonDisabled)
+            if(tab === 0){
+                console.log('Showing searched data')
+                if(txIndex + 10 >= txSearchedData.length){
+                    setTxShow(txSearchedData.slice(txIndex))
+                    setNextButtonDisabled(true)
+                    setNextButtonClass(buttonDisabled)
+                    return
+                }
+                setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
+                return
+            } else if (tab === 1) {
+                console.log('Showing searched data')
+                if(txIndex + 10 >= addSearchedData.length){
+                    setTxShow(addSearchedData.slice(txIndex))
+                    setNextButtonDisabled(true)
+                    setNextButtonClass(buttonDisabled)
+                    return
+                }
+                setTxShow(addSearchedData.slice(txIndex, txIndex + 10))
+                return
+            } else{
+                alert(error_msg_filter)
                 return
             }
-            setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
-            return
+
         }
         
         if(tab === 0){
@@ -269,15 +298,10 @@ const main = () => {
         setTxSearched(true)
         setTxIndex(0)
         console.log('buscar')
-        if(tab === 0){
-            setTxSearchedData(queryData(txData, searchValue))
-        } else if(tab === 1){
-            setTxSearchedData(queryData(addData, searchValue))
-            // console.log('searched Data', txSearchedData)
-        } else {
-            console.log(error_msg_filter)
-            alert(error_msg_filter)
-        }
+        setTxSearchedData(queryData(txData, searchValue))        
+        setAddSearchedData(queryData(addData, searchValue))
+        // console.log('searched Data', txSearchedData)
+        
     }
 
     const clearSearch = () => {
@@ -286,13 +310,13 @@ const main = () => {
         setSearchValue('')
         setTxIndex(0)
     }
-// // // // =====>>TESTE<<====== // // // //
-    // const testeQueryData = () => {
-    //     const _x = [['2', '32', '3'], ['1', '34', '5', '0'], ['9', '2', '3'], ['55', '44', '99'], ['123', '342', '100'], ['2', '66', '12']]
-    //     const _y = queryData(_x, '2')
-    //     console.log(_y)
-    // }
-// // // // // // // // // // // // // // //
+    // // // // =====>>TESTE<<====== // // // //
+        // const testeQueryData = () => {
+        //     const _x = [['2', '32', '3'], ['1', '34', '5', '0'], ['9', '2', '3'], ['55', '44', '99'], ['123', '342', '100'], ['2', '66', '12']]
+        //     const _y = queryData(_x, '2')
+        //     console.log(_y)
+        // }
+    // // // // // // // // // // // // // // //
 
     if(tab === 0){
         return (
@@ -360,13 +384,17 @@ const main = () => {
                                 </thead>
                                 <tbody>
                                     {txShow.map((e,i) => {
-                                        const id = e.id.toString()
-                                        const value = e.value.toString()
+                                        let id
+                                        let value
                                         const key = i.toString()
+                                        if(showUpdater.current === 0){
+                                            id = e.id.toString()
+                                            value = e.value.toString()
+                                        }
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {i}
+                                                {txIndex + i + 1}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                 {e.operator}
@@ -471,8 +499,11 @@ const main = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {addData.map((e,i) => {
-                                        const id = e.area.toString()
+                                    {txShow.map((e,i) => {
+                                        let id                                      
+                                        if(showUpdater.current === 1){
+                                            id = e.area.toString()
+                                        }
                                         const key = i.toString()
                                         let action = 'Cadastro'
                                         if(!e.added) {
@@ -481,7 +512,7 @@ const main = () => {
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {i}
+                                                {txIndex + i + 1}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                 {e.account}
