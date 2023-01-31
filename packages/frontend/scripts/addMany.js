@@ -39,12 +39,32 @@ const accounts = [
   '0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec',
 ]
 
+const names = [
+  'Secretaria de Educação-RJ',
+  'Governo do Estado do Rio de Janeiro',
+  'Governo do Estado de São Paulo',
+  'Governo do Estado da Bahia',
+  'Secretaria de Transporte-BA',
+  'Secretaria de Turismo-SP',
+  'Prefeitura de São Gonçalo-RJ',
+  'Prefeitura do Rio de Janeiro-RJ',
+  'Prefeitura de São Paulo-SP',
+  'Ministério do Esporte',
+  'Secretaria da Saúde-SP',
+  'ALERJ',
+]
+
 const url = hardhatChain.rpcUrls.default
 
 
 
 async function main () {
     
+    if(names.length !== accounts.length){
+      console.log('Erro: lista de nomes e contas têm tamanhos diferentes')
+      return
+    }
+  
     const provider = new ethers.providers.JsonRpcProvider(url) 
 
     const signer = new ethers.Wallet(private_key, provider)
@@ -54,7 +74,7 @@ async function main () {
 
     let i
     for(i=0; i<accounts.length; i++){
-        const add = await Contract.addOrg(accounts[i], 1)
+        const add = await Contract.addOrg(accounts[i], 1, names[i])
         const addReceipt = await add.wait()
         console.log(addReceipt)
     }

@@ -37,6 +37,7 @@ const useTxData = () => {
     const [addData, setAddData] = useState([]);
     const filterInitializer = useRef(false);
     const txDataUpdate = useRef(false);
+    const addDataUpdate = useRef(false);
     const provider = useProvider();
     useEffect(() => {
         const [contractAddress, contractABI] = getContractData();
@@ -61,13 +62,13 @@ const useTxData = () => {
             provider.on(addFilter, (log) => {
                 fetchTxData(contract, addFilter).then(response => {
                     setAddData(response)
-                    // addData updater
+                    addDataUpdate.current = !addDataUpdate.current
                 })
             })
             filterInitializer.current = true
         }
     },[])
-    return [[...txData].reverse(), [...addData].reverse(), txDataUpdate.current]
+    return [[...txData].reverse(), [...addData].reverse(), txDataUpdate.current, addDataUpdate.current]
 }
 
 const queryData = (
@@ -80,7 +81,7 @@ const queryData = (
         for(let j = 0; j < data[i].length; j++){
             if(data[i][j].toString() === filter){
                 array_.push(data[i])
-                console.log('rodada', j)
+                // console.log('rodada', j)
                 break
             }
         }
@@ -88,10 +89,22 @@ const queryData = (
     return array_
 }
 
+const fetchName = async (
+    provider,
+    account
+) => {
+    const [contractAddress, contractABI] = getContractData();
+    const contract = new ethers.Contract(contractAddress, contractABI, provider)
+    const name_ = await contract.getName(account)
+    return name_
+}
+
 const main = () => {
 
+    const provider = useProvider();
+
     const [searchValue, setSearchValue] = useState('')
-    const [txData, addData, txUpdater] = useTxData()
+    const [txData, addData, txUpdater, addUpdater] = useTxData()
     const [txIndex, setTxIndex] = useState(0)
     const [txShow, setTxShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
@@ -99,9 +112,13 @@ const main = () => {
     const dataInitializer = useRef(false)
     const [txSearched, setTxSearched] = useState(false)
     const showUpdater = useRef()
+    let nameMap = new Map()
+    const nameInitializer = useRef(false)
+    const nameIndex = useRef()
+
 
     
-    const [tab, setTab] = useState(0) // tab = 0 => tranfers // tab = 1 => registries
+    const [tab, setTab] = useState(0) // tab = 0 => transfers // tab = 1 => registries
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
     const buttonActive = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md"
     const [prevButtonClass, setPrevButtonClass ] = useState(buttonDisabled)
@@ -115,11 +132,45 @@ const main = () => {
 
     // console.log('txShow',txShow)
     // console.log(txSearched)
-    console.log('tab', tab)
-    console.log('show', txShow)
-    console.log('showUpdater', showUpdater.current)
+    // console.log('tab', tab)
+    // console.log('show', txShow)
+    // console.log('showUpdater', showUpdater.current)
+    // let x = addData.slice(0, -10)
+    // console.log('addData slice', x[0][0])
     console.log('addData', addData)
+    console.log('tipo' , typeof addData[0])
+    console.log(nameMap)
+    console.log('nameIndex', nameIndex.current)
+    console.log('addData length', addData.length)
 
+    // update list of names
+    useEffect(() => {
+        console.log('name updater')
+        console.log('nameInitializer', nameInitializer.current)
+        // console.log(addData[1][account])
+        if(!nameInitializer.current && addData.length > 0){
+            for(let i=0; i<addData.length; i++){
+                if(!nameMap.has(addData[i][0])){
+                    fetchName(provider, addData[i][0]).then(response => {
+                        nameMap.set(addData[i][0], response)
+                    })
+                }
+            }
+            nameInitializer.current = true
+            nameIndex.current = addData.length
+            return
+        }
+        const data_ = addData.slice(0, -nameIndex.current)
+        for(let i=0; i<data_.length; i++){
+            if(!nameMap.has(data_[i][0])){
+                fetchName(provider, data_[i][0]).then(response => {
+                    nameMap.set(data_[i][0], response)
+                })
+            }
+        }
+        nameIndex.current = nameIndex.current + data_.length
+    },[addUpdater])
+    
     // initiate tx list
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
