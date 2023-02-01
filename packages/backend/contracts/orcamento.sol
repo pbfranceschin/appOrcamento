@@ -26,6 +26,9 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     uint256 private _ed = 5;
     uint256 private _infra = 10; 
     uint256 private _health = 5;
+    uint256 private _other = 100 - _health - _ed - _infra;
+
+    uint256[] private _budgetPart = [_other, _ed, _infra, _health];
 
     event Registry(address indexed account, uint256 indexed area, bool indexed added);
 
@@ -34,9 +37,21 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         _mint(msg.sender, SAUDE, (_budget * _health) / 100, "");
         _mint(msg.sender, EDUCACAO, (_budget * _ed) / 100, "");
         _mint(msg.sender, INFRA, (_budget * _infra) / 100, "");
-        uint256 other = 100 - _health - _ed - _infra;
-        _mint(msg.sender, OUTROS, (_budget * other) / 100, "");
+        _mint(msg.sender, OUTROS, (_budget * _other) / 100, "");
 
+    }
+
+    function getInitialBudget() public view returns(uint256[] memory){
+        uint256[] memory budget = new uint256[](AREAS.length + 1);
+        uint256 j=0;
+        for(uint256 i=0; i<_budgetPart.length; i++){
+            budget[i] = _budgetPart[i];
+            j++;
+        }
+        // j++;
+        budget[j] = _budget;
+        
+        return budget;
     }
 
 
@@ -56,6 +71,27 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         return areas;
     }
     
+    function mint(
+        address to,
+        uint256 area,
+        uint256 amount
+    ) public onlyOwner {
+        require(_orgArea[to][OUTROS] == true, "organization not added");
+
+        _mint(to, area, amount, '0x00');
+    }
+
+    function burn(
+        address from,
+        uint256 area,
+        uint256 amount
+    ) public onlyOwner {
+        require(_orgArea[from][OUTROS] == true, "organization not added");
+
+        _burn(from, area, amount);
+
+    }
+
 
     function safeTransferFrom(
         address from, 
