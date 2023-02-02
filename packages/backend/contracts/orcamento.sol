@@ -7,11 +7,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract OrcamentoUniao2023 is ERC1155, Ownable {
     
     /**
-     * @dev mapping address to policy area to bool
+     * @dev maps address to policy area to bool
      * @notice this format is used because an organization can be active in multiple policy area
      */
     mapping(address => mapping(uint256 => bool)) private _orgArea;
  
+    /**
+     * @dev maps policy area to total minted
+     */
+    mapping (uint256 => uint256) private _totalMinted;
+
+    /**
+     * @dev maps policy area to total burned
+     */
+    mapping (uint256 => uint256) private _totalBurned;
+
     //
     uint256 public OUTROS = 0;
     uint256 public EDUCACAO = 1;
@@ -38,6 +48,10 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         _mint(msg.sender, EDUCACAO, (_budget * _ed) / 100, "");
         _mint(msg.sender, INFRA, (_budget * _infra) / 100, "");
         _mint(msg.sender, OUTROS, (_budget * _other) / 100, "");
+        _totalMinted[SAUDE] = (_budget * _health) / 100;
+        _totalMinted[EDUCACAO] = (_budget * _ed) / 100;
+        _totalMinted[INFRA] = (_budget * _infra) / 100;
+        _totalMinted[OUTROS] = (_budget * _other) / 100;
 
     }
 
@@ -52,6 +66,26 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         budget[j] = _budget;
         
         return budget;
+    }
+
+    function getTotalMinted() public view returns(uint256[] memory) {
+        uint256[] memory minted = new uint256[](AREAS.length);
+
+        for(uint256 i=0; i<AREAS.length; i++){
+            minted[i] = _totalMinted[i];
+        }
+
+        return minted;
+    }
+
+    function getTotalBurned() public view returns(uint256[] memory) {
+        uint256[] memory burned = new uint256[](AREAS.length);
+
+        for(uint256 i=0; i<AREAS.length; i++){
+            burned[i] = _totalBurned[i];
+        }
+
+        return burned;
     }
 
 
