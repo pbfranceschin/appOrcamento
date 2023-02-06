@@ -1,75 +1,17 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { getContractData } from '../utils';
-import { ContractMethodNoResultError, useProvider } from 'wagmi';
+import { getContractData, fetchData, sliceData, fetchName } from '../utils';
+import { useData, useName } from '../hooks/data'
+import { useProvider } from 'wagmi';
 
 import Head from 'next/head';
 import Header from "./itens/ScanHeader";
 import Search from '../components/scan/Search'
+import NameTable from "../components/scan/NameTable";
+import AddTable from "../components/scan/AddTable";
+import TxTable from "../components/scan/TxTable";
 
-const fetchTxData = async (contract, filter) => {
-    
-    // const logs = await provider.getLogs(filter);
-    let logs = await contract.queryFilter(filter)
-
-    // console.log(logs)
-
-    const events = logs.map(log => contract.interface.parseLog(log).args);
-
-    return events;
-}
-
-const sliceData = (data, start, end) => {
-    const length_ = end - start
-    if(data.length <= length_){
-        return data
-    }
-    let sliced = new Array()
-    for(let i=0; i<length_; i++){
-        sliced[i] = data[start + i]
-    }
-    return sliced
-}
-
-const useTxData = () => {
-    const [txData, setTxData] = useState([]);
-    const [addData, setAddData] = useState([]);
-    const filterInitializer = useRef(false);
-    const txDataUpdate = useRef(false);
-    const addDataUpdate = useRef(false);
-    const provider = useProvider();
-    useEffect(() => {
-        const [contractAddress, contractABI] = getContractData();
-        const contract = new ethers.Contract(contractAddress, contractABI, provider)
-        const txFilter = contract.filters.TransferSingle()
-        const addFilter = contract.filters.Registry()
-
-        if(!filterInitializer.current) {
-            fetchTxData(contract, txFilter).then(response => {
-                setTxData(response)
-            })
-            fetchTxData(contract, addFilter).then(response => {
-                setAddData(response)
-            })
-
-            provider.on(txFilter, (log) => {
-                fetchTxData(contract, txFilter).then(response => {
-                    setTxData(response)
-                    txDataUpdate.current = !txDataUpdate.current
-                })
-            })
-            provider.on(addFilter, (log) => {
-                fetchTxData(contract, addFilter).then(response => {
-                    setAddData(response)
-                    addDataUpdate.current = !addDataUpdate.current
-                })
-            })
-            filterInitializer.current = true
-        }
-    },[])
-    return [[...txData].reverse(), [...addData].reverse(), txDataUpdate.current, addDataUpdate.current]
-}
 
 const queryData = (
     data,
@@ -78,35 +20,34 @@ const queryData = (
 
     let array_ = new Array()
     for(let i = 0; i < data.length; i++) {
-        for(let j = 0; j < data[i].length; j++){
-            if(data[i][j].toString() === filter){
-                array_.push(data[i])
-                // console.log('rodada', j)
-                break
+        if(
+            getName(data[i][0]) === filter ||
+            getName(data[i][1]) === filter ||
+            getName(data[i][2]) === filter            
+        ) {
+            array_.push(data[i])
+        } else{        
+            for(let j = 0; j < data[i].length; j++){
+                if(data[i][j].toString() === filter){
+                    array_.push(data[i])
+                    break
+                }
             }
         }
     }
     return array_
 }
 
-const fetchName = async (
-    provider,
-    account
-) => {
-    const [contractAddress, contractABI] = getContractData();
-    const contract = new ethers.Contract(contractAddress, contractABI, provider)
-    const name_ = await contract.getName(account)
-    return name_
-}
+
 
 const main = () => {
 
     const provider = useProvider();
 
     const [searchValue, setSearchValue] = useState('')
-    const [txData, addData, txUpdater, addUpdater] = useTxData()
-    const [txIndex, setTxIndex] = useState(0)
-    const [txShow, setTxShow] = useState([])
+    const [txData, addData, txUpdater, addUpdater] = useData()
+    const [dataIndex, setDataIndex] = useState(0)
+    const [dataShow, setDataShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
     const [addSearchedData, setAddSearchedData] = useState([])
     const dataInitializer = useRef(false)
@@ -114,11 +55,11 @@ const main = () => {
     const showUpdater = useRef()
     let nameMap = new Map()
     const nameInitializer = useRef(false)
-    const nameIndex = useRef()
+    const nameIndex = useRef(0)
 
 
     
-    const [tab, setTab] = useState(0) // tab = 0 => transfers // tab = 1 => registries
+    const [tab, setTab] = useState(0) // tab = 0 => transfers // tab = 1 => registries // tab = 2 => addresses
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
     const buttonActive = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md"
     const [prevButtonClass, setPrevButtonClass ] = useState(buttonDisabled)
@@ -130,91 +71,95 @@ const main = () => {
     const error_msg_filter = 'erro: filtro de dado não reconhecido'
 
 
-    // console.log('txShow',txShow)
+
     // console.log(txSearched)
     // console.log('tab', tab)
-    // console.log('show', txShow)
     // console.log('showUpdater', showUpdater.current)
     // let x = addData.slice(0, -10)
     // console.log('addData slice', x[0][0])
     console.log('addData', addData)
-    console.log('tipo' , typeof addData[0])
-    console.log(nameMap)
-    console.log('nameIndex', nameIndex.current)
-    console.log('addData length', addData.length)
+    // console.log('tipo' , typeof addData[0])
+    // console.log(nameMap)
+    // console.log('nameIndex', nameIndex.current)
+    // console.log('addData length', addData.length)
 
-    // update list of names
+    console.log(
+        'nameMap', nameMap,
+        'nameInitializer', nameInitializer.current,
+        'addData length', addData.length,
+        'nameIndex', nameIndex.current
+    )
+
+    // update map of names
     useEffect(() => {
         console.log('name updater')
         console.log('nameInitializer', nameInitializer.current)
-        // console.log(addData[1][account])
+        
+        
         if(!nameInitializer.current && addData.length > 0){
+            console.log('entrou no if')
             for(let i=0; i<addData.length; i++){
-                if(!nameMap.has(addData[i][0])){
-                    fetchName(provider, addData[i][0]).then(response => {
-                        nameMap.set(addData[i][0], response)
-                    })
-                }
+                nameMap.set( addData[i].account, addData[i].name)
             }
+            console.log('passou do for')
             nameInitializer.current = true
             nameIndex.current = addData.length
             return
+            
         }
         const data_ = addData.slice(0, -nameIndex.current)
         for(let i=0; i<data_.length; i++){
-            if(!nameMap.has(data_[i][0])){
-                fetchName(provider, data_[i][0]).then(response => {
-                    nameMap.set(data_[i][0], response)
-                })
-            }
+            nameMap.set( addData[i].account, addData[i].name)
         }
         nameIndex.current = nameIndex.current + data_.length
-    },[addUpdater])
+
+    })
     
     // initiate tx list
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
-            setTxShow(sliceData(txData, 0, 10))
+            setDataShow(sliceData(txData, 0, 10))
             dataInitializer.current = true
         }
     },[txData, dataInitializer])
 
     
-    // update txShow
+    // update dataShow
     useLayoutEffect(() => {
         
-        console.log('txShow updater')
-        // console.log('searched data', txSearchedData.slice(txIndex))
+        console.log('dataShow updater')
 
         if(tab === 0){
             showUpdater.current = 0
         } else if(tab === 1){
             showUpdater.current = 1
+        } else if (tab === 2){
+            showUpdater.current = 2
         } else {
-            alert(error_msg_filter)
+                alert(error_msg_filter)
             return
         }
         
         if(txSearched){
             if(tab === 0){
                 console.log('Showing searched data')
-                if(txIndex + 10 >= txSearchedData.length){
-                    setTxShow(txSearchedData.slice(txIndex))
+                if(dataIndex + 10 >= txSearchedData.length){
+                    setDataShow(txSearchedData.slice(dataIndex))
                     setNextButtonDisabled(true)
                     setNextButtonClass(buttonDisabled)
                     return
                 }
-                setTxShow(txSearchedData.slice(txIndex, txIndex + 10))
+                setDataShow(txSearchedData.slice(dataIndex, dataIndex + 10))
                 return
-            } else if (tab === 1) {
+            } else if (tab === 1 || tab === 2) {
                 console.log('Showing searched data')
-                if(txIndex + 10 >= addSearchedData.length){
-                    setTxShow(addSearchedData.slice(txIndex))
+                if(dataIndex + 10 >= addSearchedData.length){
+                    setDataShow(addSearchedData.slice(dataIndex))
                     setNextButtonDisabled(true)
                     setNextButtonClass(buttonDisabled)
                     return
                 }
-                setTxShow(addSearchedData.slice(txIndex, txIndex + 10))
+                setDataShow(addSearchedData.slice(dataIndex, dataIndex + 10))
                 return
             } else{
                 alert(error_msg_filter)
@@ -224,24 +169,23 @@ const main = () => {
         }
         
         if(tab === 0){
-            if(txIndex + 10 >= txData.length) {
-                setTxShow(txData.slice(txIndex))
+            if(dataIndex + 10 >= txData.length) {
+                setDataShow(txData.slice(dataIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
                 console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
                 return
             }
-            setTxShow(txData.slice(txIndex, txIndex + 10))
-            // console.log('txShow', txShow,'txIndex', txIndex, 'nextButtonDisabled ?', nextButtonDisabled, 'data length', txData.length)
-        } else if(tab === 1){
-            if(txIndex + 10 >= addData.length) {
-                setTxShow(addData.slice(txIndex))
+            setDataShow(txData.slice(dataIndex, dataIndex + 10))            
+        } else if(tab === 1 || tab === 2){
+            if(dataIndex + 10 >= addData.length) {
+                setDataShow(addData.slice(dataIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
                 console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
                 return
             }
-            setTxShow(addData.slice(txIndex, txIndex + 10))
+            setDataShow(addData.slice(dataIndex, dataIndex + 10))
             console.log('check')
 
         } else {
@@ -249,7 +193,7 @@ const main = () => {
             alert(error_msg_filter)
         }
 
-    }, [txSearched, txIndex, tab, showUpdater.current])
+    }, [txSearched, dataIndex, tab, showUpdater.current])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
@@ -279,8 +223,11 @@ const main = () => {
             } else{
                 setNextButtonDisabled(false)
                 // console.log('check the length: multiple pages/full data')
-            }            
-        }  else {
+            }       
+        } else if(tab === 2){
+
+
+        } else {
             console.log(error_msg_filter)
             alert(error_msg_filter)
         }
@@ -289,10 +236,10 @@ const main = () => {
     
     // check the index, update prevButton state
     useLayoutEffect(() => {
-        if(txIndex === 0){
+        if(dataIndex === 0){
             setPrevButtonDisabled(true)
         }
-    },([txIndex]))
+    },([dataIndex]))
     
 
     // check button state update button class 
@@ -324,7 +271,7 @@ const main = () => {
             // console.log('button disabled checked')
             return
         }
-        setTxIndex(txIndex + 10)
+        setDataIndex(dataIndex + 10)
         setPrevButtonDisabled(false)
     }
     
@@ -333,10 +280,10 @@ const main = () => {
             // console.log('button disabled checked')
             return
         }
-        setTxIndex(txIndex - 10)
+        setDataIndex(dataIndex - 10)
         setNextButtonDisabled(false)
         
-        if(txIndex === 0){
+        if(dataIndex === 0){
             setPrevButtonDisabled(true)
         }
         
@@ -351,7 +298,7 @@ const main = () => {
             showUpdater.current = null
         }
         setTxSearched(true)
-        setTxIndex(0)
+        setDataIndex(0)
         console.log('buscar')
         setTxSearchedData(queryData(txData, searchValue))        
         setAddSearchedData(queryData(addData, searchValue))
@@ -363,7 +310,7 @@ const main = () => {
         console.log('clear search')
         setTxSearched(false)
         setSearchValue('')
-        setTxIndex(0)
+        setDataIndex(0)
     }
     // // // // =====>>TESTE<<====== // // // //
         // const testeQueryData = () => {
@@ -400,81 +347,25 @@ const main = () => {
                         Transferências
                     </button>
                     <button 
-                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
                     onClick={() => setTab(1)}
                     >
                         cadastros
                     </button>
+                    <button
+                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                    onClick={() => setTab(2)}
+                    >
+                        Endereços
+                    </button>
                 </div>
-                <div className="flex justify-center items-center pt-6 pb-2">
-                    <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1> 
-                </div>
-                    
-                <div className="flex flex-col border-t">
-                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                            <div className="overflow-hidden">
-                                <table className="min-w-full">
-                                <thead className="bg-white border-b">
-                                    <tr>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        #
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Operador
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Área
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Debitado de
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Creditado a
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Montante
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {txShow.map((e,i) => {
-                                        let id
-                                        let value
-                                        const key = i.toString()
-                                        if(showUpdater.current === 0){
-                                            id = e.id.toString()
-                                            value = e.value.toString()
-                                        }
-                                        return (
-                                            <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {txIndex + i + 1}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.operator}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {id}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.from}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.to}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {value}
-                                            </td>
-                                            </tr>
-                                        )
-                                    })}                                
-                                </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+                <TxTable
+                    data={dataShow}
+                    index={dataIndex}
+                    showUpdater={showUpdater.current}
+                />
+                
                 <div className="flex justify-start">
                     <div className="px-2 pb-2">
                         <button className={prevButtonClass} onClick={txPrevHandler}>
@@ -523,70 +414,28 @@ const main = () => {
                         Transferências
                     </button>
                     <button 
-                    className="bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                    className="bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
                     >
                         cadastros
+                    </button>
+                    <button
+                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                    onClick={() => setTab(2)}
+                    >
+                        Endereços
                     </button>
                 </div>
                 
                 <div className="flex justify-center items-center pt-6 pb-2">
                     <h1 className="font-bold text-xl subpixel-antialiased ">Cadastros</h1> 
                 </div>
-                <div className="flex flex-col border-t">
-                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                            <div className="overflow-hidden">
-                                <table className="min-w-full">
-                                <thead className="bg-white border-b">
-                                    <tr>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        #
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Endereço
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Área
-                                    </th>
-                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Ação
-                                    </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {txShow.map((e,i) => {
-                                        let id                                      
-                                        if(showUpdater.current === 1){
-                                            id = e.area.toString()
-                                        }
-                                        const key = i.toString()
-                                        let action = 'Cadastro'
-                                        if(!e.added) {
-                                            action = 'Revogação'
-                                        }
-                                        return (
-                                            <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {txIndex + i + 1}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.account}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {id}
-                                            </td>
-                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {action}
-                                            </td>
-                                            </tr>
-                                        )
-                                    })}                                
-                                </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <AddTable
+                    data={dataShow}
+                    index={dataIndex}
+                    showUpdater={showUpdater.current}
+                />
+
+
                 <div className="flex justify-start">
                     <div className="px-2 pb-2">
                         <button className={prevButtonClass} onClick={txPrevHandler}>
@@ -605,6 +454,61 @@ const main = () => {
             
             </>
             
+            )
+        } else if( tab === 2 ){
+            return(
+                <>
+                <main>
+                    <Head>
+                        <title>Rastreador do Orçamento</title>
+                        <meta content="Desenvolvido por FGV-ECMI"/>
+                        <link rel="icon" href="/favicon.ico" />
+                    </Head>
+                    <Header />
+                    <div>
+                        <Search
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            handleSearch={handleSearch}
+                            clearSearch={clearSearch}
+                        />
+
+                    </div>
+                    <div className="flex justify-center items-center pt-6 pb-2">
+                        {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
+                        <button 
+                        className="opacity-50 bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
+                        onClick={() => setTab(0)}
+                        >
+                            Transferências
+                        </button>
+                        <button 
+                        className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
+                        onClick={() => setTab(1)}
+                        >
+                            cadastros
+                        </button>
+                        <button
+                        className="bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
+                        >
+                            Endereços
+                        </button>
+                    </div>
+                    
+                    <div className="flex justify-center items-center pt-6 pb-2">
+                        <h1 className="font-bold text-xl subpixel-antialiased ">Endereços</h1> 
+                    </div>
+                    
+                    <NameTable
+                    data={dataShow}
+                    index={dataIndex}
+                    />
+
+            
+                </main>
+                </>
+                
+
             )
         }
         else{

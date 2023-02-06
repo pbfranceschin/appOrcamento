@@ -76,6 +76,12 @@
                   "internalType": "bool",
                   "name": "added",
                   "type": "bool"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "name",
+                  "type": "string"
                 }
               ],
               "name": "Registry",

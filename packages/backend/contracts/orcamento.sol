@@ -37,7 +37,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     uint256 private _infra = 10; 
     uint256 private _health = 5;
 
-    event Registry(address indexed account, uint256 indexed area, bool indexed added);
+    event Registry(address indexed account, uint256 indexed area, bool indexed added, string name);
 
     constructor() ERC1155("https://console.filebase.com/buckets/app-orcamento/{area}.json") {
         
@@ -111,7 +111,10 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         _orgName[org] = name;
         _orgAddress[name] = org;
 
+        emit Registry(org, OUTROS, true, name);
+
         if(area != OUTROS){
+            emit Registry(org, area, true, name);
             _setArea(org, area);
         }
 
@@ -125,6 +128,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
             if(_orgArea[org][areas[i]] == false){
                 return;
             }
+            emit Registry(org, areas[i], false, getName(org));
             _subArea(org, areas[i]);
         }
     }
@@ -132,24 +136,25 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     function subArea(address org, uint256 area) public onlyOwner {
         require(area > 0, 'to exclude account altogether use subOrg method');
         require(_orgArea[org][area] == true, 'this account is not registered to the area specified');
-
+        
+        emit Registry(org, area, false, getName(org));
         _subArea(org, area);
     }
 
     function addArea(address org, uint256 area) public onlyOwner{
         require(_orgArea[org][OUTROS] == true, 'Please add organization first');
         require(_orgArea[org][area] != true, "area already set for this organization");
+
+        emit Registry(org, area, true, getName(org));
         _setArea(org, area);
     }
 
     function _setArea(address org, uint256 area) private {
         _orgArea[org][area] = true;
-        emit Registry(org, area, true);
     }
 
     function _subArea(address org, uint256 area) private {
         _orgArea[org][area] = false;
-        emit Registry(org, area, false);
     }
 
  

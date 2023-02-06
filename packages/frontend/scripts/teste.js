@@ -55,14 +55,16 @@ const hardhatChain = {
     //     }
     // }
 
-    name_ = await _fetchName(Contract, data[0][0])
 
     // _fetchName(Contract, data[0][0]).then(response => {
     //     nameMap.set(data[0][0], response)
     //     console.log(response)
     // })
 
-    nameMap.set(data[0][0], name_)
+    for(let i=0; i<data.length; i++){
+      nameMap.set(data[i].account, data[i].name )
+    }
+    
     console.log(nameMap)
 
   }
