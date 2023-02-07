@@ -1,7 +1,7 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { getContractData, fetchData, sliceData, fetchName } from '../utils';
+import { getContractData, fetchData, sliceData, queryData, fetchName } from '../utils';
 import { useData, useName } from '../hooks/data'
 import { useProvider } from 'wagmi';
 
@@ -11,38 +11,13 @@ import Search from '../components/scan/Search'
 import NameTable from "../components/scan/NameTable";
 import AddTable from "../components/scan/AddTable";
 import TxTable from "../components/scan/TxTable";
+import NavButton from "../components/scan/NavButton";
 
 
-const queryData = (
-    data,
-    filter,
-) => {
-
-    let array_ = new Array()
-    for(let i = 0; i < data.length; i++) {
-        if(
-            getName(data[i][0]) === filter ||
-            getName(data[i][1]) === filter ||
-            getName(data[i][2]) === filter            
-        ) {
-            array_.push(data[i])
-        } else{        
-            for(let j = 0; j < data[i].length; j++){
-                if(data[i][j].toString() === filter){
-                    array_.push(data[i])
-                    break
-                }
-            }
-        }
-    }
-    return array_
-}
-
+let nameMap = new Map()
 
 
 const main = () => {
-
-    const provider = useProvider();
 
     const [searchValue, setSearchValue] = useState('')
     const [txData, addData, txUpdater, addUpdater] = useData()
@@ -50,15 +25,13 @@ const main = () => {
     const [dataShow, setDataShow] = useState([])
     const [txSearchedData, setTxSearchedData] = useState([])
     const [addSearchedData, setAddSearchedData] = useState([])
+    const [nameSearchedData, setNameSearchedData] = useState([])
     const dataInitializer = useRef(false)
     const [txSearched, setTxSearched] = useState(false)
     const showUpdater = useRef()
-    let nameMap = new Map()
     const nameInitializer = useRef(false)
     const nameIndex = useRef(0)
 
-
-    
     const [tab, setTab] = useState(0) // tab = 0 => transfers // tab = 1 => registries // tab = 2 => addresses
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
     const buttonActive = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md"
@@ -66,8 +39,7 @@ const main = () => {
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true)
     const [nextButtonClass, setNextButtonClass] = useState(buttonActive)
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true)
-    const prevButtonText = '<<Anterior'
-    const nextButtonText = 'Próxima>>'
+    
     const error_msg_filter = 'erro: filtro de dado não reconhecido'
 
 
@@ -77,18 +49,22 @@ const main = () => {
     // console.log('showUpdater', showUpdater.current)
     // let x = addData.slice(0, -10)
     // console.log('addData slice', x[0][0])
-    console.log('addData', addData)
+    // if(addData.length > 0){
+    //     console.log('addData', addData[0].account, addData[0].name)
+    //     nameMap.set(addData[0].account, addData[0].name)
+    //     console.log(nameMap)
+    // }
     // console.log('tipo' , typeof addData[0])
     // console.log(nameMap)
     // console.log('nameIndex', nameIndex.current)
     // console.log('addData length', addData.length)
 
-    console.log(
-        'nameMap', nameMap,
-        'nameInitializer', nameInitializer.current,
-        'addData length', addData.length,
-        'nameIndex', nameIndex.current
-    )
+    // console.log(
+    //     'nameMap', nameMap,
+    //     'nameInitializer', nameInitializer.current,
+    //     'addData length', addData.length,
+    //     'nameIndex', nameIndex.current
+    // )
 
     // update map of names
     useEffect(() => {
@@ -97,11 +73,10 @@ const main = () => {
         
         
         if(!nameInitializer.current && addData.length > 0){
-            console.log('entrou no if')
             for(let i=0; i<addData.length; i++){
-                nameMap.set( addData[i].account, addData[i].name)
+                // console.log('round', i, addData[0].account, addData[0].name)
+                nameMap.set(addData[i].account, addData[i].name)
             }
-            console.log('passou do for')
             nameInitializer.current = true
             nameIndex.current = addData.length
             return
@@ -151,7 +126,7 @@ const main = () => {
                 }
                 setDataShow(txSearchedData.slice(dataIndex, dataIndex + 10))
                 return
-            } else if (tab === 1 || tab === 2) {
+            } else if (tab === 1) {
                 console.log('Showing searched data')
                 if(dataIndex + 10 >= addSearchedData.length){
                     setDataShow(addSearchedData.slice(dataIndex))
@@ -161,7 +136,18 @@ const main = () => {
                 }
                 setDataShow(addSearchedData.slice(dataIndex, dataIndex + 10))
                 return
-            } else{
+            } 
+            else if(tab === 2) {
+                if(dataIndex + 10 >= nameSearchedData.length){
+                    setDataShow(nameSearchedData.slice(dataIndex))
+                    setNextButtonDisabled
+                    setNextButtonClass(buttonDisabled)
+                    return
+                }
+                setDataShow(nameSearchedData.slice(dataIndex, dataIndex + 10))
+                return
+            } 
+            else{
                 alert(error_msg_filter)
                 return
             }
@@ -177,7 +163,8 @@ const main = () => {
                 return
             }
             setDataShow(txData.slice(dataIndex, dataIndex + 10))            
-        } else if(tab === 1 || tab === 2){
+
+        } else if(tab === 1 ){
             if(dataIndex + 10 >= addData.length) {
                 setDataShow(addData.slice(dataIndex))
                 setNextButtonDisabled(true)
@@ -186,14 +173,25 @@ const main = () => {
                 return
             }
             setDataShow(addData.slice(dataIndex, dataIndex + 10))
-            console.log('check')
+
+        } else if(tab === 2){
+            const arr_ = Array.from(nameMap)
+            if(dataIndex + 10 >= nameMap.size){
+                setDataShow(arr_.slice(dataIndex))
+                setNextButtonDisabled(true)
+                setNextButtonClass(buttonDisabled)
+                console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
+                return
+            }
+            setDataShow(arr_.slice(dataIndex, dataIndex + 10))
+            console.log('check', arr_)
 
         } else {
             console.log(error_msg_filter)
             alert(error_msg_filter)
         }
 
-    }, [txSearched, dataIndex, tab, showUpdater.current])
+    }, [txSearched, dataIndex, tab])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
@@ -216,7 +214,7 @@ const main = () => {
                 setNextButtonDisabled(false)
                 // console.log('check the length: multiple pages/full data')
             }
-        } else if(tab === 1){
+        } else if(tab === 1 ){
             if(addData.length <= 10){
                 setNextButtonDisabled(true)
                 // console.log('check the length: single page/full data')
@@ -225,8 +223,11 @@ const main = () => {
                 // console.log('check the length: multiple pages/full data')
             }       
         } else if(tab === 2){
-
-
+            if(nameMap.size <= 10){
+                setNextButtonDisabled(true)
+            } else{
+                setNextButtonDisabled(false)
+            }
         } else {
             console.log(error_msg_filter)
             alert(error_msg_filter)
@@ -266,7 +267,7 @@ const main = () => {
 
     // // // handlers // // // 
     // // // // // // // // // 
-    const txNextHandler = () => {
+    const nextHandler = () => {
         if(nextButtonDisabled){
             // console.log('button disabled checked')
             return
@@ -275,7 +276,7 @@ const main = () => {
         setPrevButtonDisabled(false)
     }
     
-    const txPrevHandler = () => {
+    const prevHandler = () => {
         if(prevButtonDisabled){
             // console.log('button disabled checked')
             return
@@ -302,6 +303,7 @@ const main = () => {
         console.log('buscar')
         setTxSearchedData(queryData(txData, searchValue))        
         setAddSearchedData(queryData(addData, searchValue))
+        setNameSearchedData(queryData(Array.from(nameMap), searchValue))
         // console.log('searched Data', txSearchedData)
         
     }
@@ -348,13 +350,19 @@ const main = () => {
                     </button>
                     <button 
                     className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
-                    onClick={() => setTab(1)}
+                    onClick={() => {
+                        setTab(1)
+                        setDataIndex(0)
+                    }}
                     >
                         cadastros
                     </button>
                     <button
                     className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
-                    onClick={() => setTab(2)}
+                    onClick={() => {
+                        setTab(2)
+                        setDataIndex(0)
+                    }}
                     >
                         Endereços
                     </button>
@@ -366,7 +374,14 @@ const main = () => {
                     showUpdater={showUpdater.current}
                 />
                 
-                <div className="flex justify-start">
+                <NavButton
+                    prevButtonClass={prevButtonClass}
+                    nextButtonClass={nextButtonClass}
+                    prevHandler={prevHandler}
+                    nextHandler={nextHandler}
+                />
+                
+                {/* <div className="flex justify-start">
                     <div className="px-2 pb-2">
                         <button className={prevButtonClass} onClick={txPrevHandler}>
                             {prevButtonText}
@@ -378,7 +393,7 @@ const main = () => {
                         </button>
                     </div>
 
-                </div>
+                </div> */}
                 {/* TESTE */}
                 {/* <div className="py-4 px-2">
                     <button className="bg-red-400 py-2 px-4 text-white font-medium text-xs rounded" onClick={testeQueryData}>teste</button>
@@ -409,7 +424,10 @@ const main = () => {
                     {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
                     <button 
                     className="opacity-50 bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
-                    onClick={() => setTab(0)}
+                    onClick={() => {
+                        setTab(0)
+                        setDataIndex(0)
+                    }}
                     >
                         Transferências
                     </button>
@@ -420,7 +438,10 @@ const main = () => {
                     </button>
                     <button
                     className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
-                    onClick={() => setTab(2)}
+                    onClick={() => {
+                        setTab(2)
+                        setDataIndex(0)
+                    }}
                     >
                         Endereços
                     </button>
@@ -435,20 +456,26 @@ const main = () => {
                     showUpdater={showUpdater.current}
                 />
 
+                <NavButton
+                    prevButtonClass={prevButtonClass}
+                    nextButtonClass={nextButtonClass}
+                    prevHandler={prevHandler}
+                    nextHandler={nextHandler}
+                />
 
-                <div className="flex justify-start">
+                {/* <div className="flex justify-start">
                     <div className="px-2 pb-2">
-                        <button className={prevButtonClass} onClick={txPrevHandler}>
+                        <button className={prevButtonClass} onClick={prevHandler}>
                             {prevButtonText}
                         </button>
                     </div>
                     <div>
-                        <button className={nextButtonClass} onClick={txNextHandler}>
+                        <button className={nextButtonClass} onClick={nextHandler}>
                             {nextButtonText}
                         </button>
                     </div>
 
-                </div>
+                </div> */}
 
             </main>
             
@@ -478,13 +505,17 @@ const main = () => {
                         {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
                         <button 
                         className="opacity-50 bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
-                        onClick={() => setTab(0)}
+                        onClick={() => {
+                            setTab(0)
+                            setDataIndex(0)}}
                         >
                             Transferências
                         </button>
                         <button 
                         className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
-                        onClick={() => setTab(1)}
+                        onClick={() => {
+                            setTab(1)
+                            setDataIndex(0)}}
                         >
                             cadastros
                         </button>
@@ -502,6 +533,14 @@ const main = () => {
                     <NameTable
                     data={dataShow}
                     index={dataIndex}
+                    showUpdater={showUpdater.current}
+                    />
+
+                    <NavButton
+                    prevButtonClass={prevButtonClass}
+                    nextButtonClass={nextButtonClass}
+                    prevHandler={prevHandler}
+                    nextHandler={nextHandler}
                     />
 
             

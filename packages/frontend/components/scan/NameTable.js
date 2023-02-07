@@ -1,11 +1,12 @@
 import React from "react";
-import { useName } from "../../hooks/data";
+// import { useName } from "../../hooks/data";
 
 // props.data, props.txIndex
 
 const NameTable = (props) => {
 
-    // const data_ = props.data
+    // const dataKeys = [...props.data.keys()]
+
     return (
         <>
         <div className="flex flex-col border-t">
@@ -29,17 +30,27 @@ const NameTable = (props) => {
                                 <tbody>
                                     {props.data.map((e,i) => {                      
                                         const key = i.toString()
-                                        // const name_ = useName(e.account)
+                                        let account_
+                                        let name_
+                                        if(props.showUpdater === 2){
+                                            account_ = e[0]
+                                            name_ = e[1]
+                                        } else {
+                                            account_ = '-'
+                                            name_ = '-'
+                                        }
+                                        
+                                        // console.log('debugando', props.data)
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {props.index + i + 1}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.name}
+                                                {name_}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.account}
+                                                {account_}
                                             </td>
                                             </tr>
                                         )

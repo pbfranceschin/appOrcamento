@@ -1,6 +1,5 @@
 import { NETWORK_ID  } from "./config";
 import contracts from "./contracts/hardhat_contracts.json";
-import { useContract, useContractRead, useProvider } from "wagmi"
 import { useName } from "./hooks/data";
 
 
@@ -47,4 +46,21 @@ export const sliceData = (data, start, end) => {
 }
 
 
+export const queryData = (
+    data,
+    filter,
+) => {
+
+    let array_ = new Array()
+    for(let i = 0; i < data.length; i++) {        
+        for(let j = 0; j < data[i].length; j++){
+            if(data[i][j].toString() === filter){
+                array_.push(data[i])
+                break
+            }
+        }
+        
+    }
+    return array_
+}
 
