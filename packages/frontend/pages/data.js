@@ -153,99 +153,153 @@ const main = () => {
         {name: 'Educação', value: area1initial},
         {name: 'Infra', value: area2initial},
         {name: 'Saúde', value: area3initial },
-    ]   
+    ]
+
+    const mintedBudgetChartData = [
+        {name: 'Ordinária', value: area0Minted},
+        {name: 'Educação', value: area1Minted},
+        {name: 'Infra', value: area2Minted},
+        {name: 'Saúde', value: area3Minted },
+    ]
+
+    const burnedBudgetChartData = [
+        {name: 'Ordinária', value: area0burned},
+        {name: 'Educação', value: area1burned},
+        {name: 'Infra', value: area2burned},
+        {name: 'Saúde', value: area3burned },
+    ]
         
     console.log('chart data', initialBudgetChartData)
     
     return (
         <>
+        
+        <Head>
+            <title>Dados do Orçamento - Desenvolvido por FGV-ECMI</title>
+            <meta content="Desenvolvido por FGV-ECMI"/>
+            <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <Header />
         <main>
-            <Head>
-                <title>Dados do Orçamento - Desenvolvido por FGV-ECMI</title>
-                <meta content="Desenvolvido por FGV-ECMI"/>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Header />
-            <div className="grid grid-rows-3 py-4 px-3 justify-center border">
-                <div className="justify-center content-start items-center object-cover border box-border h-45 py-4 px-2 grid grid-cols-3">
-                    <div className="flex justify-start container mx-auto grid grid-rows-2">
-                        <div>
-                            <h2 className="subpixel-antialiased font-medium text-base lining-nums"
-                            >
-                                Orçamento Inicial: {budgetLen.current > 0 ? budget[budgetLen.current - 1].toString() : 0 }<br></br>
-                            </h2>
-                        </div>
-                        <div>
-                            <p className="subpixel-antialiased font-light lining-nums text-base ">
-                                - Ordinária: {area0initial}<br></br>
-                                - Educação: {area1initial}<br></br>
-                                - Infra: {area2initial}<br></br>
-                                - Saúde: {area3initial}<br></br>
-                            </p>
-                        </div>
+            <div className="grid grid-rows-3 gap-2 ">
+                <div className="py-2 px-2">
+                    <div >
+                        <h2 className="subpixel-antialiased font-medium text-lg lining-nums">
+                            Orçamento Inicial: {budgetLen.current > 0 ? budget[budgetLen.current - 1].toString() : 0 }<br></br>
+                        </h2>
                     </div>
-                    <div className="flex justify-center grid grid-rows-2 py-2">
-                        <div>
-                            <h2 className="subpixel-antialiased font-medium text-base lining-nums ">
-                                Total Emitido: {area0Minted + area1Minted + area2Minted + area3Minted }<br></br>
-                            </h2>
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3">
+                        <div className="flex justify-start container mx-auto col-span-1">
+                                <p className="subpixel-antialiased font-light lining-nums text-base ">
+                                    - Ordinária: {area0initial}<br></br>
+                                    - Educação: {area1initial}<br></br>
+                                    - Infra: {area2initial}<br></br>
+                                    - Saúde: {area3initial}<br></br>
+                                </p>
                         </div>
-                        <div>
-                            <p className="subpixel-antialiased font-light lining-nums text-base ">
-                                - Ordinária: {area0Minted}<br></br>
-                                - Educação: {area1Minted}<br></br>
-                                - Infra: {area2Minted}<br></br>
-                                - Saúde: {area3Minted}<br></br>
-                            </p>
-                            <p className="subpixel-antialiased font-normal lining-nums text-base">
-                                Déficit Potencial: 
-                                {budgetLen.current > 0 ? 
-                                    (area0Minted + area1Minted + area2Minted + area3Minted) - budget[budgetLen.current - 1].toNumber() : 0 
-                                }
-
-                            </p>
-                            <p className="subpixel-antialiased font-normal lining-nums text-base">
-                                Déficit Corrente:
-                                {budgetLen.current > 0 ?
-                                    (area0burned + area1burned + area2burned + area3burned) - budget[budgetLen.current - 1].toNumber()
-                                    : 0
-                                }
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex justify-end grid grid-rows-2 py-2">
-                        <div>
-                            <h2 className="subpixel-antialiased font-medium text-base lining-nums ">
-                                Total Executado: {area0burned + area1burned + area2burned + area3burned }<br></br>
-                            </h2>
-                        </div>
-                        <div>
-                            <p className="subpixel-antialiased font-light lining-nums text-base ">
-                                - Ordinária: {area0burned}<br></br>
-                                - Educação: {area1burned}<br></br>
-                                - Infra: {area2burned}<br></br>
-                                - Saúde: {area3burned}<br></br>
-                            </p>
+                        <div className="py-6 overflow-visible col-span-2">
+                            <PieChart width={400} height={400} >
+                                <Pie
+                                    dataKey="value"
+                                    isAnimationActive={false}
+                                    data={initialBudgetChartData}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={80}
+                                    fill="#8884d8"
+                                    label
+                                />          
+                                <Tooltip />
+                            </PieChart>
                         </div>
                     </div>
                 </div>
-                
-                <div>
-                    <div className="py-6 overflow-visible">
-                        <PieChart width={400} height={400} >
-                            <Pie
-                                dataKey="value"
-                                isAnimationActive={false}
-                                data={initialBudgetChartData}
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                fill="#8884d8"
-                                label
-                            />          
-                            <Tooltip />
-                        </PieChart>
+                <div className="py-2 px-2">
+                    <div>
+                        <h2 className="subpixel-antialiased font-medium text-lg lining-nums ">
+                            Total Emitido: {area0Minted + area1Minted + area2Minted + area3Minted }<br></br>
+                        </h2>
                     </div>
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3">
+                        <div className="grid grid-rows-1 gap-4 col-span-1">
+                            <div className="row-span-2">
+                                <p className="subpixel-antialiased font-light lining-nums text-base ">
+                                    - Ordinária: {area0Minted}<br></br>
+                                    - Educação: {area1Minted}<br></br>
+                                    - Infra: {area2Minted}<br></br>
+                                    - Saúde: {area3Minted}<br></br>
+                                </p>
+                            </div>
+                            <div className="row-span-1">
+                                <p className="subpixel-antialiased font-normal lining-nums text-base">
+                                    Déficit Potencial: 
+                                    {budgetLen.current > 0 ? 
+                                        (area0Minted + area1Minted + area2Minted + area3Minted) - budget[budgetLen.current - 1].toNumber() : 0 
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div className="col-span-2">
+                            <PieChart width={400} height={400} >
+                                <Pie
+                                    dataKey="value"
+                                    isAnimationActive={false}
+                                    data={mintedBudgetChartData}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={80}
+                                    fill="#5F9EA0"
+                                    label
+                                />          
+                                <Tooltip />
+                            </PieChart>
+                        </div>
+                    </div>
+
+                </div>
+                <div className="py-2 px-2">
+                    <div>
+                        <h2 className="subpixel-antialiased font-medium text-lg lining-nums ">
+                            Total Executado: {area0burned + area1burned + area2burned + area3burned }<br></br>
+                        </h2>
+                    </div>
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3">
+                        <div className="grid grid-rows-3 gap-4 col-span-1">
+                            <div className="row-span-2">
+                                <p className="subpixel-antialiased font-light lining-nums text-base ">
+                                    - Ordinária: {area0burned}<br></br>
+                                    - Educação: {area1burned}<br></br>
+                                    - Infra: {area2burned}<br></br>
+                                    - Saúde: {area3burned}<br></br>
+                                </p>
+                            </div>
+                            <div className="row-span-1">
+                                <p className="subpixel-antialiased font-normal lining-nums text-base">
+                                    Déficit Corrente:
+                                    {budgetLen.current > 0 ?
+                                        (area0burned + area1burned + area2burned + area3burned) - budget[budgetLen.current - 1].toNumber()
+                                        : 0
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div className="col-span-2">
+                            <PieChart width={400} height={400} >
+                                <Pie
+                                    dataKey="value"
+                                    isAnimationActive={false}
+                                    data={burnedBudgetChartData}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={80}
+                                    fill="#DC143C"
+                                    label
+                                />          
+                                <Tooltip />
+                            </PieChart>
+                        </div>
+                    </div>                        
+
 
                 </div>
 
@@ -254,6 +308,21 @@ const main = () => {
             </div>
         <button className="border rounded bg-red-400" onClick={handleRender}> render </button>
         </main>
+
+
+        {/* <div className="flex justify-center grid grid-rows-2 py-2">
+                        
+                        <div>
+                            
+                           
+                            
+                        </div>
+                    </div>
+                    <div className="flex justify-end grid grid-rows-2 py-2">
+                        
+                        
+                    </div> */}
+
         </>
     )
 
