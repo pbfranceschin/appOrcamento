@@ -3,6 +3,9 @@ import React from "react";
 const AddOrg = (props) => {
     return (
         <>
+        <div>
+            <p>Cadastramento de novo órgão</p>
+        </div>
         <div className='form-control pb-2'>
             <input
                 className="border rounded"
@@ -25,6 +28,12 @@ const AddOrg = (props) => {
                 value={props.nameAdd}
                 onChange={(e) => props.setNameAdd(e.target.value)}
             />
+            <button 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={props.handleAddOrg}
+            >
+                {props.buttonAddOrgText}
+            </button>
         </div>
         </>
     )

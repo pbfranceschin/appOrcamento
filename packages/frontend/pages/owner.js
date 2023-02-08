@@ -1,5 +1,5 @@
 import Head from 'next/head';
-// import Header from './itens/OwnerHeader';
+import Header from './itens/Header';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { useContract, useSigner } from 'wagmi';

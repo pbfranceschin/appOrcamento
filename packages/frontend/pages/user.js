@@ -814,7 +814,6 @@ export default function ApplicationSite() {
                 <div className='grid grid-cols-2'>
                     <div>
                         <div className='pb-2'>
-                            <p>Cadastramento de novo órgão</p>
                             <AddOrg 
                                 address1stAdd={address1stAdd}
                                 setAddress1stAdd={setAddress1stAdd}
@@ -822,28 +821,20 @@ export default function ApplicationSite() {
                                 setArea1stAdd={setArea1stAdd}
                                 nameAdd={nameAdd}
                                 setNameAdd={setNameAdd}
+                                handleAddOrg={handleAddOrg}
+                                buttonAddOrgText={buttonAddOrgText}
                             />
-                            <button 
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleAddOrg}
-                            >
-                                {buttonAddOrgText}
-                            </button>
+                            
                         </div>
                         <div>
-                            <p className='pt-2'>Cadastramento de órgão a nova área</p>
                             <AddArea
                                 addressAdd={addressAdd}
                                 setAddressAdd={setAddressAdd}
                                 areaAdd={areaAdd}
                                 setAreaAdd={setAreaAdd}
+                                handleAddArea={handleAddArea}
+                                buttonAddAreaText={buttonAddAreaText}
                             />
-                            <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleAddArea}
-                            >
-                                {buttonAddAreaText}
-                            </button>
                         </div>
                     </div>
                     <div>

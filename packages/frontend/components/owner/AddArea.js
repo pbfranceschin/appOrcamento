@@ -1,8 +1,12 @@
 import React from "react";
 
+
 const AddArea = (props) => {
     return (
         <>
+        <div>
+            <p>Cadastramento de órgão a nova área</p>
+        </div>
         <div className='form-control pb-2'>
             <input
                 className="border rounded"
@@ -18,6 +22,12 @@ const AddArea = (props) => {
                 value={props.areaAdd}
                 onChange = {(e) => props.setAreaAdd(e.target.value)}
             />
+            <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={props.handleAddArea}
+            >
+                {props.buttonAddAreaText}
+            </button>
         </div>
         </>
     )
