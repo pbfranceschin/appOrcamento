@@ -839,32 +839,22 @@ export default function ApplicationSite() {
                     </div>
                     <div>
                         <div>
-                            <p>Revogação de órgão</p>
                             <SubOrg
                             addressSubOrg={addressSubOrg}
                             setAddressSubOrg={setAddressSubOrg}
+                            handleSubOrg={handleSubOrg}
+                            buttonSubOrgText={buttonSubOrgText}
                             />
-                            <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={handleSubOrg}
-                            >
-                                {buttonSubOrgText}
-                            </button>
+                            
                         </div>
                         <div className='pt-2'>
-                            <p>Subtração de área</p>
                             <SubArea
                             addressSubArea={addressSubArea}
                             setAddressSubArea={setAddressSubArea}
                             areaSub={areaSub}
                             setAreaSub={setAreaSub}
-                            />
-                            <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={handleSubArea}
-                            >
-                                {buttonSubAreaText}
-                            </button>
+                            handleSubArea={handleSubArea}
+                            />                            
                         </div>
                     </div>
                 </div>

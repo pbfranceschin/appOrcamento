@@ -22,6 +22,8 @@ const AddArea = (props) => {
                 value={props.areaAdd}
                 onChange = {(e) => props.setAreaAdd(e.target.value)}
             />
+        </div>
+        <div>
             <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={props.handleAddArea}

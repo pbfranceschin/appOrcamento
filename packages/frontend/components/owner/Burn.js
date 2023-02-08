@@ -5,7 +5,7 @@ const Burn = (props) => {
     return (
         <>
         <div>
-            <h1 className="text-lg font-medium">
+            <h1 >
                 Queima de saldo
             </h1>
         </div>
@@ -31,6 +31,8 @@ const Burn = (props) => {
                 value={props.amountBrun}
                 onChange = {(e) => props.setAmountBurn(e.target.value)}
             />
+        </div>
+        <div>
             <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={props.handleBurn}

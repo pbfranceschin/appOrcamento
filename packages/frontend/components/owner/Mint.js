@@ -5,7 +5,7 @@ const Mint = (props) => {
     return (
         <>
         <div>
-            <h1 className="text-lg font-medium">
+            <h1 >
                 Emissão de saldo
             </h1>
         </div>
@@ -31,6 +31,8 @@ const Mint = (props) => {
                 value={props.amountMint}
                 onChange = {(e) => props.setAmountMint(e.target.value)}
             />
+        </div>
+        <div >
             <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={props.handleMint}

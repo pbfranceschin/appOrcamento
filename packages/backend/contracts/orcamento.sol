@@ -73,7 +73,27 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     function getAddress(string memory name) public view returns(address) {
         return _orgAddress[name];
     }
-    
+
+    function mint(
+        address to,
+        uint256 area,
+        uint256 amount
+    ) public onlyOwner {
+        require(_orgArea[to][OUTROS] == true, "organization not added");
+
+        _mint(to, area, amount, '0x00');
+    }
+
+    function burn(
+        address from,
+        uint256 area,
+        uint256 amount
+    ) public onlyOwner {
+        require(_orgArea[from][OUTROS] == true, "organization not added");
+
+        _burn(from, area, amount);
+
+    }
 
     function safeTransferFrom(
         address from, 
