@@ -1,9 +1,8 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { getContractData, fetchData, sliceData, queryData, fetchName } from '../utils';
-import { useData, useName } from '../hooks/data'
-import { useProvider } from 'wagmi';
+import { queryData } from '../utils';
+import { useData } from '../hooks/data'
 
 import Head from 'next/head';
 import Header from "./itens/ScanHeader";
@@ -12,10 +11,10 @@ import NameTable from "../components/scan/NameTable";
 import AddTable from "../components/scan/AddTable";
 import TxTable from "../components/scan/TxTable";
 import NavButton from "../components/scan/NavButton";
+import Tabs from "../components/scan/Tabs";
 
 
 let nameMap = new Map()
-
 
 const main = () => {
 
@@ -41,30 +40,6 @@ const main = () => {
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true)
     
     const error_msg_filter = 'erro: filtro de dado não reconhecido'
-
-
-
-    // console.log(txSearched)
-    // console.log('tab', tab)
-    // console.log('showUpdater', showUpdater.current)
-    // let x = addData.slice(0, -10)
-    // console.log('addData slice', x[0][0])
-    // if(addData.length > 0){
-    //     console.log('addData', addData[0].account, addData[0].name)
-    //     nameMap.set(addData[0].account, addData[0].name)
-    //     console.log(nameMap)
-    // }
-    // console.log('tipo' , typeof addData[0])
-    // console.log(nameMap)
-    // console.log('nameIndex', nameIndex.current)
-    // console.log('addData length', addData.length)
-
-    // console.log(
-    //     'nameMap', nameMap,
-    //     'nameInitializer', nameInitializer.current,
-    //     'addData length', addData.length,
-    //     'nameIndex', nameIndex.current
-    // )
 
     // update map of names
     useEffect(() => {
@@ -93,7 +68,7 @@ const main = () => {
     // initiate tx list
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
-            setDataShow(sliceData(txData, 0, 10))
+            setDataShow(txData.slice(0, 10))
             dataInitializer.current = true
         }
     },[txData, dataInitializer])
@@ -314,13 +289,6 @@ const main = () => {
         setSearchValue('')
         setDataIndex(0)
     }
-    // // // // =====>>TESTE<<====== // // // //
-        // const testeQueryData = () => {
-        //     const _x = [['2', '32', '3'], ['1', '34', '5', '0'], ['9', '2', '3'], ['55', '44', '99'], ['123', '342', '100'], ['2', '66', '12']]
-        //     const _y = queryData(_x, '2')
-        //     console.log(_y)
-        // }
-    // // // // // // // // // // // // // // //
 
     if(tab === 0){
         return (
@@ -341,33 +309,13 @@ const main = () => {
                     />
 
                 </div>
-                <div className="flex justify-center items-center pt-6 pb-2">
-                    {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
-                    <button 
-                    className="bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
-                    >
-                        Transferências
-                    </button>
-                    <button 
-                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
-                    onClick={() => {
-                        setTab(1)
-                        setDataIndex(0)
-                    }}
-                    >
-                        cadastros
-                    </button>
-                    <button
-                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
-                    onClick={() => {
-                        setTab(2)
-                        setDataIndex(0)
-                    }}
-                    >
-                        Endereços
-                    </button>
-                </div>
 
+                <Tabs
+                    tab={tab}
+                    setTab={setTab}
+                    setDataIndex={setDataIndex}
+                />
+                
                 <TxTable
                     data={dataShow}
                     index={dataIndex}
@@ -381,27 +329,11 @@ const main = () => {
                     nextHandler={nextHandler}
                 />
                 
-                {/* <div className="flex justify-start">
-                    <div className="px-2 pb-2">
-                        <button className={prevButtonClass} onClick={txPrevHandler}>
-                            {prevButtonText}
-                        </button>
-                    </div>
-                    <div>
-                        <button className={nextButtonClass} onClick={txNextHandler}>
-                            {nextButtonText}
-                        </button>
-                    </div>
-
-                </div> */}
-                {/* TESTE */}
-                {/* <div className="py-4 px-2">
-                    <button className="bg-red-400 py-2 px-4 text-white font-medium text-xs rounded" onClick={testeQueryData}>teste</button>
-                </div> */}
-                {/* ^^^^^^^^ */}
+                
             </main>
             </>
-        )} else if (tab === 1){
+        )
+    } else if (tab === 1){
             return (
             <>
             <main>
@@ -420,36 +352,13 @@ const main = () => {
                     />
 
                 </div>
-                <div className="flex justify-center items-center pt-6 pb-2">
-                    {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
-                    <button 
-                    className="opacity-50 bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
-                    onClick={() => {
-                        setTab(0)
-                        setDataIndex(0)
-                    }}
-                    >
-                        Transferências
-                    </button>
-                    <button 
-                    className="bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
-                    >
-                        cadastros
-                    </button>
-                    <button
-                    className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
-                    onClick={() => {
-                        setTab(2)
-                        setDataIndex(0)
-                    }}
-                    >
-                        Endereços
-                    </button>
-                </div>
+               
+                <Tabs
+                    tab={tab}
+                    setTab={setTab}
+                    setDataIndex={setDataIndex}
+                />
                 
-                <div className="flex justify-center items-center pt-6 pb-2">
-                    <h1 className="font-bold text-xl subpixel-antialiased ">Cadastros</h1> 
-                </div>
                 <AddTable
                     data={dataShow}
                     index={dataIndex}
@@ -462,27 +371,10 @@ const main = () => {
                     prevHandler={prevHandler}
                     nextHandler={nextHandler}
                 />
-
-                {/* <div className="flex justify-start">
-                    <div className="px-2 pb-2">
-                        <button className={prevButtonClass} onClick={prevHandler}>
-                            {prevButtonText}
-                        </button>
-                    </div>
-                    <div>
-                        <button className={nextButtonClass} onClick={nextHandler}>
-                            {nextButtonText}
-                        </button>
-                    </div>
-
-                </div> */}
-
             </main>
-            
             </>
-            
-            )
-        } else if( tab === 2 ){
+        )
+    } else if( tab === 2 ){
             return(
                 <>
                 <main>
@@ -501,35 +393,12 @@ const main = () => {
                         />
 
                     </div>
-                    <div className="flex justify-center items-center pt-6 pb-2">
-                        {/* <h1 className="font-bold text-xl subpixel-antialiased ">Transferências</h1>  */}
-                        <button 
-                        className="opacity-50 bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded-l shadow-md"
-                        onClick={() => {
-                            setTab(0)
-                            setDataIndex(0)}}
-                        >
-                            Transferências
-                        </button>
-                        <button 
-                        className="opacity-50 bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase shadow-md"
-                        onClick={() => {
-                            setTab(1)
-                            setDataIndex(0)}}
-                        >
-                            cadastros
-                        </button>
-                        <button
-                        className="bg-blue-600 py-3 px-6 text-white font-medium text-xs uppercase rounded-r shadow-md"
-                        >
-                            Endereços
-                        </button>
-                    </div>
-                    
-                    <div className="flex justify-center items-center pt-6 pb-2">
-                        <h1 className="font-bold text-xl subpixel-antialiased ">Endereços</h1> 
-                    </div>
-                    
+                    <Tabs
+                        tab={tab}
+                        setTab={setTab}
+                        setDataIndex={setDataIndex}
+                    />
+
                     <NameTable
                     data={dataShow}
                     index={dataIndex}
@@ -543,20 +412,16 @@ const main = () => {
                     nextHandler={nextHandler}
                     />
 
-            
                 </main>
                 </>
-                
-
-            )
-        }
-        else{
-            return(
+        )
+    } else{
+        return (
                 <>
                 <h1 className="text-2xl font-bold uppercase">erro: <br></br> {error_msg_filter}</h1>
                 </>
-            )
-        }
+        )
+    }
     
 }
 

@@ -9,6 +9,9 @@ const NameTable = (props) => {
 
     return (
         <>
+        <div className="flex justify-center items-center pt-6 pb-2">
+            <h1 className="font-bold text-xl subpixel-antialiased ">Endereços</h1> 
+        </div>
         <div className="flex flex-col border-t">
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
