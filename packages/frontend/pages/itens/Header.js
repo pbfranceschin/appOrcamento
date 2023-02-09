@@ -2,7 +2,7 @@ import React from "react";
 import newStyle from '../../styles/new.module.css';
 import Image from 'next/image'; 
 
-const Header = () => {
+const Header = (props) => {
 
     return (
         <>
@@ -14,7 +14,7 @@ const Header = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-            <h2 className="font-bold italic text-2xl">App Orçamento da União</h2>
+            <h2 className="font-bold italic text-2xl">{props.title}</h2>
             </a>
           </div>
           <div className={newStyle.headerRight}>

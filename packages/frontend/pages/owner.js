@@ -271,9 +271,6 @@ export default function OwnerPage() {
             console.log(txReceipt)
             alert(success_msg)
             setButtonBurnText(buttonSendDefault)
-            setValueBurn('')
-            setAddressBurn('')
-            setAreaBurn('')
         }
     }
 
@@ -287,7 +284,7 @@ export default function OwnerPage() {
             return
         }
         if(!area1stAdd) {
-            addOrg(address1stAdd, 0)
+            addOrg(address1stAdd, 0, nameAdd)
             return
         }
         addOrg(address1stAdd, area1stAdd, nameAdd)
@@ -332,6 +329,10 @@ export default function OwnerPage() {
             alert('preencha todos os campos')
             return
         }
+        burn(addressBurn, areaBurn, valueBurn)
+        setValueBurn('')
+        setAddressBurn('')
+        setAreaBurn('')
     }
 
     
@@ -343,14 +344,19 @@ export default function OwnerPage() {
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Header />
+        <Header title='Controle do Orçamento' />
         <div className='px-2 py-2'>
         <ConnectButton />
         </div>
 
         <main>
+            <div className='py-2 px-2 flex justify-center'>
+                <h1 className='text-lg font-semibold text-red-500 italic'>
+                    Essa seção é de uso exclusivo do órgão de controle do Orçamento
+                </h1>
+            </div>
             <div className='px-2 py-2 grid grid-rows-2 gap-4'>
-                <div className='rounded-lg shadow-md'>
+                <div className='rounded-lg shadow-md bg-slate-100'>
                     <div className='px-2 py-2 justify-center content-center items-center'>
                         <h1 className='text-lg font-medium'>Cadastro</h1>
                     </div>
@@ -403,7 +409,7 @@ export default function OwnerPage() {
                     </div>
                 </div>
                 
-                <div className='rounded-lg shadow-md'>
+                <div className='rounded-lg shadow-md bg-slate-100'>
                     <div className='px-2 py-2 justify-center content-center items-center'>
                         <h1 className='text-lg font-medium'>Controle da Verba</h1>
                     </div>

@@ -28,8 +28,8 @@ const Mint = (props) => {
                 className="border rounded"
                 type='number'
                 placeholder = "montante"
-                value={props.amountMint}
-                onChange = {(e) => props.setAmountMint(e.target.value)}
+                value={props.valueMint}
+                onChange = {(e) => props.setValueMint(e.target.value)}
             />
         </div>
         <div >

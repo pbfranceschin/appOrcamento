@@ -28,8 +28,8 @@ const Burn = (props) => {
                 className="border rounded"
                 type='number'
                 placeholder = "montante"
-                value={props.amountBrun}
-                onChange = {(e) => props.setAmountBurn(e.target.value)}
+                value={props.valueBrun}
+                onChange = {(e) => props.setValueBurn(e.target.value)}
             />
         </div>
         <div>
