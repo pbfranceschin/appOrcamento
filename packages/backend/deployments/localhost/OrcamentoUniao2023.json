@@ -396,6 +396,45 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "getInitialBudget",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTotalBurned",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTotalMinted",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -919,10 +958,42 @@
       {
         "astId": 1960,
         "contract": "contracts/orcamento.sol:OrcamentoUniao2023",
+        "label": "_ed",
+        "offset": 0,
+        "slot": "15",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1957,
+        "contract": "contracts/orcamento.sol:OrcamentoUniao2023",
+        "label": "_infra",
+        "offset": 0,
+        "slot": "14",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1960,
+        "contract": "contracts/orcamento.sol:OrcamentoUniao2023",
         "label": "_health",
         "offset": 0,
         "slot": "15",
         "type": "t_uint256"
+      },
+      {
+        "astId": 1969,
+        "contract": "contracts/orcamento.sol:OrcamentoUniao2023",
+        "label": "_other",
+        "offset": 0,
+        "slot": "16",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1977,
+        "contract": "contracts/orcamento.sol:OrcamentoUniao2023",
+        "label": "_budgetPart",
+        "offset": 0,
+        "slot": "17",
+        "type": "t_array(t_uint256)dyn_storage"
       }
     ],
     "types": {

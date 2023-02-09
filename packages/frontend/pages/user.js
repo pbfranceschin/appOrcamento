@@ -5,7 +5,6 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState, PureComponent } from 'react';
 import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 
-import styles from '../styles/Home.module.css'
 import newStyle from '../styles/new.module.css'
 
 import SingleTransfer from '../components/user/SingleTransfer';

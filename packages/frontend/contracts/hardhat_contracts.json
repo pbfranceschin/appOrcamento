@@ -402,19 +402,39 @@
               "type": "function"
             },
             {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "org",
-                  "type": "address"
-                }
-              ],
-              "name": "getName",
+              "inputs": [],
+              "name": "getInitialBudget",
               "outputs": [
                 {
-                  "internalType": "string",
+                  "internalType": "uint256[]",
                   "name": "",
-                  "type": "string"
+                  "type": "uint256[]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "getTotalBurned",
+              "outputs": [
+                {
+                  "internalType": "uint256[]",
+                  "name": "",
+                  "type": "uint256[]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "getTotalMinted",
+              "outputs": [
+                {
+                  "internalType": "uint256[]",
+                  "name": "",
+                  "type": "uint256[]"
                 }
               ],
               "stateMutability": "view",
@@ -442,6 +462,29 @@
                 }
               ],
               "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "area",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "mint",
+              "outputs": [],
+              "stateMutability": "nonpayable",
               "type": "function"
             },
             {
