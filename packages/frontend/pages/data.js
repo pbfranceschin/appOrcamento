@@ -25,6 +25,7 @@ const getMints = async (contract) => {
 const getBurns = async (contract) => {
     let burns_ = new Array()
     burns_ = await contract.getTotalBurned()
+    console.log('getBurns', burns_)
     return burns_
 }
 
@@ -37,7 +38,7 @@ const main = () => {
         signerOrProvider: provider
     })
 
-    const [render, setRender] =useState(true)
+    // const [render, setRender] =useState(true)
     
     const [budget, setBudget] = useState([])
     const budgetLen = useRef(0)
@@ -78,8 +79,8 @@ const main = () => {
         console.log('mint/burn sub initializer')
 
         const zeroAddress = '0x0000000000000000000000000000000000000000'
-        const mintFilter = contract.filters.TransferSingle(zeroAddress)
-        const burnFilter = contract.filters.TransferSingle(null, zeroAddress)
+        const mintFilter = contract.filters.TransferSingle(null, zeroAddress)
+        const burnFilter = contract.filters.TransferSingle(null, null, zeroAddress)
         
         getMints(contract).then(response => {
             // console.log('updating total minted')
@@ -98,7 +99,7 @@ const main = () => {
         
         provider.on(mintFilter, (log) => {
             getMints(contract).then(response => {
-                console.log('updating total minted')
+                console.log('updating total minted', response[0].toNumber())
                 setArea0Minted(response[0].toNumber())
                 setArea1Minted(response[1].toNumber())
                 setArea2Minted(response[2].toNumber())
@@ -107,7 +108,7 @@ const main = () => {
         })
         provider.on(burnFilter, (log) => {
             getBurns(contract).then(response => {
-                console.log('updating total burned')
+                console.log('updating total burned', response[0].toNumber())
                 setArea0burned(response[0].toNumber())
                 setArea1burned(response[1].toNumber())
                 setArea2burned(response[2].toNumber())

@@ -72,7 +72,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
             budget[i] = _budgetPart[i];
             j++;
         }
-        // j++;
+        
         budget[j] = _budget;
         
         return budget;
@@ -130,6 +130,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     ) public onlyOwner {
         require(_orgArea[to][OUTROS] == true, "organization not added");
 
+        _totalMinted[area] += amount;
         _mint(to, area, amount, '0x00');
     }
 
@@ -140,6 +141,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     ) public onlyOwner {
         require(_orgArea[from][OUTROS] == true, "organization not added");
 
+        _totalBurned[area] += amount;
         _burn(from, area, amount);
 
     }

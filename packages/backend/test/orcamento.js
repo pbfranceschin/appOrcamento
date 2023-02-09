@@ -32,8 +32,8 @@ describe("Testing OrcamentoUniao contract", function () {
     org3Address = await org3.getAddress();
     contractFactory = await ethers.getContractFactory("OrcamentoUniao2023");
     contract = await contractFactory.deploy();
-    await contract.addOrg(org1Address, EDUCACAO);
-    await contract.addOrg(org2Address, OUTROS);
+    await contract.addOrg(org1Address, EDUCACAO, 'name_1');
+    await contract.addOrg(org2Address, OUTROS, 'name_2');
   });
 
   it("tests budget partitioning", async function () {
@@ -44,7 +44,7 @@ describe("Testing OrcamentoUniao contract", function () {
     expect(await contract.balanceOf(ownerAddress, OUTROS)).to.equal((verba*outros)/100);
   });
 
-  it("tests area allocation and getter", async function () {
+  it("tests area allocation and area getter", async function () {
     let areas1 = await contract.getAreas(org1Address);
     let areas2 = await contract.getAreas(org2Address);
     // areas1 should be [0,1,0,0]
@@ -58,7 +58,7 @@ describe("Testing OrcamentoUniao contract", function () {
     }
     
     await expect(
-      contract.addOrg(org1Address, OUTROS)
+      contract.addOrg(org1Address, OUTROS, 'name1')
     ).to.be.revertedWith("address already added");
 
     await expect(
@@ -116,6 +116,25 @@ describe("Testing OrcamentoUniao contract", function () {
     await expect(contract.subOrg(org3Address)).to.be.revertedWith("address not added")
     
     
+  });
+
+  it("tests budget getters", async function () {
+    const outros = 100 - edu - infra - saude;
+    const initialBudget = await contract.getInitialBudget();
+    // console.log('teste', initialBudget[0].toNumber());
+    expect(initialBudget[0]).to.eq( outros );
+    expect(initialBudget[1]).to.eq( edu );
+    expect(initialBudget[2]).to.eq( infra );
+    expect(initialBudget[3]).to.eq( saude );
+    expect(initialBudget[4]).to.eq( verba );
+
+    const b4Mint = [ (verba*outros)/100, (verba*edu)/100 ]
+    const newMint = 5000;
+    await contract.mint(org1Address, EDUCACAO, newMint);
+    await contract.mint(org2Address, OUTROS, newMint);
+    const getMint = await contract.getTotalMinted();
+    expect(getMint[OUTROS]).to.eq( b4Mint[0] + newMint );
+    expect(getMint[EDUCACAO]).to.eq( b4Mint[1] + newMint );
   });
 
   it("tests transfers", async function () {

@@ -210,13 +210,13 @@ export default function OwnerPage() {
             alert("Conecte a carteira para realizar essa operação")
             return
         }
-        if( buttonSubAreaText !== buttonSendDefault) {
+        if( buttonMintText !== buttonSendDefault) {
             return
         }
         let error = null
         let txReceipt
         try{
-            setButtonSubAreaText('Assinando...')
+            setButtonMintText('Assinando...')
             console.log('minting', amount,'of area', area, 'to account', account)
             const tx = await Contract.mint(account, area, amount)
             setButtonMintText('Enviando...')
@@ -248,7 +248,7 @@ export default function OwnerPage() {
             alert("Conecte a carteira para realizar essa operação")
             return
         }
-        if( buttonSubAreaText !== buttonSendDefault) {
+        if( buttonBurnText !== buttonSendDefault) {
             return
         }
         let error = null
