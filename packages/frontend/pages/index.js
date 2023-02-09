@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>App Orçamento da União</title>
+        <title>App Orçamento da União - Desenvolvido por FGV-ECMI</title>
         <meta name="description" content="Desenvolvido por FGV-ECMI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

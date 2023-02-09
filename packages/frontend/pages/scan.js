@@ -5,7 +5,7 @@ import { queryData } from '../utils';
 import { useData } from '../hooks/data'
 
 import Head from 'next/head';
-import Header from "./itens/ScanHeader";
+import Header from "./itens/Header";
 import Search from '../components/scan/Search'
 import NameTable from "../components/scan/NameTable";
 import AddTable from "../components/scan/AddTable";
@@ -295,11 +295,11 @@ const main = () => {
             <>
             <main>
                 <Head>
-                    <title>Rastreador do Orçamento</title>
+                    <title>Rastreador do Orçamento - Desenvolvido por FGV-ECMI</title>
                     <meta content="Desenvolvido por FGV-ECMI"/>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                <Header />
+                <Header title='Rastreador do Orçamento' /> 
                 <div>
                     <Search
                         searchValue={searchValue}

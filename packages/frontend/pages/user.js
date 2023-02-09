@@ -639,12 +639,12 @@ export default function ApplicationSite() {
     return (
         <>
             <Head>
-                <title>App Orçamento da União</title>
+                <title>App Orçamento da União - Desenvolvido por FGV-ECMI</title>
                 <meta name="description" content="Created by FGV-ECMI" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header />
+            <Header title='App Orçamento da União' />
             <ConnectButton />
             
 
