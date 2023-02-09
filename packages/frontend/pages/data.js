@@ -69,9 +69,9 @@ const main = () => {
         area3burned
     )
 
-    const handleRender = () => {
-        setRender(!render)
-    }
+    // const handleRender = () => {
+    //     setRender(!render)
+    // }
 
     // ========>>> totalminted: fazer o subscription com provider.on filtrando por transfer da account 0 !!!!!
     useEffect(() => {
@@ -181,14 +181,14 @@ const main = () => {
         </Head>
         <Header />
         <main>
-            <div className="grid grid-rows-3 gap-2 ">
-                <div className="py-2 px-2">
+            <div className="grid grid-rows-3 gap-4 ">
+                <div className="pt-6 py-2 px-2">
                     <div >
                         <h2 className="subpixel-antialiased font-medium text-lg lining-nums">
                             Orçamento Inicial: {budgetLen.current > 0 ? budget[budgetLen.current - 1].toString() : 0 }<br></br>
                         </h2>
                     </div>
-                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3">
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3 bg-slate-100">
                         <div className="flex justify-start container mx-auto col-span-1">
                                 <p className="subpixel-antialiased font-light lining-nums text-base ">
                                     - Ordinária: {area0initial}<br></br>
@@ -220,7 +220,7 @@ const main = () => {
                             Total Emitido: {area0Minted + area1Minted + area2Minted + area3Minted }<br></br>
                         </h2>
                     </div>
-                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3">
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3 bg-slate-100">
                         <div className="grid grid-rows-1 gap-4 col-span-1">
                             <div className="row-span-2">
                                 <p className="subpixel-antialiased font-light lining-nums text-base ">
@@ -263,7 +263,7 @@ const main = () => {
                             Total Executado: {area0burned + area1burned + area2burned + area3burned }<br></br>
                         </h2>
                     </div>
-                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3">
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3 bg-slate-100">
                         <div className="grid grid-rows-3 gap-4 col-span-1">
                             <div className="row-span-2">
                                 <p className="subpixel-antialiased font-light lining-nums text-base ">
@@ -306,23 +306,8 @@ const main = () => {
 
                 
             </div>
-        <button className="border rounded bg-red-400" onClick={handleRender}> render </button>
+        {/* <button className="border rounded bg-red-400" onClick={handleRender}> render </button> */}
         </main>
-
-
-        {/* <div className="flex justify-center grid grid-rows-2 py-2">
-                        
-                        <div>
-                            
-                           
-                            
-                        </div>
-                    </div>
-                    <div className="flex justify-end grid grid-rows-2 py-2">
-                        
-                        
-                    </div> */}
-
         </>
     )
 
