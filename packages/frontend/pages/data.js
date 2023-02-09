@@ -40,7 +40,7 @@ const main = () => {
 
     // const [render, setRender] =useState(true)
     
-    const [budget, setBudget] = useState([])
+    const [budget, setBudget] = useState([]) // receives arr [percentage0, percentage1, percentage2, percentage3, totalBudget] 
     const budgetLen = useRef(0)
     const [area0initial, setArea0initial] = useState(0)
     const [area1initial, setArea1initial] = useState(0)

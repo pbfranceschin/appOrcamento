@@ -102,6 +102,13 @@ export default function ApplicationSite() {
     const [addressSubArea, setAddressSubArea] = useState('');
     const [areaSub, setAreaSub] = useState('');
     
+    // chartData
+    // const [budgetTotal, setBudgetTotal] = useState(0);
+    // const [budget0, setBudget0] = useState(0);
+    // const [budget1, setBudget1] = useState(0);
+    // const [budget2, setBudget2] = useState(0);
+    // const [budget3, setBudget3] = useState(0);
+
 
     // // contract callers // // // //
     // // // // // // // // // // // /
@@ -644,11 +651,13 @@ export default function ApplicationSite() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header title='App Orçamento da União' />
-            <ConnectButton />
+            <div className='py-2 px-2'>
+                <ConnectButton />
+            </div>
             
 
-            <main className="justify-center content-center justify-items-center p-6">
-            <div className={newStyle.centerClose}>
+            <main className="p-6">
+            {/* <div className={newStyle.centerClose}>
                 <h2 className='font-bold text-xl'>Orçamento: {verba_}</h2>
             </div>
             <div className={newStyle.centerClose}>
@@ -665,142 +674,141 @@ export default function ApplicationSite() {
                     />          
                     <Tooltip />
                 </PieChart>
-            </div>
-                <div className={newStyle.center}>
+            </div> */}
+                <div className='flex justify-center py-6'>
                     <h2 className='font-bold text-xl'>Repasses</h2>
                 </div>
-                <div className='p-4'>
-                <p className='pb-2 italic'><b>Áreas: </b>
-                    0 = Verba Ordinária;
-                    1 = Educação;
-                    2 = Infraestrutura;
-                    3 = Saúde
-                    </p>
-                {/* </div>
-                <div> */}
-                    <p >Transferência simples</p>
-                    <SingleTransfer 
-                        addressSingle={addressSingle}
-                        valueSingle={valueSingle}
-                        areaSingle={areaSingle}
-                        setValueSingle={setValueSingle}
-                        setAreaSingle={setAreaSingle}
-                        setAddressSingle={setAddressSingle}
-                    />
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleSingleTransfer}
-                    >
-                        {buttonSingleText}
-                    </button>
-                {/* </div>
-                <div> */}
-                    <p className='pt-6'>Transferência em lote</p>
-                    <BatchTransfer
-                        batchAddress={batchAddress}                        
-                        setBatchAddress={setBatchAddress}
-                        batchValue1={batchValue1}
-                        setBatchValue1={setBatchValue1}
-                        batchValue2={batchValue2}
-                        setBatchValue2={setBatchValue2}
-                        batchValue3={batchValue3}
-                        setBatchValue3={setBatchValue3}
-                        batchValue4={batchValue4}
-                        setBatchValue4={setBatchValue4}
-                        batchArea1={batchArea1}
-                        setBatchArea1={setBatchArea1}
-                        batchArea2={batchArea2}
-                        setBatchArea2={setBatchArea2}
-                        batchArea3={batchArea3}
-                        setBatchArea3={setBatchArea3}
-                        batchArea4={batchArea4}
-                        setBatchArea4={setBatchArea4}
-                    />
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleBatchTransfer}
-                    >
-                        {buttonBatchText}
-                    </button>
+                <div className='rounded-lg shadow-md bg-slate-100 px-4 py-4 '>
+                    <div className='flex justify-center p-4'>
+                    <p className='pb-2 italic'><b>Áreas: </b>
+                        0 = Verba Ordinária;
+                        1 = Educação;
+                        2 = Infraestrutura;
+                        3 = Saúde
+                        </p>
+                    </div>
+                    <div className='pb-6 px-2 lg:grid grid-cols-2'>
+                        <div className=''>
+                            <p className='py-2' >Transferência simples</p>
+                            <SingleTransfer 
+                                addressSingle={addressSingle}
+                                valueSingle={valueSingle}
+                                areaSingle={areaSingle}
+                                setValueSingle={setValueSingle}
+                                setAreaSingle={setAreaSingle}
+                                setAddressSingle={setAddressSingle}
+                                handleSingleTransfer={handleSingleTransfer}
+                                buttonSingleText={buttonSingleText}
+                            />
+                        </div>
+                        <div>
+                            <p className='py-2'>Transferência em lote</p>
+                            <BatchTransfer
+                                batchAddress={batchAddress}                        
+                                setBatchAddress={setBatchAddress}
+                                batchValue1={batchValue1}
+                                setBatchValue1={setBatchValue1}
+                                batchValue2={batchValue2}
+                                setBatchValue2={setBatchValue2}
+                                batchValue3={batchValue3}
+                                setBatchValue3={setBatchValue3}
+                                batchValue4={batchValue4}
+                                setBatchValue4={setBatchValue4}
+                                batchArea1={batchArea1}
+                                setBatchArea1={setBatchArea1}
+                                batchArea2={batchArea2}
+                                setBatchArea2={setBatchArea2}
+                                batchArea3={batchArea3}
+                                setBatchArea3={setBatchArea3}
+                                batchArea4={batchArea4}
+                                setBatchArea4={setBatchArea4}
+                                handleBatchTransfer={handleBatchTransfer}
+                                buttonBatchText={buttonBatchText}
+                            />                    
+                        </div>
+                    </div>
                 </div>
-                <div className={newStyle.center}>
+                <div className='flex justify-center py-6 pt-10'>
                     <h2 className='font-bold text-xl'>Consultas</h2>                    
                 </div>
-                <div className='flex justify-center pb-2'>
-                    <p className='pb-2 italic'><b>Áreas: </b>
-                    0 = Verba Ordinária;
-                    1 = Educação;
-                    2 = Infraestrutura;
-                    3 = Saúde
-                    </p>
-                </div>
-                <div className='grid grid-cols-2'>
-                    <div>
-                        <div >
-                            <p>Consulta de Saldos</p>
-                            <GetBalance 
-                                addressBalance={addressBalance}
-                                setAddressBalance={setAddressBalance}
-                                areaBalance={areaBalance}
-                                setAreaBalance={setAreaBalance}
-                            />
-                            <button 
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleGetBalance}
-                            >
-                                {buttonGetBalanceText}
-                            </button>
-                            <p className='py-2'><i>Saldo:</i> {balance}</p>
-                        </div>
-                        <div >
-                            <p>Consulta de Áreas</p>
-                            <GetArea 
-                                areaGet={areaGet}
-                                setAreaGet={setAreaGet}
-                            />
-                            <button 
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleGetArea}
-                            >
-                                {buttonGetAreaText}
-                            </button>
-                            <p className='pt-2'><i>Áreas:</i> {areas}</p>              
-                            
-                        </div>
+                <div className='rounded-lg shadow-md bg-slate-100 px-4 pt-4 pb-6 mb-8'>
+                    <div className='flex justify-center p-4'>
+                        <p className='pb-2 italic'><b>Áreas: </b>
+                        0 = Verba Ordinária;
+                        1 = Educação;
+                        2 = Infraestrutura;
+                        3 = Saúde
+                        </p>
                     </div>
-                    <div>
+                    <div className='lg:grid grid-cols-2'>
                         <div>
-                            <p>Consulta de Endereço</p>
-                            <GetAddress
-                                nameGet={nameGet}
-                                setNameGet={setNameGet}
-                            />
-                            <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleGetAddress}
-                            >
-                                {buttonGetAddressText}
-                            </button>
-                            <p className='pt-2'><i>Endereço:</i> {addressShow}</p>
+                            <div >
+                                <p>Consulta de Saldos</p>
+                                <GetBalance 
+                                    addressBalance={addressBalance}
+                                    setAddressBalance={setAddressBalance}
+                                    areaBalance={areaBalance}
+                                    setAreaBalance={setAreaBalance}
+                                />
+                                <button 
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    onClick={handleGetBalance}
+                                >
+                                    {buttonGetBalanceText}
+                                </button>
+                                <p className='py-2'><i>Saldo:</i> {balance}</p>
+                            </div>
+                            <div >
+                                <p>Consulta de Áreas</p>
+                                <GetArea 
+                                    areaGet={areaGet}
+                                    setAreaGet={setAreaGet}
+                                />
+                                <button 
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    onClick={handleGetArea}
+                                >
+                                    {buttonGetAreaText}
+                                </button>
+                                <p className='pt-2'><i>Áreas:</i> {areas}</p>              
+                                
+                            </div>
                         </div>
-                        <div className='pt-2'>
-                            <p>Consulta de Nome</p>
-                            <GetName
-                                addressGet={addressGet}
-                                setAddressGet={setAddressGet}
-                            />
-                            <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleGetName}
-                            >
-                                {buttonGetNameText}
-                            </button>
-                            <p className='pt-2'><i>Nome:</i> {nameShow}</p>
-                        </div>
+                        <div>
+                            <div>
+                                <p>Consulta de Endereço</p>
+                                <GetAddress
+                                    nameGet={nameGet}
+                                    setNameGet={setNameGet}
+                                />
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    onClick={handleGetAddress}
+                                >
+                                    {buttonGetAddressText}
+                                </button>
+                                <p className='pt-2'><i>Endereço:</i> {addressShow}</p>
+                            </div>
+                            <div className='pt-2'>
+                                <p>Consulta de Nome</p>
+                                <GetName
+                                    addressGet={addressGet}
+                                    setAddressGet={setAddressGet}
+                                />
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    onClick={handleGetName}
+                                >
+                                    {buttonGetNameText}
+                                </button>
+                                <p className='pt-2'><i>Nome:</i> {nameShow}</p>
+                            </div>
 
+                        </div>
                     </div>
                 </div>
                 
-                
-                <div className={newStyle.center}>
+                {/* <div className={newStyle.center}>
                     <h2 className='font-bold text-xl'>Controle</h2>
                     
                 </div>
@@ -853,10 +861,11 @@ export default function ApplicationSite() {
                             areaSub={areaSub}
                             setAreaSub={setAreaSub}
                             handleSubArea={handleSubArea}
+                            buttonSubAreaText={buttonSubAreaText}
                             />                            
                         </div>
                     </div>
-                </div>
+                </div> */}
             </main>
 
         </>      
