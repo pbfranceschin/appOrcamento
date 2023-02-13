@@ -28,9 +28,9 @@ export default function Home() {
         </div>
         <div className='flex justify-center py-6'>
           
-          <div >
+          <div className='flex justify-center' >
             <h1 
-            className="font-bold text-slate-400 text-2xl lg:text-4xl md:text-4xl"
+            className="font-bold text-slate-400 text-xl lg:text-4xl md:text-4xl"
             >
               <i>O orçamento público na Blockchain!</i>
             </h1>
