@@ -23,9 +23,17 @@ export const fetchData = async (contract, filter) => {
 
     // console.log(logs)
 
-    const events = logs.map(log => contract.interface.parseLog(log).args);
+    // const events = logs.map(log => contract.interface.parseLog(log).args);
 
-    return events;
+    return logs;
+}
+
+
+export const fetchBlock = async (provider, log) => {
+
+    const block = await provider.getBlock(log.blockNumber)
+    return block
+
 }
 
 export const fetchName = (address) => {
@@ -49,18 +57,40 @@ export const sliceData = (data, start, end) => {
 export const queryData = (
     data,
     filter,
+    blocks
 ) => {
 
-    let array_ = new Array()
+    let data_ = new Array()
+    let blocks_ = new Array()
     for(let i = 0; i < data.length; i++) {        
         for(let j = 0; j < data[i].length; j++){
             if(data[i][j].toString() === filter){
-                array_.push(data[i])
+                data_.push(data[i])
+                blocks_.push(blocks[i])
                 break
             }
         }
         
     }
-    return array_
+    return [data_ , blocks]
+}
+
+export const filterByIndex = (
+    array,
+    indexes
+) => {
+
+    let arr_ = new Array()
+    for(let i=0; i<indexes.length; i++){
+        arr_.push(array[indexes[i]])
+    }
+    return arr_
+}
+
+export const dateFormat = (timestamp) => {
+    const time = timestamp*1000
+    const date = new Date(time)
+    const dateFormat = date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()
+    return dateFormat
 }
 

@@ -1,8 +1,8 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { queryData } from '../utils';
-import { useData } from '../hooks/data'
+import { queryData, filterByIndex } from '../utils';
+import { useBlock, useData } from '../hooks/data'
 
 import Head from 'next/head';
 import Header from "./itens/DataHeader";
@@ -19,9 +19,14 @@ let nameMap = new Map()
 const main = () => {
 
     const [searchValue, setSearchValue] = useState('')
-    const [txData, addData, txUpdater, addUpdater] = useData()
+    const [txData, addData, txBlocks, addBlocks, txUpdater, addUpdater] = useData()
+    // const [txBlocks, setTxBlocks] = useState([])
+    // const [addBlocks, setAddBlocks] = useState([])
     const [dataIndex, setDataIndex] = useState(0)
     const [dataShow, setDataShow] = useState([])
+    const [blocksShow, setBlocksShow] = useState([])
+    const TxBlocksSearched = useRef([])
+    const AddBlocksSearched = useRef([])
     const [txSearchedData, setTxSearchedData] = useState([])
     const [addSearchedData, setAddSearchedData] = useState([])
     const [nameSearchedData, setNameSearchedData] = useState([])
@@ -40,6 +45,11 @@ const main = () => {
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true)
     
     const error_msg_filter = 'erro: filtro de dado não reconhecido'
+
+    // console.log('txblocks', txBlocks,'addBlocks', addBlocks)
+    
+    //////////// RESOLVER ////////////////////
+    console.log('blocksShow', blocksShow) // <<<================ não ta inicializando no começo !!!!!!
 
     // update map of names
     useEffect(() => {
@@ -69,6 +79,7 @@ const main = () => {
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
             setDataShow(txData.slice(0, 10))
+            setBlocksShow(txBlocks.slice(0, 10))
             dataInitializer.current = true
         }
     },[txData, dataInitializer])
@@ -95,21 +106,25 @@ const main = () => {
                 console.log('Showing searched data')
                 if(dataIndex + 10 >= txSearchedData.length){
                     setDataShow(txSearchedData.slice(dataIndex))
+                    setBlocksShow(TxBlocksSearched.current.slice(dataIndex))
                     setNextButtonDisabled(true)
                     setNextButtonClass(buttonDisabled)
                     return
                 }
                 setDataShow(txSearchedData.slice(dataIndex, dataIndex + 10))
+                setBlocksShow(TxBlocksSearched.current.slice(dataIndex, dataIndex + 10))
                 return
             } else if (tab === 1) {
                 console.log('Showing searched data')
                 if(dataIndex + 10 >= addSearchedData.length){
                     setDataShow(addSearchedData.slice(dataIndex))
+                    setBlocksShow(AddBlocksSearched.current.slice(dataIndex))
                     setNextButtonDisabled(true)
                     setNextButtonClass(buttonDisabled)
                     return
                 }
                 setDataShow(addSearchedData.slice(dataIndex, dataIndex + 10))
+                setBlocksShow(AddBlocksSearched.current.slice(dataIndex, dataIndex + 10))
                 return
             } 
             else if(tab === 2) {
@@ -132,22 +147,26 @@ const main = () => {
         if(tab === 0){
             if(dataIndex + 10 >= txData.length) {
                 setDataShow(txData.slice(dataIndex))
+                setBlocksShow(txBlocks.slice(dataIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
                 console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
                 return
             }
             setDataShow(txData.slice(dataIndex, dataIndex + 10))            
+            setBlocksShow(txBlocks.slice(dataIndex, dataIndex + 10))
 
         } else if(tab === 1 ){
             if(dataIndex + 10 >= addData.length) {
                 setDataShow(addData.slice(dataIndex))
+                setBlocksShow(addBlocks.slice(dataIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
                 console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
                 return
             }
             setDataShow(addData.slice(dataIndex, dataIndex + 10))
+            setBlocksShow(addBlocks.slice(dataIndex, dataIndex + 10))
 
         } else if(tab === 2){
             const arr_ = Array.from(nameMap)
@@ -276,8 +295,11 @@ const main = () => {
         setTxSearched(true)
         setDataIndex(0)
         console.log('buscar')
-        setTxSearchedData(queryData(txData, searchValue))        
-        setAddSearchedData(queryData(addData, searchValue))
+        let [data_, blocks_] = queryData(txData, searchValue, txBlocks)
+        setTxSearchedData(data_)
+        [data_, blocks_] = queryData(addData, searchValue, addBlocks)
+        setAddSearchedData(data_)
+        AddBlocksSearched.current = blocks_
         setNameSearchedData(queryData(Array.from(nameMap), searchValue))
         // console.log('searched Data', txSearchedData)
         
@@ -318,6 +340,7 @@ const main = () => {
                 
                 <TxTable
                     data={dataShow}
+                    blocks={blocksShow}
                     index={dataIndex}
                     showUpdater={showUpdater.current}
                 />
