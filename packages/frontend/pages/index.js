@@ -11,46 +11,47 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>App Orçamento da União - Desenvolvido por FGV-ECMI</title>
+        <title>Orçamento Público | FGV-ECMI</title>
         <meta name="description" content="Desenvolvido por FGV-ECMI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header title='App Orçamento da União' />
+      <Header title='App Orçamento Público' />
       <main >
-        <div className={newStyle.centerClose}>
+        <div className='flex justify-center py-6'>
           <Image
           src="/brasao.png"
+          alt='brasao_brasil'
           width={234.375}
           height={140.625}
           />
         </div>
-        <div className={newStyle.centerClose}>
+        <div className='flex justify-center py-6'>
           
           <div >
             <h1 
-            className="font-bold text-4xl text-blue-800"
+            className="font-bold text-slate-400 text-2xl lg:text-4xl md:text-4xl"
             >
               <i>O orçamento público na Blockchain!</i>
             </h1>
           </div>
         </div>
-        <div className={newStyle.center}>
+        <div className='flex justify-center py-6 pb-20'>
           <a
             href='/user'
             target="_blank"
             rel="noopener noreferrer"
           >
             <button
-            className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded shadow-xl"
+            className="bg-zinc-600 hover:bg-slate-500 text-white font-bold py-2 px-4 border border-blue-700 rounded shadow-xl"
           >
               Abrir o App
             </button>
           </a>
         </div>
         <div className="pb-9">
-          <div className={newStyle.centerClose}>
-            <p><h2 className='font-bold text-2xl pb-2 subpixel-antialiased'>Não confie, verifique!</h2></p>
+          <div className='flex justify-center'>
+            <h2 className='font-bold text-2xl pb-2 subpixel-antialiased text-zinc-500'>Não confie, verifique!</h2>
           </div>
           <div className={newStyle.centerClose}>
             <p className="text-sm subpixel-antialiased font-light">O <i><b>App Orçamento da União</b></i> move a tecnologia <b>Blockchain</b> <br></br> para 
@@ -62,70 +63,79 @@ export default function Home() {
           </div>
         </div>
         
-        <div className={styles.grid}>
-          <a
-            href=""
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-            {/* <h2> */}
-              Transparência <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-            {/* <p> */}
-              Facilita o rastreio do dinheiro público pela da sociedade civil.
-            </p>
-          </a>
-
-          <a
-            href=""
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-            {/* <h2> */}
-              Resiliência <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-            {/* <p> */}
-              Garante alta integridade dos dados através da decentralização.
-            </p>
-          </a>
-
-          <a
-            href=""
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-            {/* <h2> */}
-              Eficiência <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-            {/* <p> */}
-              Diminui custos através da desintermediação dos bancos.
-            </p>
-          </a>
-
-          <a
-            href=""
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-            {/* <h2> */}
-              Controle <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-            {/* <p> */}
-              Condicionamento dos repasses através de smart contracts
-            </p>
-          </a>
+        <div className='pt-10 px-12 grid justify-center lg:grid-cols-4 gap-8 md:grid-cols-2'>
+          {/* <div className='grid grid-rows-2'> */}
+            <div className='rounded-md shadow-md px-3 bg-slate-400 text-white hover:bg-white hover:text-black'>
+              <a
+                href=""
+                className={styles.card}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <h2 className={inter.className}>
+                {/* <h2> */}
+                  Transparência <span>-&gt;</span>
+                </h2>
+                <p className={inter.className}>
+                {/* <p> */}
+                  Facilita o rastreio do dinheiro público pela da sociedade civil.
+                </p>
+              </a>
+            </div>
+            <div className='rounded-md shadow-md px-3 bg-zinc-500 text-white hover:bg-white hover:text-black'>
+              <a
+                href=""
+                className={styles.card}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <h2 className={inter.className}>
+                {/* <h2> */}
+                  Resiliência <span>-&gt;</span>
+                </h2>
+                <p className={inter.className}>
+                {/* <p> */}
+                  Garante alta integridade dos dados através da decentralização.
+                </p>
+              </a>
+            </div>
+          {/* </div> */}
+          {/* <div className='grid grid-rows-2'> */}
+            <div className='rounded-md shadow-md px-3 bg-zinc-500 text-white hover:bg-white hover:text-black'>
+              <a
+                href=""
+                className={styles.card}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <h2 className={inter.className}>
+                {/* <h2> */}
+                  Eficiência <span>-&gt;</span>
+                </h2>
+                <p className={inter.className}>
+                {/* <p> */}
+                  Diminui custos através da desintermediação dos bancos.
+                </p>
+              </a>
+            </div>
+            <div className='rounded-md shadow-md px-3 bg-slate-400 text-white hover:bg-white hover:text-black'>
+              <a
+                href=""
+                className={styles.card}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <h2 className={inter.className}>
+                {/* <h2> */}
+                  Controle <span>-&gt;</span>
+                </h2>
+                <p className={inter.className}>
+                {/* <p> */}
+                  Condicionamento dos repasses através de smart contracts
+                </p>
+              </a>
+            </div>
+          {/* </div> */}
         </div>
       </main>
     </>

@@ -176,11 +176,11 @@ const main = () => {
         <>
         
         <Head>
-            <title>Dados do Orçamento - Desenvolvido por FGV-ECMI</title>
+            <title>Orçamento Público | FGV-ECMI</title>
             <meta content="Desenvolvido por FGV-ECMI"/>
             <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Header />
+        <Header title='Dados do Orçamento' />
         <main>
             <div className="grid grid-rows-3 gap-4 ">
                 <div className="pt-6 py-2 px-2">
@@ -189,8 +189,8 @@ const main = () => {
                             Orçamento Inicial: {budgetLen.current > 0 ? budget[budgetLen.current - 1].toString() : 0 }<br></br>
                         </h2>
                     </div>
-                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3 bg-slate-100">
-                        <div className="flex justify-start container mx-auto col-span-1">
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 bg-slate-100 lg:grid grid-cols-3 sm:grid grid-rows">
+                        <div className="flex justify-start container mx-auto lg:col-span-1 sm:row-span-1">
                                 <p className="subpixel-antialiased font-light lining-nums text-base ">
                                     - Ordinária: {area0initial}<br></br>
                                     - Educação: {area1initial}<br></br>
@@ -198,7 +198,7 @@ const main = () => {
                                     - Saúde: {area3initial}<br></br>
                                 </p>
                         </div>
-                        <div className="py-6 overflow-visible col-span-2">
+                        <div className="py-6 overflow-visible lg:col-span-2 sm:row-span-2">
                             <PieChart width={400} height={400} >
                                 <Pie
                                     dataKey="value"
@@ -221,8 +221,8 @@ const main = () => {
                             Total Emitido: {area0Minted + area1Minted + area2Minted + area3Minted }<br></br>
                         </h2>
                     </div>
-                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3 bg-slate-100">
-                        <div className="grid grid-rows-1 gap-4 col-span-1">
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 bg-slate-100 lg:grid grid-cols-3 sm:grid grid-rows-3">
+                        <div className="grid grid-rows-1 gap-4 lg:col-span-1 sm:row-span-1">
                             <div className="row-span-2">
                                 <p className="subpixel-antialiased font-light lining-nums text-base ">
                                     - Ordinária: {area0Minted}<br></br>
@@ -240,7 +240,7 @@ const main = () => {
                                 </p>
                             </div>
                         </div>
-                        <div className="col-span-2">
+                        <div className="lg:col-span-2 sm:row-span-2">
                             <PieChart width={400} height={400} >
                                 <Pie
                                     dataKey="value"
@@ -264,7 +264,7 @@ const main = () => {
                             Total Executado: {area0burned + area1burned + area2burned + area3burned }<br></br>
                         </h2>
                     </div>
-                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 grid grid-cols-3 bg-slate-100">
+                    <div className="justify-center content-start items-center object-cover rounded-md shadow-lg py-4 px-2 bg-slate-100 lg:grid grid-cols-3 ">
                         <div className="grid grid-rows-3 gap-4 col-span-1">
                             <div className="row-span-2">
                                 <p className="subpixel-antialiased font-light lining-nums text-base ">

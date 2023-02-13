@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Header from './itens/Header';
+import Header from './itens/DataHeader';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { useContract, useSigner } from 'wagmi';
@@ -339,7 +339,7 @@ export default function OwnerPage() {
     return (
         <>
         <Head>
-            <title>App Orçamento da União - Desenvolvido por FGV-ECMI</title>
+            <title>Orçamento Público | FGV-ECMI</title>
             <meta name="description" content="Created by FGV-ECMI" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="icon" href="/favicon.ico" />
@@ -362,7 +362,7 @@ export default function OwnerPage() {
                     </div>
                     <div className='grid grid-rows-2'>
                         
-                        <div className='px-2 grid grid-cols-2'>
+                        <div className='px-2 lg:grid grid-cols-2'>
                             <div>
                                 <AddOrg
                                 address1stAdd={address1stAdd}
@@ -386,7 +386,7 @@ export default function OwnerPage() {
                                 />
                             </div>
                         </div>
-                        <div className='py-2 px-2 grid grid-cols-2'>
+                        <div className='py-2 px-2 lg:grid grid-cols-2'>
                             <div>
                                 <SubOrg 
                                 addressSubOrg={addressSubOrg}
@@ -413,7 +413,7 @@ export default function OwnerPage() {
                     <div className='px-2 py-2 justify-center content-center items-center'>
                         <h1 className='text-lg font-medium'>Controle da Verba</h1>
                     </div>
-                    <div className='px-2 grid grid-cols-2'>
+                    <div className='px-2 lg:grid grid-cols-2'>
                         <div>
                             <Mint
                             addressMint={addressMint}

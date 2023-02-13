@@ -6,8 +6,8 @@ const Header = (props) => {
 
     return (
         <>
-        <div className={newStyle.header}>
-          <div className='header'>
+        <div className='py-10 mb-4 bg-zinc-500 text-white grid lg:grid-cols-2 md:grid-cols-2'>
+          <div className='px-3 justify start'>
             <a
               href="/index"
             //   className={styles.card}
@@ -17,7 +17,7 @@ const Header = (props) => {
             <h2 className="font-bold italic text-2xl">{props.title}</h2>
             </a>
           </div>
-          <div className={newStyle.headerRight}>
+          <div className='pr-4 flex justify-end justify-items-end'>
             <a
               href="https://ecmi.fgv.br/"
               target="_blank"
@@ -25,6 +25,7 @@ const Header = (props) => {
             >
               {' '}
               <Image
+                // className="justify-self-end"
                 src="/FGV_branco.png"
                 alt="logo"
                 width={120}

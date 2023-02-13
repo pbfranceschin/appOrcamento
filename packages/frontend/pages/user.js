@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Header from './itens/Header';
+import Header from './itens/DataHeader';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState, PureComponent } from 'react';
 import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer } from 'recharts';
@@ -645,12 +645,12 @@ export default function ApplicationSite() {
     return (
         <>
             <Head>
-                <title>App Orçamento da União - Desenvolvido por FGV-ECMI</title>
+                <title>Orçamento Público | FGV-ECMI</title>
                 <meta name="description" content="Created by FGV-ECMI" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header title='App Orçamento da União' />
+            <Header title='App Orçamento Público' />
             <div className='py-2 px-2'>
                 <ConnectButton />
             </div>
