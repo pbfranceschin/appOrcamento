@@ -12,6 +12,7 @@ import AddTable from "../components/scan/AddTable";
 import TxTable from "../components/scan/TxTable";
 import NavButton from "../components/scan/NavButton";
 import Tabs from "../components/scan/Tabs";
+import { useFeeData } from "wagmi";
 
 
 let nameMap = new Map()
@@ -35,6 +36,7 @@ const main = () => {
     const showUpdater = useRef()
     const nameInitializer = useRef(false)
     const nameIndex = useRef(0)
+    const blockListInitializer = useRef(false)
 
     const [tab, setTab] = useState(0) // tab = 0 => transfers // tab = 1 => registries // tab = 2 => addresses
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
@@ -48,8 +50,7 @@ const main = () => {
 
     // console.log('txblocks', txBlocks,'addBlocks', addBlocks)
     
-    //////////// RESOLVER ////////////////////
-    console.log('blocksShow', blocksShow) // <<<================ não ta inicializando no começo !!!!!!
+    // TESTAR UPDATE DA LISTA DE NOMES: RODAR MAIS CADASTROS E OBSERVAR O COMPORTAMENTO DA TABELA
 
     // update map of names
     useEffect(() => {
@@ -60,7 +61,7 @@ const main = () => {
         if(!nameInitializer.current && addData.length > 0){
             for(let i=0; i<addData.length; i++){
                 // console.log('round', i, addData[0].account, addData[0].name)
-                nameMap.set(addData[i].account, addData[i].name)
+                nameMap.set(addData[i].args.account, addData[i].args.name)
             }
             nameInitializer.current = true
             nameIndex.current = addData.length
@@ -69,7 +70,7 @@ const main = () => {
         }
         const data_ = addData.slice(0, -nameIndex.current)
         for(let i=0; i<data_.length; i++){
-            nameMap.set( addData[i].account, addData[i].name)
+            nameMap.set( data_[i].args.account, data_[i].args.name)
         }
         nameIndex.current = nameIndex.current + data_.length
 
@@ -79,10 +80,19 @@ const main = () => {
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
             setDataShow(txData.slice(0, 10))
-            setBlocksShow(txBlocks.slice(0, 10))
+            // console.log('showData initiator', txData, txBlocks)
             dataInitializer.current = true
         }
-    },[txData, dataInitializer])
+    },[txBlocks])
+
+    // initiate block list
+    useEffect(() => {
+        if(!blockListInitializer.current && txBlocks.length > 0){
+            setBlocksShow(txBlocks.slice(0,10))
+            // console.log('block list initiator', txBlocks)
+            blockListInitializer.current = true
+        }
+    })
 
     
     // update dataShow
@@ -361,11 +371,11 @@ const main = () => {
             <>
             <main>
                 <Head>
-                    <title>Rastreador do Orçamento</title>
+                    <title>Orçamento Público | FGV-ECMI</title>
                     <meta content="Desenvolvido por FGV-ECMI"/>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                <Header />
+                <Header  title='Rastreador do Orçamento' />
                 <div>
                     <Search
                         searchValue={searchValue}
@@ -384,6 +394,7 @@ const main = () => {
                 
                 <AddTable
                     data={dataShow}
+                    blocks={blocksShow}
                     index={dataIndex}
                     showUpdater={showUpdater.current}
                 />
@@ -402,11 +413,11 @@ const main = () => {
                 <>
                 <main>
                     <Head>
-                        <title>Rastreador do Orçamento</title>
+                        <title>Orçamento Público | FGV-ECMI</title>
                         <meta content="Desenvolvido por FGV-ECMI"/>
                         <link rel="icon" href="/favicon.ico" />
                     </Head>
-                    <Header />
+                    <Header title='Rastreador do Orçamento' />
                     <div>
                         <Search
                             searchValue={searchValue}

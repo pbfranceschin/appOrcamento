@@ -54,9 +54,11 @@ const TxTable = (props) => {
                                             value = e.args.value.toString()
                                             operator = e.args.operator
                                             from = e.args.from
-                                            to = e.args.to
-                                            // const time_ = props.blocks[i].timestamp
-                                            // date_ = dateFormat(time_)                                            
+                                            to = e.args.to                                            
+                                        }
+                                        if(props.blocks.length > 0){
+                                            const time_ = props.blocks[i].timestamp
+                                            date = dateFormat(time_)
                                         }
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
