@@ -300,7 +300,7 @@ const main = () => {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <Header title='Rastreador do Orçamento' /> 
-                <div className="pt-4">
+                <div className="pt-3">
                     <Search
                         searchValue={searchValue}
                         setSearchValue={setSearchValue}
@@ -338,12 +338,12 @@ const main = () => {
             <>
             <main>
                 <Head>
-                    <title>Rastreador do Orçamento</title>
+                    <title>Orçamento Público | FGV-ECMI</title>
                     <meta content="Desenvolvido por FGV-ECMI"/>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                <Header />
-                <div>
+                <Header title='Rastreador do Orçamento'/>
+                <div className="pt-3">
                     <Search
                         searchValue={searchValue}
                         setSearchValue={setSearchValue}
@@ -379,12 +379,12 @@ const main = () => {
                 <>
                 <main>
                     <Head>
-                        <title>Rastreador do Orçamento</title>
+                        <title>Orçamento Público | FGV-ECMI</title>
                         <meta content="Desenvolvido por FGV-ECMI"/>
                         <link rel="icon" href="/favicon.ico" />
                     </Head>
-                    <Header />
-                    <div>
+                    <Header title='Rastreador do Orçamento'/>
+                    <div className="pt-3">
                         <Search
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
