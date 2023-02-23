@@ -62,6 +62,11 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         _totalMinted[EDUCACAO] = (_budget * _ed) / 100;
         _totalMinted[INFRA] = (_budget * _infra) / 100;
         _totalMinted[OUTROS] = (_budget * _other) / 100;
+        _orgName[msg.sender] = "Tesouro Nacional";
+        _orgAddress["Tesouro Nacional"] = msg.sender;
+        for(uint256 i=0; i<AREAS.length; i++){
+            _setArea(msg.sender, i);
+        }
 
     }
 
