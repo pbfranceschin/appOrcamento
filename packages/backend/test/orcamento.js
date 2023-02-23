@@ -183,4 +183,11 @@ describe("Testing OrcamentoUniao contract", function () {
     ).to.be.revertedWith("this organization does not have permission to receive this budget");
 
   });
+
+  it("tests registry logging", async function () {
+    const addFilter = contract.filters.Registry();
+    const logs = await contract.queryFilter(addFilter);
+    const events = logs.map(log => contract.interface.parseLog(log).args);
+    console.log(events);
+  });
 })
