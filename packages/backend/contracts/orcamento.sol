@@ -62,6 +62,11 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         _totalMinted[EDUCACAO] = (_budget * _ed) / 100;
         _totalMinted[INFRA] = (_budget * _infra) / 100;
         _totalMinted[OUTROS] = (_budget * _other) / 100;
+        _orgName[msg.sender] = "Tesouro Nacional";
+        _orgAddress["Tesouro Nacional"] = msg.sender;
+        for(uint256 i=0; i<AREAS.length; i++){
+            _setArea(msg.sender, i);
+        }
 
     }
 
@@ -178,14 +183,15 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     function addOrg(address org, uint256 area, string memory name) public onlyOwner {
         require(_orgArea[org][OUTROS] != true, "address already added");
 
-        _setArea(org, OUTROS);
         _orgName[org] = name;
         _orgAddress[name] = org;
+        _setArea(org, OUTROS);
 
-        emit Registry(org, OUTROS, true, name);
+
+        // emit Registry(org, OUTROS, true, name);
 
         if(area != OUTROS){
-            emit Registry(org, area, true, name);
+            // emit Registry(org, area, true, name);
             _setArea(org, area);
         }
 
@@ -199,7 +205,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
             if(_orgArea[org][areas[i]] == false){
                 return;
             }
-            emit Registry(org, areas[i], false, _orgName[org]);
+            // emit Registry(org, areas[i], false, _orgName[org]);
             _subArea(org, areas[i]);
         }
     }
@@ -208,7 +214,7 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         require(area > 0, 'to exclude account altogether use subOrg method');
         require(_orgArea[org][area] == true, 'this account is not registered to the area specified');
         
-        emit Registry(org, area, false, _orgName[org]);
+        // emit Registry(org, area, false, _orgName[org]);
         _subArea(org, area);
     }
 
@@ -216,15 +222,17 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
         require(_orgArea[org][OUTROS] == true, 'Please add organization first');
         require(_orgArea[org][area] != true, "area already set for this organization");
 
-        emit Registry(org, area, true, _orgName[org]);
+        // emit Registry(org, area, true, _orgName[org]);
         _setArea(org, area);
     }
 
     function _setArea(address org, uint256 area) private {
+        emit Registry(org, area, true, _orgName[org]);
         _orgArea[org][area] = true;
     }
 
     function _subArea(address org, uint256 area) private {
+        emit Registry(org, area, false, _orgName[org]);
         _orgArea[org][area] = false;
     }
 
