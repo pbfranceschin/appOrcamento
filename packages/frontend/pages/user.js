@@ -20,12 +20,8 @@ import SubArea from '../components/owner/SubArea';
 
 import {
     useContract,
-    useContractRead,
-    usePrepareContractWrite,
-    useContractWrite,
+    useProvider,
     useSigner,
-    useWaitForTransaction,
-    chain,
 } from "wagmi";
 
 import { getContractData } from '../utils';
@@ -42,10 +38,11 @@ const buttonViewDefault = "Consultar";
 export default function ApplicationSite() {
 
     const { data: signerData } = useSigner();
+    const provider = useProvider();
     const Contract = useContract({
         address: contractAddress,
         abi: contractABI,
-        signerOrProvider: signerData
+        signerOrProvider: provider
     });
 
     const [buttonSingleText, setButtonSingleText] = useState(buttonSendDefault);
