@@ -1,8 +1,9 @@
 import React from "react";
+import { useProvider } from "wagmi";
+import { dateFormat } from "../../utils";
 
 const TxTable = (props) => {
 
-    // props: showUpdater.current, txshow, 
     return (
         <>
         <div className="flex justify-center items-center pt-6 pb-2">
@@ -18,6 +19,9 @@ const TxTable = (props) => {
                                     <tr>
                                     <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                         #
+                                    </th>
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Data/Hora
                                     </th>
                                     <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                         Operador
@@ -38,29 +42,44 @@ const TxTable = (props) => {
                                 </thead>
                                 <tbody>
                                     {props.data.map((e,i) => {
-                                        let id
-                                        let value
-                                        const key = i.toString()
+                                        let id;
+                                        let value;
+                                        let date;
+                                        let operator;
+                                        let from;
+                                        let to;
+                                        const key = i.toString();
                                         if(props.showUpdater === 0){
-                                            id = e.id.toString()
-                                            value = e.value.toString()
+                                            id = e.args.id.toString();
+                                            value = e.args.value.toString();
+                                            operator = e.args.operator;
+                                            from = e.args.from;
+                                            to = e.args.to;
+                                            if(props.blocks.length > 0){
+                                                const time_ = props.blocks[i].timestamp;
+                                                date = dateFormat(time_);
+                                            }
                                         }
+                                        
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {props.index + i + 1}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.operator}
+                                                {date}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {operator}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                 {id}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.from}
+                                                {from}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.to}
+                                                {to}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                 {value}

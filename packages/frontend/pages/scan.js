@@ -1,7 +1,7 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { queryData } from '../utils';
+import { queryLogData , query2LArrData } from '../utils';
 import { useData } from '../hooks/data'
 
 import Head from 'next/head';
@@ -13,15 +13,19 @@ import TxTable from "../components/scan/TxTable";
 import NavButton from "../components/scan/NavButton";
 import Tabs from "../components/scan/Tabs";
 
-
 let nameMap = new Map()
 
 const main = () => {
 
     const [searchValue, setSearchValue] = useState('')
-    const [txData, addData, txUpdater, addUpdater] = useData()
+    const [txData, addData, txBlocks, addBlocks, txUpdater, addUpdater] = useData()
+    // const [txBlocks, setTxBlocks] = useState([])
+    // const [addBlocks, setAddBlocks] = useState([])
     const [dataIndex, setDataIndex] = useState(0)
     const [dataShow, setDataShow] = useState([])
+    const [blocksShow, setBlocksShow] = useState([])
+    const TxBlocksSearched = useRef([])
+    const AddBlocksSearched = useRef([])
     const [txSearchedData, setTxSearchedData] = useState([])
     const [addSearchedData, setAddSearchedData] = useState([])
     const [nameSearchedData, setNameSearchedData] = useState([])
@@ -30,6 +34,7 @@ const main = () => {
     const showUpdater = useRef()
     const nameInitializer = useRef(false)
     const nameIndex = useRef(0)
+    const blockListInitializer = useRef(false)
 
     const [tab, setTab] = useState(0) // tab = 0 => transfers // tab = 1 => registries // tab = 2 => addresses
     const buttonDisabled = "bg-blue-600 py-3 px-3 text-white font-medium text-xs uppercase rounded shadow-md opacity-50 cursor-not-allowed"
@@ -52,7 +57,7 @@ const main = () => {
         if(!nameInitializer.current && addData.length > 0){
             for(let i=0; i<addData.length; i++){
                 // console.log('round', i, addData[0].account, addData[0].name)
-                nameMap.set(addData[i].account, addData[i].name)
+                nameMap.set(addData[i].args.account, addData[i].args.name)
             }
             nameInitializer.current = true
             nameIndex.current = addData.length
@@ -61,7 +66,7 @@ const main = () => {
         }
         const data_ = addData.slice(0, -nameIndex.current)
         for(let i=0; i<data_.length; i++){
-            nameMap.set( addData[i].account, addData[i].name)
+            nameMap.set( data_[i].args.account, data_[i].args.name)
         }
         nameIndex.current = nameIndex.current + data_.length
 
@@ -71,9 +76,19 @@ const main = () => {
     useEffect(() => {
         if(!dataInitializer.current && txData.length > 0){
             setDataShow(txData.slice(0, 10))
+            // console.log('showData initiator', txData, txBlocks)
             dataInitializer.current = true
         }
-    },[txData, dataInitializer])
+    },[txUpdater])
+
+    // initiate block list
+    useEffect(() => {
+        if(!blockListInitializer.current && txBlocks.length > 0){
+            setBlocksShow(txBlocks.slice(0,10))
+            // console.log('block list initiator', txBlocks)
+            blockListInitializer.current = true
+        }
+    },[txBlocks])
 
     
     // update dataShow
@@ -97,21 +112,25 @@ const main = () => {
                 console.log('Showing searched data')
                 if(dataIndex + 10 >= txSearchedData.length){
                     setDataShow(txSearchedData.slice(dataIndex))
+                    setBlocksShow(TxBlocksSearched.current.slice(dataIndex))
                     setNextButtonDisabled(true)
                     setNextButtonClass(buttonDisabled)
                     return
                 }
                 setDataShow(txSearchedData.slice(dataIndex, dataIndex + 10))
+                setBlocksShow(TxBlocksSearched.current.slice(dataIndex, dataIndex + 10))
                 return
             } else if (tab === 1) {
                 console.log('Showing searched data')
                 if(dataIndex + 10 >= addSearchedData.length){
                     setDataShow(addSearchedData.slice(dataIndex))
+                    setBlocksShow(AddBlocksSearched.current.slice(dataIndex))
                     setNextButtonDisabled(true)
                     setNextButtonClass(buttonDisabled)
                     return
                 }
                 setDataShow(addSearchedData.slice(dataIndex, dataIndex + 10))
+                setBlocksShow(AddBlocksSearched.current.slice(dataIndex, dataIndex + 10))
                 return
             } 
             else if(tab === 2) {
@@ -134,22 +153,26 @@ const main = () => {
         if(tab === 0){
             if(dataIndex + 10 >= txData.length) {
                 setDataShow(txData.slice(dataIndex))
+                setBlocksShow(txBlocks.slice(dataIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
                 console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
                 return
             }
             setDataShow(txData.slice(dataIndex, dataIndex + 10))            
+            setBlocksShow(txBlocks.slice(dataIndex, dataIndex + 10))
 
         } else if(tab === 1 ){
             if(dataIndex + 10 >= addData.length) {
                 setDataShow(addData.slice(dataIndex))
+                setBlocksShow(addBlocks.slice(dataIndex))
                 setNextButtonDisabled(true)
                 setNextButtonClass(buttonDisabled)
                 console.log('last_page', 'nextButtonDisabled ?', nextButtonDisabled)
                 return
             }
             setDataShow(addData.slice(dataIndex, dataIndex + 10))
+            setBlocksShow(addBlocks.slice(dataIndex, dataIndex + 10))
 
         } else if(tab === 2){
             const arr_ = Array.from(nameMap)
@@ -161,14 +184,14 @@ const main = () => {
                 return
             }
             setDataShow(arr_.slice(dataIndex, dataIndex + 10))
-            console.log('check', arr_)
+            // console.log('check', arr_)
 
         } else {
             console.log(error_msg_filter)
             alert(error_msg_filter)
         }
 
-    }, [txSearched, dataIndex, tab])
+    }, [txSearched, dataIndex, tab, txUpdater])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
@@ -269,18 +292,22 @@ const main = () => {
 
     const handleSearch = () => {
         if(!searchValue){
-            clearSearch()
-            return
+            clearSearch();
+            return;
         }
         if(txSearched){
-            showUpdater.current = null
+            showUpdater.current = null;
         }
-        setTxSearched(true)
-        setDataIndex(0)
-        console.log('buscar')
-        setTxSearchedData(queryData(txData, searchValue))        
-        setAddSearchedData(queryData(addData, searchValue))
-        setNameSearchedData(queryData(Array.from(nameMap), searchValue))
+        setTxSearched(true);
+        setDataIndex(0);
+        console.log('buscar');
+        const [data_, blocks_] = queryLogData(txData, searchValue, txBlocks);
+        setTxSearchedData(data_);
+        TxBlocksSearched.current = blocks_;
+        const [data__, blocks__] = queryLogData(addData, searchValue, addBlocks);
+        setAddSearchedData(data__);
+        AddBlocksSearched.current = blocks__;
+        setNameSearchedData(query2LArrData(Array.from(nameMap), searchValue))
         // console.log('searched Data', txSearchedData)
         
     }
@@ -320,6 +347,7 @@ const main = () => {
                 
                 <TxTable
                     data={dataShow}
+                    blocks={blocksShow}
                     index={dataIndex}
                     showUpdater={showUpdater.current}
                 />
@@ -363,6 +391,7 @@ const main = () => {
                 
                 <AddTable
                     data={dataShow}
+                    blocks={blocksShow}
                     index={dataIndex}
                     showUpdater={showUpdater.current}
                 />

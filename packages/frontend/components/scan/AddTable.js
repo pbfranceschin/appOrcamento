@@ -1,5 +1,5 @@
 import React from "react";
-// import { useName } from "../../hooks/data";
+import { dateFormat } from "../../utils";
 
 const AddTable = (props) => {
 
@@ -18,9 +18,9 @@ const AddTable = (props) => {
                                     <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                         #
                                     </th>
-                                    {/* <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        Nome
-                                    </th> */}
+                                    <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                        Data/Hora
+                                    </th>
                                     <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                         Endereço
                                     </th>
@@ -34,26 +34,32 @@ const AddTable = (props) => {
                                 </thead>
                                 <tbody>
                                     {props.data.map((e,i) => {
-                                        let id                                      
+                                        let id
+                                        let account
+                                        let date
+                                        let action = 'Cadastro'
                                         if(props.showUpdater === 1){
-                                            id = e.area.toString()
+                                            id = e.args.area.toString()
+                                            account = e.args.account
+                                            if(!e.args.added) {
+                                                action = 'Revogação'
+                                            }
+                                        }
+                                        if(props.blocks.length > 0){
+                                            const time_ = props.blocks[i].timestamp
+                                            date = dateFormat(time_)
                                         }
                                         const key = i.toString()
-                                        let action = 'Cadastro'
-                                        if(!e.added) {
-                                            action = 'Revogação'
-                                        }
-                                        // const name_ = useName(e.account)
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {props.index + i + 1}
                                             </td>
-                                            {/* <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {name_}
-                                            </td> */}
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                {e.account}
+                                                {date}
+                                            </td>
+                                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                {account}
                                             </td>
                                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                 {id}
