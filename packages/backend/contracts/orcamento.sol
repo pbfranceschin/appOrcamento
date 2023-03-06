@@ -205,7 +205,6 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
             if(_orgArea[org][areas[i]] == false){
                 return;
             }
-            // emit Registry(org, areas[i], false, _orgName[org]);
             _subArea(org, areas[i]);
         }
     }
@@ -213,16 +212,12 @@ contract OrcamentoUniao2023 is ERC1155, Ownable {
     function subArea(address org, uint256 area) public onlyOwner {
         require(area > 0, 'to exclude account altogether use subOrg method');
         require(_orgArea[org][area] == true, 'this account is not registered to the area specified');
-        
-        // emit Registry(org, area, false, _orgName[org]);
         _subArea(org, area);
     }
 
     function addArea(address org, uint256 area) public onlyOwner{
         require(_orgArea[org][OUTROS] == true, 'Please add organization first');
         require(_orgArea[org][area] != true, "area already set for this organization");
-
-        // emit Registry(org, area, true, _orgName[org]);
         _setArea(org, area);
     }
 
