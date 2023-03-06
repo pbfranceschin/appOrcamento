@@ -55,7 +55,10 @@ const TxTable = (props) => {
                                             operator = e.args.operator;
                                             from = e.args.from;
                                             to = e.args.to;
-                                            if(props.blocks.length > 0){
+                                            if(
+                                                props.blocks.length > 0 &&
+                                                props.blocks[i] != undefined
+                                            ) {
                                                 const time_ = props.blocks[i].timestamp;
                                                 date = dateFormat(time_);
                                             }
