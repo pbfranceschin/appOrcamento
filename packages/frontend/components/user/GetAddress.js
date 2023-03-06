@@ -6,7 +6,7 @@ const GetAddress = (props) => {
         <>
         <div className='form-control pb-2'>
         <input
-                className="border rounded"
+                className="border rounded p-1"
                 type='text'
                 placeholder = "nome do órgão"
                 value={props.nameGet}

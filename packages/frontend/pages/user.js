@@ -118,7 +118,7 @@ export default function ApplicationSite() {
         try {
             setButtonSingleText("Assinando...")
             console.log('singleTransfer from', signerAddress, 'to', to)
-            const tx = await Contract.safeTransferFrom(
+            const tx = await Contract.connect(signerData).safeTransferFrom(
                 signerAddress,
                 to,
                 area,
@@ -163,7 +163,7 @@ export default function ApplicationSite() {
         try {
             setButtonBatchText("Assinando...")
             console.log('batchTransfer from', signerAddress, 'to', to)
-            const tx = await Contract.safeBatchTransferFrom(
+            const tx = await Contract.connect(signerData).safeBatchTransferFrom(
                 signerAddress,
                 to,
                 areas,
@@ -183,6 +183,7 @@ export default function ApplicationSite() {
             console.log('success')
             console.log(txReceipt)
             setButtonBatchText(buttonSendDefault)
+            setBatchAddress('')
             setBatchValue1('')
             setBatchValue2('')
             setBatchValue3('')
@@ -459,8 +460,8 @@ export default function ApplicationSite() {
     // // // // handlers // // // 
     // // // // // // // // // //
     const handleSingleTransfer = () => {
-        if(!valueSingle || !addressSingle){
-            alert('Preencha os campos _endereço_ e _montante_')
+        if(!valueSingle || !addressSingle || !areaSingle){
+            alert('Preencha os campos endereço , montante e selecione a área de atuação')
             return
         }
         transferSingle(addressSingle, areaSingle, valueSingle)
