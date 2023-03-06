@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { getContractData, fetchData } from "../utils";
 import { ethers } from "ethers";
 import { useContract, useProvider } from "wagmi";
-
+import AreaDropdown from "../components/AreaDropdown";
 
 let dataInit = false
 let blockInit = false
@@ -22,7 +22,10 @@ const block = async (provider, log) => {
 
 }
 
+
 const main = () => {
+
+    const [area, setArea] = useState('');
 
     // const arr = [['sim', 'nao'], ['sim', 'nao', 'nao'], ['talvez', 'talvez']]
     // const [filteredArr, setFilteredArr] = useState([])
@@ -163,8 +166,7 @@ const main = () => {
         <button className="border" onClick={hanldleFilterClick}>Filtrar arr</button>
         <p className="py-2"> R: {filteredArr} </p>
         </div> */}
-        <div className="py-6 px-6">
-            {/* <label for="countries">Select an option</label> */}
+        {/* <div className="py-6 px-6">
             <select id="area_1" onChange={(e) => console.log(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
                 <option defaultValue="">escolha uma área</option>
                 <option value="0">Ordinária</option>
@@ -174,7 +176,13 @@ const main = () => {
             </select>
             <button className="p-4 border rounded bg-red-500 text-white font-bold" onClick={handleDropdown}> dropDown test</button>
 
-        </div>
+        </div> */}
+
+        <AreaDropdown
+        setArea={setArea}
+        defaultValue=""
+        defaultLabel="escolha"
+        />
 
         </>
     )

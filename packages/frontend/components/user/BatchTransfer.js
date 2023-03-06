@@ -1,4 +1,5 @@
 import React from 'react';
+import AreaDropdown from '../AreaDropdown';
 
 const BatchTransfer = (props) => {
     return (
@@ -20,7 +21,13 @@ const BatchTransfer = (props) => {
                 value={props.batchValue1}
                 onChange={(e) => props.setBatchValue1(e.target.value)}
             />
-            <div className='pr-10'>
+            <AreaDropdown
+                setArea={props.setBatchArea1}
+                defaultValue=""
+                defaultLabel="área 1"
+            />
+
+            {/* <div className='pr-10'>
                 <select 
                 id="small"
                 onChange={(e) => e.target.value === "área 1" ? props.setBatchArea1("") : props.setBatchArea1(e.target.value)} 
@@ -31,7 +38,7 @@ const BatchTransfer = (props) => {
                     <option value="2">Infraestrutura</option>
                     <option value="3">Saúde</option>
                 </select>
-            </div>
+            </div> */}
             {/* <input 
                 className='border rounded'
                 type='number'
@@ -48,18 +55,11 @@ const BatchTransfer = (props) => {
                 value={props.bacthValue2}
                 onChange={(e) => props.setBatchValue2(e.target.value)}
             />
-            <div className='pr-10'>
-                <select 
-                id="small"
-                onChange={(e) => e.target.value === "área 2" ? props.setBatchArea2("") : props.setBatchArea2(e.target.value)} 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
-                    <option defaultValue="">área 2</option>
-                    <option value="0">Ordinária</option>
-                    <option value="1">Educação</option>
-                    <option value="2">Infraestrutura</option>
-                    <option value="3">Saúde</option>
-                </select>
-            </div>
+            <AreaDropdown
+                setArea={props.setBatchArea2}
+                defaultValue=""
+                defaultLabel="área 2"
+            />
             
         </div>
         <div>
@@ -70,18 +70,11 @@ const BatchTransfer = (props) => {
                 value={props.batchValue3}
                 onChange={(e) => props.setBatchValue3(e.target.value)}
             />
-            <div className='pr-10'>
-                <select 
-                id="small"
-                onChange={(e) => e.target.value === "área 3" ? props.setBatchArea3("") : props.setBatchArea3(e.target.value)} 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
-                    <option defaultValue="">área 3</option>
-                    <option value="0">Ordinária</option>
-                    <option value="1">Educação</option>
-                    <option value="2">Infraestrutura</option>
-                    <option value="3">Saúde</option>
-                </select>
-            </div>
+            <AreaDropdown
+                setArea={props.setBatchArea3}
+                defaultValue=""
+                defaultLabel="área 3"
+            />
             
         </div>
         <div>
@@ -92,18 +85,11 @@ const BatchTransfer = (props) => {
                 value={props.batchValue4}
                 onChange={(e) => props.setBatchValue4(e.target.value)}
             />
-            <div className='pr-10'>
-                <select 
-                id="small"
-                onChange={(e) => e.target.value === "área 4" ? props.setBatchArea4("") : props.setBatchArea4(e.target.value)} 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
-                    <option defaultValue="">área 4</option>
-                    <option value="0">Ordinária</option>
-                    <option value="1">Educação</option>
-                    <option value="2">Infraestrutura</option>
-                    <option value="3">Saúde</option>
-                </select>
-            </div>
+            <AreaDropdown
+                setArea={props.setBatchArea4}
+                defaultValue=""
+                defaultLabel="área 4"
+            />
             
         </div>
         <div className='py-2'>

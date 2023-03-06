@@ -1,8 +1,12 @@
 import React from 'react';
+import AreaDropdown from '../AreaDropdown';
+
 
 
 const SingleTransfer = (props) => {
 
+    const placeholder = "escolha uma área";
+    const defaultValue = "";
 
     return (
         <>
@@ -23,7 +27,12 @@ const SingleTransfer = (props) => {
                     onChange = {(e) => props.setValueSingle(e.target.value)}
                 />
             </div>
-            <div className='pr-10'>
+            < AreaDropdown 
+            setArea={props.setAreaSingle} 
+            defaultValue={defaultValue}
+            defaultLabel={placeholder}
+            />
+            {/* <div className='pr-10'>
                 <select 
                 id="area"
                 // value={props.areaSingle === "" ? def  : props.areaSingle}
@@ -36,7 +45,7 @@ const SingleTransfer = (props) => {
                     <option value="3">Saúde</option>
                 </select>
             
-            </div>
+            </div> */}
             <div className='py-2'>
                 <button 
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
