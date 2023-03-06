@@ -1,11 +1,10 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import Header from './itens/DataHeader';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState, PureComponent } from 'react';
-import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+// import { PieChart, Pie, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 
-import newStyle from '../styles/new.module.css'
+// import newStyle from '../styles/new.module.css'
 
 import SingleTransfer from '../components/user/SingleTransfer';
 import BatchTransfer from '../components/user/BatchTransfer';
@@ -13,28 +12,16 @@ import GetArea from '../components/user/GetArea';
 import GetBalance from '../components/user/GetBalance';
 import GetAddress from '../components/user/GetAddress';
 import GetName from '../components/user/GetName';
-import AddOrg from '../components/owner/AddOrg';
-import AddArea from '../components/owner/AddArea';
-import SubOrg from '../components/owner/SubOrg';
-import SubArea from '../components/owner/SubArea';
 
 import {
     useContract,
-    useContractRead,
-    usePrepareContractWrite,
-    useContractWrite,
     useSigner,
-    useWaitForTransaction,
-    chain,
+    useProvider,
 } from "wagmi";
 
 import { getContractData } from '../utils';
-import { arrayify } from 'ethers/lib/utils';
-
-
 
 const [contractAddress, contractABI] = getContractData();
-
 const buttonSendDefault = "Enviar";
 const buttonViewDefault = "Consultar";
 
@@ -42,10 +29,11 @@ const buttonViewDefault = "Consultar";
 export default function ApplicationSite() {
 
     const { data: signerData } = useSigner();
+    const provider = useProvider();
     const Contract = useContract({
         address: contractAddress,
         abi: contractABI,
-        signerOrProvider: signerData
+        signerOrProvider: provider
     });
 
     const [buttonSingleText, setButtonSingleText] = useState(buttonSendDefault);

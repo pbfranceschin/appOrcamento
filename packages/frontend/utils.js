@@ -53,26 +53,45 @@ export const sliceData = (data, start, end) => {
     return sliced
 }
 
-
-export const queryData = (
+// query array of logs
+export const queryLogData = (
     data,
     filter,
     blocks
 ) => {
 
-    let data_ = new Array()
-    let blocks_ = new Array()
+    let data_ = new Array();
+    let blocks_ = new Array();
     for(let i = 0; i < data.length; i++) {        
-        for(let j = 0; j < data[i].length; j++){
-            if(data[i][j].toString() === filter){
-                data_.push(data[i])
-                blocks_.push(blocks[i])
-                break
+        for(let j = 0; j < data[i].args.length; j++){
+            if(data[i].args[j].toString() === filter){
+                data_.push(data[i]);
+                blocks_.push(blocks[i]);
+                break;
             }
         }
         
     }
-    return [data_ , blocks]
+    return [data_ , blocks_];
+}
+
+// query array of arrays
+export const query2LArrData = (
+    data,
+    filter
+) => {
+
+    let data_ = new Array();
+    for(let i = 0; i < data.length; i++) {        
+        for(let j = 0; j < data[i].length; j++){
+            if(data[i][j].toString() === filter){
+                data_.push(data[i]);
+                break;
+            }
+        }
+        
+    }
+    return data_;
 }
 
 export const filterByIndex = (

@@ -42,24 +42,25 @@ const TxTable = (props) => {
                                 </thead>
                                 <tbody>
                                     {props.data.map((e,i) => {
-                                        let id
-                                        let value
-                                        let date
-                                        let operator
-                                        let from
-                                        let to
-                                        const key = i.toString()
+                                        let id;
+                                        let value;
+                                        let date;
+                                        let operator;
+                                        let from;
+                                        let to;
+                                        const key = i.toString();
                                         if(props.showUpdater === 0){
-                                            id = e.args.id.toString()
-                                            value = e.args.value.toString()
-                                            operator = e.args.operator
-                                            from = e.args.from
-                                            to = e.args.to                                            
+                                            id = e.args.id.toString();
+                                            value = e.args.value.toString();
+                                            operator = e.args.operator;
+                                            from = e.args.from;
+                                            to = e.args.to;
+                                            if(props.blocks.length > 0){
+                                                const time_ = props.blocks[i].timestamp;
+                                                date = dateFormat(time_);
+                                            }
                                         }
-                                        if(props.blocks.length > 0){
-                                            const time_ = props.blocks[i].timestamp
-                                            date = dateFormat(time_)
-                                        }
+                                        
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">

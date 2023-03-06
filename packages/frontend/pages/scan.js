@@ -1,8 +1,8 @@
 import { parse } from "@ethersproject/transactions";
 import { ethers } from "ethers";
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { queryData, filterByIndex } from '../utils';
-import { useBlock, useData } from '../hooks/data'
+import { queryLogData , query2LArrData } from '../utils';
+import { useData } from '../hooks/data'
 
 import Head from 'next/head';
 import Header from "./itens/DataHeader";
@@ -12,8 +12,6 @@ import AddTable from "../components/scan/AddTable";
 import TxTable from "../components/scan/TxTable";
 import NavButton from "../components/scan/NavButton";
 import Tabs from "../components/scan/Tabs";
-import { useFeeData } from "wagmi";
-
 
 let nameMap = new Map()
 
@@ -83,7 +81,7 @@ const main = () => {
             // console.log('showData initiator', txData, txBlocks)
             dataInitializer.current = true
         }
-    },[txBlocks])
+    },[txUpdater])
 
     // initiate block list
     useEffect(() => {
@@ -92,7 +90,7 @@ const main = () => {
             // console.log('block list initiator', txBlocks)
             blockListInitializer.current = true
         }
-    })
+    },[txBlocks])
 
     
     // update dataShow
@@ -188,14 +186,14 @@ const main = () => {
                 return
             }
             setDataShow(arr_.slice(dataIndex, dataIndex + 10))
-            console.log('check', arr_)
+            // console.log('check', arr_)
 
         } else {
             console.log(error_msg_filter)
             alert(error_msg_filter)
         }
 
-    }, [txSearched, dataIndex, tab])
+    }, [txSearched, dataIndex, tab, txUpdater])
     
      // check the length update nextButton state
     useLayoutEffect(() => {
@@ -296,21 +294,22 @@ const main = () => {
 
     const handleSearch = () => {
         if(!searchValue){
-            clearSearch()
-            return
+            clearSearch();
+            return;
         }
         if(txSearched){
-            showUpdater.current = null
+            showUpdater.current = null;
         }
-        setTxSearched(true)
-        setDataIndex(0)
-        console.log('buscar')
-        let [data_, blocks_] = queryData(txData, searchValue, txBlocks)
-        setTxSearchedData(data_)
-        [data_, blocks_] = queryData(addData, searchValue, addBlocks)
-        setAddSearchedData(data_)
-        AddBlocksSearched.current = blocks_
-        setNameSearchedData(queryData(Array.from(nameMap), searchValue))
+        setTxSearched(true);
+        setDataIndex(0);
+        console.log('buscar');
+        const [data_, blocks_] = queryLogData(txData, searchValue, txBlocks);
+        setTxSearchedData(data_);
+        TxBlocksSearched.current = blocks_;
+        const [data__, blocks__] = queryLogData(addData, searchValue, addBlocks);
+        setAddSearchedData(data__);
+        AddBlocksSearched.current = blocks__;
+        setNameSearchedData(query2LArrData(Array.from(nameMap), searchValue))
         // console.log('searched Data', txSearchedData)
         
     }
@@ -332,7 +331,7 @@ const main = () => {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <Header title='Rastreador do Orçamento' /> 
-                <div className="pt-4">
+                <div className="pt-3">
                     <Search
                         searchValue={searchValue}
                         setSearchValue={setSearchValue}
@@ -376,7 +375,7 @@ const main = () => {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <Header  title='Rastreador do Orçamento' />
-                <div>
+                <div className="pt-3">
                     <Search
                         searchValue={searchValue}
                         setSearchValue={setSearchValue}
@@ -418,7 +417,7 @@ const main = () => {
                         <link rel="icon" href="/favicon.ico" />
                     </Head>
                     <Header title='Rastreador do Orçamento' />
-                    <div>
+                    <div className="pt-3">
                         <Search
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
