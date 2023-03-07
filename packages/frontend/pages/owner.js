@@ -14,9 +14,9 @@ import Mint from '../components/owner/Mint'
 
 
 
-const [contractAddress, contractABI] = getContractData()
+const [contractAddress, contractABI] = getContractData();
 const buttonSendDefault = "Enviar";
-const success_msg = 'Operação realizada com sucesso'
+const success_msg = 'Operação realizada com sucesso';
 
 
 export default function OwnerPage() {
@@ -50,7 +50,7 @@ export default function OwnerPage() {
     // mint
     const [valueMint, setValueMint] = useState('');
     const [addressMint, setAddressMint] = useState('');
-    const [areaMint, setAreaMint] = useState('')
+    const [areaMint, setAreaMint] = useState('');
     // burn
     const [valueBurn, setValueBurn] = useState('');
     const [addressBurn, setAddressBurn] = useState('');
@@ -65,35 +65,35 @@ export default function OwnerPage() {
         name
     ) => {
         if(!signerData) {
-            alert("Conecte a carteira para realizar essa operação")
-            return
+            alert("Conecte a carteira para realizar essa operação");
+            return;
         }
         if(buttonAddOrgText !== buttonSendDefault){
-            return
+            return;
         }
-        let error = null
-        let txReceipt
+        let error = null;
+        let txReceipt;
         try {
-            setButtonAddOrgText('Assinando...')
-            console.log('Adding account', account,'to area', area)
-            const tx = await Contract.addOrg(account, area, name)
-            setButtonAddOrgText('Enviando...')
-            txReceipt = await tx.wait()
+            setButtonAddOrgText('Assinando...');
+            console.log('Adding account', account,'to area', area);
+            const tx = await Contract.addOrg(account, area, name);
+            setButtonAddOrgText('Enviando...');
+            txReceipt = await tx.wait();
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonAddOrgText(buttonSendDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonAddOrgText(buttonSendDefault);
         }
         if(error === null) {
-            console.log('success')
-            console.log(txReceipt)
-            alert(success_msg)
-            setButtonAddOrgText(buttonSendDefault)
-            setAddress1stAdd('')
-            setArea1stAdd('')
-            setNameAdd('')
+            console.log('success');
+            console.log(txReceipt);
+            alert(success_msg);
+            setButtonAddOrgText(buttonSendDefault);
+            setAddress1stAdd('');
+            setArea1stAdd('');
+            setNameAdd('');
         }
     }
     
@@ -102,66 +102,66 @@ export default function OwnerPage() {
         area
         ) => {
             if(!signerData) {
-                alert("Conecte a carteira para realizar essa operação")
-                return
+                alert("Conecte a carteira para realizar essa operação");
+                return;
             }
             if(buttonAddAreaText !== buttonSendDefault){
-                return
+                return;
             }
-            let error = null
-            let txReceipt
+            let error = null;
+            let txReceipt;
             try{
                 setButtonAddAreaText('Assinando...')
-                console.log('Adding account', account,'to area', area)
-                const tx = await Contract.addArea(account, area)
-                setButtonAddAreaText('Enviando...')
-                txReceipt = await tx.wait()
+                console.log('Adding account', account,'to area', area);
+                const tx = await Contract.addArea(account, area);
+                setButtonAddAreaText('Enviando...');
+                txReceipt = await tx.wait();
             } catch(err){
-                console.log(err)
-                error = err
-                let msg = "Erro:\n".concat(err)
-                alert(msg)
-                setButtonAddAreaText(buttonSendDefault)
+                console.log(err);
+                error = err;
+                let msg = "Erro:\n".concat(err);
+                alert(msg);
+                setButtonAddAreaText(buttonSendDefault);
             }
             if(error === null) {
                 console.log('success')
-                console.log(txReceipt)
-                alert(success_msg)
-                setButtonAddAreaText(buttonSendDefault)
-                setAddressAdd('')
-                setAreaAdd('')
+                console.log(txReceipt);
+                alert(success_msg);
+                setButtonAddAreaText(buttonSendDefault);
+                setAddressAdd('');
+                setAreaAdd('');
             }
     }
 
     const subOrg = async (account) => {
         if(!signerData) {
-            alert("Conecte a carteira para realizar essa operação")
-            return
+            alert("Conecte a carteira para realizar essa operação");
+            return;
         }
         if(buttonSubOrgText !== buttonSendDefault) {
-            return
+            return;
         }
-        let error = null
-        let txReceipt
+        let error = null;
+        let txReceipt;
         try{
-            setButtonSubOrgText('Assinando...')
-            console.log('Revoking account', account)
-            const tx = await Contract.subOrg(account)
-            setButtonSubOrgText('Enviando...')
-            txReceipt = await tx.wait()
+            setButtonSubOrgText('Assinando...');
+            console.log('Revoking account', account);
+            const tx = await Contract.subOrg(account);
+            setButtonSubOrgText('Enviando...');
+            txReceipt = await tx.wait();
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonSubOrgText(buttonSendDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonSubOrgText(buttonSendDefault);
         }
         if(error === null) {
-            console.log('success')
-            console.log(txReceipt)
-            alert(success_msg)
-            setButtonSubOrgText(buttonSendDefault)
-            setAddressSubOrg('')            
+            console.log('success');
+            console.log(txReceipt);
+            alert(success_msg);
+            setButtonSubOrgText(buttonSendDefault);
+            setAddressSubOrg('');
         }
     }
 
@@ -207,35 +207,35 @@ export default function OwnerPage() {
         amount
     ) => {
         if(!signerData) {
-            alert("Conecte a carteira para realizar essa operação")
-            return
+            alert("Conecte a carteira para realizar essa operação");
+            return;
         }
         if( buttonMintText !== buttonSendDefault) {
-            return
+            return;
         }
-        let error = null
-        let txReceipt
+        let error = null;
+        let txReceipt;
         try{
-            setButtonMintText('Assinando...')
-            console.log('minting', amount,'of area', area, 'to account', account)
-            const tx = await Contract.mint(account, area, amount)
-            setButtonMintText('Enviando...')
-            txReceipt = await tx.wait()
+            setButtonMintText('Assinando...');
+            console.log('minting', amount,'of area', area, 'to account', account);
+            const tx = await Contract.mint(account, area, amount);
+            setButtonMintText('Enviando...');
+            txReceipt = await tx.wait();
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonMintText(buttonSendDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonMintText(buttonSendDefault);
         }
         if(error === null) {
-            console.log('success')
-            console.log(txReceipt)
-            alert(success_msg)
-            setButtonMintText(buttonSendDefault)
-            setValueMint('')
-            setAddressMint('')
-            setAreaMint('')
+            console.log('success');
+            console.log(txReceipt);
+            alert(success_msg);
+            setButtonMintText(buttonSendDefault);
+            setValueMint('');
+            setAddressMint('');
+            setAreaMint('');
         }
     }
 
@@ -245,32 +245,32 @@ export default function OwnerPage() {
         amount
     ) => {
         if(!signerData) {
-            alert("Conecte a carteira para realizar essa operação")
-            return
+            alert("Conecte a carteira para realizar essa operação");
+            return;
         }
         if( buttonBurnText !== buttonSendDefault) {
-            return
+            return;
         }
-        let error = null
-        let txReceipt
+        let error = null;
+        let txReceipt;
         try{
-            setButtonBurnText('Assinando...')
-            console.log('burning', amount,'of area', area, 'from account', account)
-            const tx = await Contract.burn(account, area, amount)
-            setButtonBurnText('Enviando...')
-            txReceipt = await tx.wait()
+            setButtonBurnText('Assinando...');
+            console.log('burning', amount,'of area', area, 'from account', account);
+            const tx = await Contract.burn(account, area, amount);
+            setButtonBurnText('Enviando...');
+            txReceipt = await tx.wait();
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonBurnText(buttonSendDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonBurnText(buttonSendDefault);
         }
         if(error === null) {
-            console.log('success')
-            console.log(txReceipt)
-            alert(success_msg)
-            setButtonBurnText(buttonSendDefault)
+            console.log('success');
+            console.log(txReceipt);
+            alert(success_msg);
+            setButtonBurnText(buttonSendDefault);
         }
     }
 
@@ -279,60 +279,60 @@ export default function OwnerPage() {
     // // // // // /
 
     const handleAddOrg = () => {
-        if(!address1stAdd) {
-            alert('Preencha o campo do endereço')
-            return
+        if(!address1stAdd || !nameAdd) {
+            alert('Preencha os campos endereço e nome');
+            return;
         }
         if(!area1stAdd) {
-            addOrg(address1stAdd, 0, nameAdd)
-            return
+            addOrg(address1stAdd, 0, nameAdd);
+            return;
         }
-        addOrg(address1stAdd, area1stAdd, nameAdd)
+        addOrg(address1stAdd, area1stAdd, nameAdd);
         
     }
 
     const handleAddArea = () => {
         if(!addressAdd || !areaAdd){
-            alert('Preencha os campos _endereço_ e _area_')
-            return
+            alert('Preencha os campos endereço e area');
+            return;
         }
-        addArea(addressAdd, areaAdd)
+        addArea(addressAdd, areaAdd);
         
     }
 
     const handleSubOrg = () => {
         if(!addressSubOrg) {
-            alert('Preencha o campo endereço')
-            return
+            alert('Preencha o campo endereço');
+            return;
         }
-        subOrg(addressSubOrg)
+        subOrg(addressSubOrg);
     }
 
     const handleSubArea = () => {
         if(!addressSubArea || !areaSub) {
-            alert('Preencha os campos _endereço_ e _area_')
-            return
+            alert('Preencha os campos _endereço_ e _area_');
+            return;
         }
-        subArea(addressSubArea, areaSub)
+        subArea(addressSubArea, areaSub);
     }
 
     const handleMint = () => {
         if(!valueMint || !addressMint || !areaMint){
-            alert('preencha todos os campos')
-            return
+            alert('preencha todos os campos');
+            return;
         }
-        mint(addressMint, areaMint, valueMint)
+        mint(addressMint, areaMint, valueMint);
     }
 
     const handleBurn = () => {
         if(!valueBurn || ! addressBurn || !areaBurn){
-            alert('preencha todos os campos')
-            return
+            alert('preencha todos os campos');
+            return;
         }
-        burn(addressBurn, areaBurn, valueBurn)
-        setValueBurn('')
-        setAddressBurn('')
-        setAreaBurn('')
+        burn(addressBurn, areaBurn, valueBurn);
+        setValueBurn('');
+        setAddressBurn('');
+        setAreaBurn('');
     }
 
     
