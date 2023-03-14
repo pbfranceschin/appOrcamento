@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const contracts = require('../contracts/hardhat_contracts.json')
+const contracts = require('../contracts/hardhat_contracts.json');
 
 const hardhatChain = {
     id: 31337,
@@ -22,8 +22,8 @@ const hardhatChain = {
     const contractAddress = contracts[chainId][0].contracts.OrcamentoUniao2023.address;
     const contractABI = contracts[chainId][0].contracts.OrcamentoUniao2023.abi;
 
-const private_key = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-const from = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+const private_key = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+const from = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 const accounts = [
   '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
   '0x90F79bf6EB2c4f870365E785982E1f101E93b906',
@@ -37,7 +37,7 @@ const accounts = [
   '0x71bE63f3384f5fb98995898A86B02Fb2426c5788',
   '0xFABB0ac9d68B0B445fB7357272Ff202C5651694a',
   '0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec',
-]
+];
 
 const names = [
   'Secretaria de Educação-RJ',
@@ -52,31 +52,31 @@ const names = [
   'Ministério do Esporte',
   'Secretaria da Saúde-SP',
   'ALERJ',
-]
+];
 
-const url = hardhatChain.rpcUrls.default
+const url = hardhatChain.rpcUrls.default;
 
 
 
 async function main () {
     
     if(names.length !== accounts.length){
-      console.log('Erro: lista de nomes e contas têm tamanhos diferentes')
-      return
+      console.log('Erro: lista de nomes e contas têm tamanhos diferentes');
+      return;
     }
   
-    const provider = new ethers.providers.JsonRpcProvider(url) 
+    const provider = new ethers.providers.JsonRpcProvider(url);
 
-    const signer = new ethers.Wallet(private_key, provider)
+    const signer = new ethers.Wallet(private_key, provider);
     
-    const Contract = new ethers.Contract(contractAddress, contractABI, signer)
+    const Contract = new ethers.Contract(contractAddress, contractABI, signer);
     
 
     let i
     for(i=0; i<accounts.length; i++){
-        const add = await Contract.addOrg(accounts[i], 1, names[i])
-        const addReceipt = await add.wait()
-        console.log(addReceipt)
+        const add = await Contract.addOrg(accounts[i], 1, names[i]);
+        const addReceipt = await add.wait();
+        console.log(addReceipt);
     }
 
 }
@@ -86,4 +86,4 @@ main()
   .catch((error) => {
     console.error(error);
     process.exit(1);
-  });
+});

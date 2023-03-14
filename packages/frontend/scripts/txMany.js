@@ -38,11 +38,11 @@ async function main () {
     
     const Contract = new ethers.Contract(contractAddress, contractABI, signer)
     
-    // const add = await Contract.addOrg(to, 1, 'Ministério da Fazenda')
+      const add = await Contract.addOrg(to, 1, 'Ministério da Fazenda')
 
-    // const addReceipt = await add.wait()
+      const addReceipt = await add.wait()
 
-    // console.log(addReceipt)
+      console.log(addReceipt)
 
     let i
     for(i=0; i<25; i++){

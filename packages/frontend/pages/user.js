@@ -42,11 +42,7 @@ export default function ApplicationSite() {
     const [buttonGetAreaText, setButtonGetAreaText] = useState(buttonViewDefault);
     const [buttonGetAddressText, setButtonGetAddressText ] = useState(buttonViewDefault);
     const [buttonGetNameText, setButtonGetNameText] = useState(buttonViewDefault);
-    const [buttonAddOrgText, setButtonAddOrgText ] = useState(buttonSendDefault);
-    const [buttonAddAreaText, setButtonAddAreaText ] = useState(buttonSendDefault);
-    const [buttonSubOrgText, setButtonSubOrgText] = useState(buttonSendDefault);
-    const [buttonSubAreaText, setButtonSubAreaText ] = useState(buttonSendDefault);
-
+    
     // SingleTransfer
     const [valueSingle, setValueSingle] = useState('');
     const [areaSingle, setAreaSingle] = useState('');
@@ -77,18 +73,6 @@ export default function ApplicationSite() {
     const [addressGet, setAddressGet] = useState('')
     const [nameShow, setNameShow] = useState('')
 
-    // addOrg
-    const [address1stAdd, setAddress1stAdd] = useState('');
-    const [area1stAdd, setArea1stAdd] = useState('');
-    const [nameAdd, setNameAdd] = useState('');
-    // addArea
-    const [addressAdd, setAddressAdd] = useState('');
-    const [areaAdd, setAreaAdd] = useState('');
-    // subOrg
-    const [addressSubOrg, setAddressSubOrg] = useState('');
-    // subArea
-    const [addressSubArea, setAddressSubArea] = useState('');
-    const [areaSub, setAreaSub] = useState('');
     
     // chartData
     // const [budgetTotal, setBudgetTotal] = useState(0);
@@ -106,18 +90,18 @@ export default function ApplicationSite() {
         amount,    
         ) =>{
         if(!signerData) {
-            alert("Conecte a carteira para transferir")
-            return
+            alert("Conecte a carteira para transferir");
+            return;
         }
         if(buttonSingleText !== buttonSendDefault){
-            return
+            return;
         }
-        const signerAddress = await signerData.getAddress()
-        let error = null
-        let txReceipt
+        const signerAddress = await signerData.getAddress();
+        let error = null;
+        let txReceipt;
         try {
-            setButtonSingleText("Assinando...")
-            console.log('singleTransfer from', signerAddress, 'to', to)
+            setButtonSingleText("Assinando...");
+            console.log('singleTransfer from', signerAddress, 'to', to);
             const tx = await Contract.connect(signerData).safeTransferFrom(
                 signerAddress,
                 to,
@@ -125,23 +109,23 @@ export default function ApplicationSite() {
                 amount,
                 '0x00'
             )
-            setButtonSingleText("Enviando...")
-            txReceipt = await tx.wait()
+            setButtonSingleText("Enviando...");
+            txReceipt = await tx.wait();
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonSingleText(buttonSendDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonSingleText(buttonSendDefault);
         }
         if(error === null) {
-            console.log('success')
-            console.log(txReceipt)
-            setButtonSingleText(buttonSendDefault)
-            setAddressSingle('')
-            setValueSingle('')
-            setAreaSingle('')
-            alert('Transferencia realizada com sucesso')
+            console.log('success');
+            console.log(txReceipt);
+            setButtonSingleText(buttonSendDefault);
+            setAddressSingle('');
+            setValueSingle('');
+            setAreaSingle('');
+            alert('Transferencia realizada com sucesso');
         }
     }
 
@@ -151,18 +135,18 @@ export default function ApplicationSite() {
         amounts,
         ) =>{
         if(!signerData) {
-            alert("Conecte a carteira para transferir")
-            return
+            alert("Conecte a carteira para transferir");
+            return;
         }
         if(buttonBatchText !== buttonSendDefault){
-            return
+            return;
         }
-        const signerAddress = await signerData.getAddress()
-        let error = null
-        let txReceipt
+        const signerAddress = await signerData.getAddress();
+        let error = null;
+        let txReceipt;
         try {
-            setButtonBatchText("Assinando...")
-            console.log('batchTransfer from', signerAddress, 'to', to)
+            setButtonBatchText("Assinando...");
+            console.log('batchTransfer from', signerAddress, 'to', to);
             const tx = await Contract.connect(signerData).safeBatchTransferFrom(
                 signerAddress,
                 to,
@@ -170,29 +154,29 @@ export default function ApplicationSite() {
                 amounts,
                 '0x00'
             )
-            setButtonBatchText("Enviando...")
-            txReceipt = await tx.wait()
+            setButtonBatchText("Enviando...");
+            txReceipt = await tx.wait();
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonBatchText(buttonSendDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonBatchText(buttonSendDefault);
         }
         if(error === null) {
-            console.log('success')
-            console.log(txReceipt)
-            setButtonBatchText(buttonSendDefault)
-            setBatchAddress('')
-            setBatchValue1('')
-            setBatchValue2('')
-            setBatchValue3('')
-            setBatchValue4('')
-            setBatchArea1('')
-            setBatchArea2('')
-            setBatchArea3('')
-            setBatchArea4('')
-            alert('Transferencia realizada com sucesso')
+            console.log('success');
+            console.log(txReceipt);
+            setButtonBatchText(buttonSendDefault);
+            setBatchAddress('');
+            setBatchValue1('');
+            setBatchValue2('');
+            setBatchValue3('');
+            setBatchValue4('');
+            setBatchArea1('');
+            setBatchArea2('');
+            setBatchArea3('');
+            setBatchArea4('');
+            alert('Transferencia realizada com sucesso');
         }
     }
 
@@ -201,25 +185,25 @@ export default function ApplicationSite() {
         area
     ) => {
         if(buttonGetBalanceText !== buttonViewDefault) {
-            return
+            return;
         }
-        let error = null
-        let bal
+        let error = null;
+        let bal;
         try {
-            setButtonGetBalanceText('Consultando...')
-            bal = await Contract.balanceOf(account, area)
-            console.log('piiing2')
+            setButtonGetBalanceText('Consultando...');
+            bal = await Contract.balanceOf(account, area);
+            console.log('piiing2');
         } catch(err) {
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonGetBalanceText(buttonViewDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonGetBalanceText(buttonViewDefault);
         }
         if(error == null) {
-            console.log('success')
-            setButtonGetBalanceText(buttonViewDefault)
-            setBalance(bal.toString())
+            console.log('success');
+            setButtonGetBalanceText(buttonViewDefault);
+            setBalance(bal.toString());
         }
 
     }
@@ -229,25 +213,25 @@ export default function ApplicationSite() {
         account,        
     ) => {
         if(buttonGetAreaText !== buttonViewDefault){
-            return
+            return;
         }
-        setAreas('')
-        let error = null
-        let areas_
+        setAreas('');
+        let error = null;
+        let areas_;
         try {
-            setButtonGetAreaText('Carregando...')
-            areas_ = await Contract.getAreas(account)
+            setButtonGetAreaText('Carregando...');
+            areas_ = await Contract.getAreas(account);
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonGetAreaText(buttonViewDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonGetAreaText(buttonViewDefault);
         }
         if(error === null) {
-            console.log('success')
-            setButtonGetAreaText(buttonViewDefault)
-            setAreas(areas_.toString())
+            console.log('success');
+            setButtonGetAreaText(buttonViewDefault);
+            setAreas(areas_.toString());
         }
     }
 
@@ -255,30 +239,30 @@ export default function ApplicationSite() {
         name
     ) => {
         if(buttonGetAddressText !== buttonViewDefault){
-            return
+            return;
         }
-        setAddressShow('')
-        let error = null
-        let address_
+        setAddressShow('');
+        let error = null;
+        let address_;
         try {
-            setButtonGetAddressText('Carregando...')
-            address_ = await Contract.getAddress(name)
+            setButtonGetAddressText('Carregando...');
+            address_ = await Contract.getAddress(name);
         } catch(err){
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonGetAddressText(buttonViewDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonGetAddressText(buttonViewDefault);
         }
         if(error === null){
-            console.log('success')
-            setButtonGetAddressText(buttonViewDefault)
-            console.log(address_)
+            console.log('success');
+            setButtonGetAddressText(buttonViewDefault);
+            console.log(address_);
             if(address_.toString() === '0x0000000000000000000000000000000000000000'){
-                setAddressShow('Inexistente')
-                return
+                setAddressShow('Inexistente');
+                return;
             }
-            setAddressShow(address_.toString())
+            setAddressShow(address_.toString());
         }
     }
 
@@ -286,30 +270,30 @@ export default function ApplicationSite() {
         address
     ) => {
         if(buttonGetNameText !== buttonViewDefault){
-            return
+            return;
         }
-        setNameShow('')
-        let error = null
-        let name_
+        setNameShow('');
+        let error = null;
+        let name_;
         try {
-            setButtonGetNameText('Carregando...')
-            name_ = await Contract.getName(address)
+            setButtonGetNameText('Carregando...');
+            name_ = await Contract.getName(address);
         } catch(err) {
-            console.log(err)
-            error = err
-            let msg = "Erro:\n".concat(err)
-            alert(msg)
-            setButtonGetNameText(buttonViewDefault)
+            console.log(err);
+            error = err;
+            let msg = "Erro:\n".concat(err);
+            alert(msg);
+            setButtonGetNameText(buttonViewDefault);
         }
         if(error === null) {
-            console.log('success')
-            setButtonGetNameText(buttonViewDefault)
-            console.log(name_)
+            console.log('success');
+            setButtonGetNameText(buttonViewDefault);
+            console.log(name_);
             if(name_.toString() === ''){
-                setNameShow('Não registrado')
-                return
+                setNameShow('Não registrado');
+                return;
             }
-            setNameShow(name_.toString())
+            setNameShow(name_.toString());
         }
     }
     
@@ -318,16 +302,16 @@ export default function ApplicationSite() {
     // // // // // // // // // //
     const handleSingleTransfer = () => {
         if(!valueSingle || !addressSingle || !areaSingle){
-            alert('Preencha os campos endereço , montante e selecione a área de atuação')
-            return
+            alert('Preencha os campos endereço , montante e selecione a área de atuação');
+            return;
         }
-        transferSingle(addressSingle, areaSingle, valueSingle)
+        transferSingle(addressSingle, areaSingle, valueSingle);
     }
  
     const handleBatchTransfer = () => {
         if(!batchAddress){
-            alert('Preencha o campo _endereço_ ')
-            return
+            alert('Preencha o campo _endereço_ ');
+            return;
         }
         if(
             !(batchValue1 && batchArea1) &&
@@ -335,8 +319,8 @@ export default function ApplicationSite() {
             !(batchValue3 && batchArea3) &&
             !(batchValue4 && batchArea4)
             ) {
-                alert('preencha pelo menos um dos pares (area, montante)')
-                return
+                alert('preencha pelo menos um dos pares (area, montante)');
+                return;
             }
         if(
             (!batchValue1 && batchArea1) ||
@@ -348,61 +332,61 @@ export default function ApplicationSite() {
             (!batchValue4 && batchArea4) ||
             (batchValue4 && !batchArea4)
         ) {
-            alert('pelo menos um dos pares (area, montante) está imcompleto!')
-            return
+            alert('pelo menos um dos pares (area, montante) está imcompleto!');
+            return;
         }
-        let values = new Array()
-        let areas = new Array()
+        let values = new Array();
+        let areas = new Array();
         if(batchValue1){
-            values.push(batchValue1)
-            areas.push(batchArea1)
+            values.push(batchValue1);
+            areas.push(batchArea1);
         }
         if(batchValue2){
-            values.push(batchValue2)
-            areas.push(batchArea2)
+            values.push(batchValue2);
+            areas.push(batchArea2);
         }
         if(batchValue3){
-            values.push(batchValue3)
-            areas.push(batchArea3)
+            values.push(batchValue3);
+            areas.push(batchArea3);
         }
         if(batchValue4){
-            values.push(batchValue4)
-            areas.push(batchArea4)
+            values.push(batchValue4);
+            areas.push(batchArea4);
         }
         
-        transferBatch(batchAddress, areas, values)
+        transferBatch(batchAddress, areas, values);
     }
 
     const handleGetBalance = () => {
         if(!addressBalance || !areaBalance) {
-            alert('Preencha os campos _endereço_ e _area_')
-            return
+            alert('Preencha os campos _endereço_ e _area_');
+            return;
         }
-        getBalance(addressBalance, areaBalance)
+        getBalance(addressBalance, areaBalance);
     }
 
     const handleGetArea = () => {
         if(!areaGet) {
-            alert('Preencha o campo _endereço_')
-            return
+            alert('Preencha o campo _endereço_');
+            return;
         }
-        getArea(areaGet)
+        getArea(areaGet);
     }
 
     const handleGetAddress = () => {
         if(!nameGet){
-            alert('Preencha o campo com o nome do órgão')
-            return
+            alert('Preencha o campo com o nome do órgão');
+            return;
         }
-        getAddress(nameGet)
+        getAddress(nameGet);
     }
 
     const handleGetName = () => {
         if(!addressGet){
-            alert('Preencha o campo com o endereço')
-            return
+            alert('Preencha o campo com o endereço');
+            return;
         }
-        getName(addressGet)
+        getName(addressGet);
     }
 
 
@@ -443,13 +427,13 @@ export default function ApplicationSite() {
 
     ///////////////////////////////////////////////
 
-    const verba_ = 10**12
-    const chartData = [
-        {name: 'Ordinária', value: (verba_*80)/100},
-        {name: 'Educação', value: (verba_*5)/100},
-        {name: 'Infra', value: (verba_*10)/100},
-        {name: 'Saúde', value: (verba_*5)/100 },
-    ]
+    // const verba_ = 10**12
+    // const chartData = [
+    //     {name: 'Ordinária', value: (verba_*80)/100},
+    //     {name: 'Educação', value: (verba_*5)/100},
+    //     {name: 'Infra', value: (verba_*10)/100},
+    //     {name: 'Saúde', value: (verba_*5)/100 },
+    // ]
 
     return (
         <>

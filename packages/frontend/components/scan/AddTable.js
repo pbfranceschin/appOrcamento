@@ -44,11 +44,12 @@ const AddTable = (props) => {
                                             if(!e.args.added) {
                                                 action = 'Revogação'
                                             }
+                                            if(props.blocks.length > 0){
+                                                const time_ = props.blocks[i].timestamp
+                                                date = dateFormat(time_)
+                                            }
                                         }
-                                        if(props.blocks.length > 0){
-                                            const time_ = props.blocks[i].timestamp
-                                            date = dateFormat(time_)
-                                        }
+                                        
                                         const key = i.toString()
                                         return (
                                             <tr key={key} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">

@@ -182,7 +182,7 @@ export default function OwnerPage() {
             setButtonSubAreaText('Assinando...')
             console.log('Subtracting account', account, 'from area', area)
             const tx = await Contract.subArea(account, area)
-            setButtonSubOrgText('Enviando...')
+            setButtonSubAreaText('Enviando...')
             txReceipt = await tx.wait()
         } catch(err){
             console.log(err)
